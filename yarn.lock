@@ -889,6 +889,10 @@ coffee-script@~1.10.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/coffee-script/-/coffee-script-1.10.0.tgz#12938bcf9be1948fa006f92e0c4c9e81705108c0"
 
+coffeescript@^2.0.1:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/coffeescript/-/coffeescript-2.1.0.tgz#8cb7ce12021ab9f84d8c524f54edbd6141374606"
+
 colors@*, colors@1.1.2, colors@^1.1.2, colors@latest, colors@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/colors/-/colors-1.1.2.tgz#168a4701756b6a7f51a12ce0c97bfa28c084ed63"
@@ -1414,6 +1418,10 @@ ejs@2.3.4:
 ejs@2.4.*:
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/ejs/-/ejs-2.4.2.tgz#7057eb4812958fb731841cd9ca353343efe597b1"
+
+ejs@2.5.7:
+  version "2.5.7"
+  resolved "https://registry.yarnpkg.com/ejs/-/ejs-2.5.7.tgz#cc872c168880ae3c7189762fd5ffc00896c9518a"
 
 encodeurl@~1.0.1:
   version "1.0.1"
@@ -2088,6 +2096,15 @@ grunt-contrib-coffee@1.0.0:
     coffee-script "~1.10.0"
     lodash "~4.3.0"
     uri-path "~1.0.0"
+
+grunt-contrib-coffee@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/grunt-contrib-coffee/-/grunt-contrib-coffee-2.0.0.tgz#d18acc7e7e7307b304a33fd5e61db1902d204f7f"
+  dependencies:
+    chalk "^1.1.1"
+    coffeescript "^2.0.1"
+    lodash "^4.6.1"
+    uri-path "^1.0.0"
 
 grunt-contrib-concat@1.0.1:
   version "1.0.1"
@@ -3067,7 +3084,7 @@ lodash@3.8.0:
   version "3.8.0"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.8.0.tgz#376eb98bdcd9382a9365c33c4cb8250de1325b91"
 
-lodash@4.x, lodash@>=2.4.x, lodash@^4.0.1, lodash@^4.13.1, lodash@^4.14.2, lodash@^4.15.0, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.8.0, lodash@^4.8.2, lodash@~4.17.4:
+lodash@4.x, lodash@>=2.4.x, lodash@^4.0.1, lodash@^4.13.1, lodash@^4.14.2, lodash@^4.15.0, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.6.1, lodash@^4.8.0, lodash@^4.8.2, lodash@~4.17.4:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
@@ -4533,12 +4550,12 @@ sails-generate@~0.13.0:
     sails-generate-views "~0.10.5"
     sails-generate-views-jade "~0.10.3"
 
-sails-hook-autoreload@0.14.3:
-  version "0.14.3"
-  resolved "https://registry.yarnpkg.com/sails-hook-autoreload/-/sails-hook-autoreload-0.14.3.tgz#b6292609cc590324bea5f9144db8450820f3c350"
+sails-hook-autoreload@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/sails-hook-autoreload/-/sails-hook-autoreload-1.1.0.tgz#666cab7e0490b7575c970fc830b53f59f3529664"
   dependencies:
+    "@sailshq/lodash" "^3.10.2"
     chokidar "^1.0.0"
-    lodash "^3.10.1"
 
 sails-hook-orm@~1.0.9:
   version "1.0.9"
