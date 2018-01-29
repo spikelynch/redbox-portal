@@ -1234,8 +1234,8 @@ module.exports.form = {
           compClass: 'TextBlockComponent',
           viewOnly: false,
           definition: {
-            name: 'title',
-            type: 'h1'
+            value: 'LabArchives',
+            type: 'h2'
           }
         },
         {
@@ -1259,15 +1259,22 @@ module.exports.form = {
           }
         },
         {
-          class: 'WSLoginField',
-          viewOnly: false,
+          class: 'WSField',
+          showHeader: true,
           definition: {
-          }
-        },
-        {
-          class: 'WSListField',
-          viewOnly: false,
-          definition: {
+            name: 'workspaces',
+            columns: [
+              {'label': 'project', 'property': 'project'},
+              {'label': 'link', 'property': 'link'},
+              {'label': 'status', 'property': 'status'}
+            ],
+            permission: {
+              'label': 'Stash is requesting from LabArchives the following permissions',
+              list: [
+                'Create Repositories',
+                'Write information into your repositories'
+              ]
+            }
           }
         }
       ]
