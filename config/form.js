@@ -1245,17 +1245,29 @@ module.exports.form = {
             label: 'Back',
             value: '/@branding/@portal/record/workspace/edit/@rdmp',
             cssClasses: 'btn btn-large btn-info margin-15',
-            showPencil: true,
+            showPencil: false,
             controlType: 'anchor'
           },
           variableSubstitutionFields: ['value']
         },
         {
+          class: 'Container',
+          compClass: 'TextBlockComponent',
+          definition: {
+            value: '@ws-login-permission:help',
+            type: 'h4'
+          }
+        },
+        {
           class: 'WSLoginField',
           viewOnly: false,
           definition: {
-            name: 'description',
-            label: 'Description'
+          }
+        },
+        {
+          class: 'WSListField',
+          viewOnly: false,
+          definition: {
           }
         }
       ]

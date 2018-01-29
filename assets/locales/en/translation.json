@@ -338,5 +338,6 @@
   "auth-update-error": "Updating authorization resulted in server error, please contact administrator.",
   "edit-error-no-permissions": "You do not have permission to edit this record",
   "view-error-no-permissions": "You do not have permission to view this record",
-  "missing-record": "Problems retrieving this record, are you sure it exists?"
+  "missing-record": "Problems retrieving this record, are you sure it exists?",
+  "@ws-login-permission:help": "The provisioner requires permission to create a workspace on your behalf"
 }
