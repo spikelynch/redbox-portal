@@ -1251,7 +1251,7 @@ module.exports.form = {
           variableSubstitutionFields: ['value']
         },
         {
-          class: 'TextArea',
+          class: 'WSLoginField',
           viewOnly: false,
           definition: {
             name: 'description',

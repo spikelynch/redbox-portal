@@ -51,6 +51,7 @@ import { CompleterService } from 'ng2-completer';
 import { ConfigService } from '../config-service';
 import { TranslationService } from '../translation-service';
 import { UtilityService } from '../util-service';
+import { WSLoginField, WSLoginComponent } from "./ws/ws-field-login.component";
 /**
  * Field / Model Factory Service...
  *
@@ -76,7 +77,8 @@ export class FieldControlService {
     'WorkflowStepButton': {'meta': WorkflowStepButton, 'comp': WorkflowStepButtonComponent},
     'LinkValueComponent': {'meta': LinkValue, 'comp': LinkValueComponent },
     'SelectionField': {'meta': SelectionField, 'comp': [ SelectionFieldComponent, DropdownFieldComponent ]},
-    'RelatedObjectDataField': {'meta': RelatedObjectDataField, 'comp': RelatedObjectDataComponent, 'lookupService': 'vocabFieldLookupService'}
+    'RelatedObjectDataField': {'meta': RelatedObjectDataField, 'comp': RelatedObjectDataComponent, 'lookupService': 'vocabFieldLookupService'},
+    'WSLoginField': {'meta': WSLoginField, 'comp': WSLoginComponent}
   };
   constructor(@Inject(VocabFieldLookupService) private vocabFieldLookupService: VocabFieldLookupService, @Inject(CompleterService) private completerService: CompleterService,
   @Inject(ConfigService) protected configService: ConfigService,
