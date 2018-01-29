@@ -37,8 +37,8 @@ module.exports.recordtype = {
       }
     ]
   },
-  "sampleWorkspace": {
-    packageType: "workspace",
+  "workspace": {
+    "packageType": "workspace",
     searchFilters: [
       {
         name: "text_title",

@@ -17,14 +17,14 @@ module.exports.form = {
         "saveError": ["@dmpt-form-save-error"]
       },
       fields: [{
-          class: 'Container',
-          compClass: 'TextBlockComponent',
-          viewOnly: true,
-          definition: {
-            name: 'title',
-            type: 'h1'
-          }
-        },
+        class: 'Container',
+        compClass: 'TextBlockComponent',
+        viewOnly: true,
+        definition: {
+          name: 'title',
+          type: 'h1'
+        }
+      },
         {
           class: "AnchorOrButton",
           viewOnly: true,
@@ -61,13 +61,13 @@ module.exports.form = {
                   label: "@dmpt-welcome-tab",
                   active: true,
                   fields: [{
-                      class: 'Container',
-                      compClass: 'TextBlockComponent',
-                      definition: {
-                        value: '@dmpt-welcome-heading',
-                        type: 'h3'
-                      }
-                    },
+                    class: 'Container',
+                    compClass: 'TextBlockComponent',
+                    definition: {
+                      value: '@dmpt-welcome-heading',
+                      type: 'h3'
+                    }
+                  },
                     {
                       class: 'Container',
                       compClass: 'TextBlockComponent',
@@ -108,13 +108,13 @@ module.exports.form = {
                   id: "project",
                   label: "@dmpt-project-tab",
                   fields: [{
-                      class: 'Container',
-                      compClass: 'TextBlockComponent',
-                      definition: {
-                        value: '@dmpt-project-heading',
-                        type: 'h3'
-                      }
-                    },
+                    class: 'Container',
+                    compClass: 'TextBlockComponent',
+                    definition: {
+                      value: '@dmpt-project-heading',
+                      type: 'h3'
+                    }
+                  },
                     {
                       class: 'TextField',
                       editOnly: true,
@@ -273,9 +273,9 @@ module.exports.form = {
                             searchFields: 'grant_number,dc_title',
                             titleFieldArr: ['grant_number', 'repository_name', 'dc_title'],
                             titleFieldDelim: [{
-                                prefix: '[',
-                                suffix: ']'
-                              },
+                              prefix: '[',
+                              suffix: ']'
+                            },
                               {
                                 prefix: ' (',
                                 suffix: ')'
@@ -388,44 +388,44 @@ module.exports.form = {
                   id: "people",
                   label: "@dmpt-people-tab",
                   fields: [{
-                      class: 'ContributorField',
-                      showHeader: true,
-                      definition: {
-                        name: 'contributor_ci',
-                        required: true,
-                        label: '@dmpt-people-tab-ci',
-                        role: "@dmpt-people-tab-ci-role",
-                        freeText: false,
-                        forceLookupOnly: true,
-                        vocabId: 'Parties AND repository_name:People',
-                        sourceType: 'mint',
-                        fieldNames: [{
-                          'text_full_name': 'text_full_name'
-                        }, {
-                          'full_name_honorific': 'text_full_name_honorific'
-                        }, {
-                          'email': 'Email[0]'
-                        }],
-                        searchFields: 'text_given_name,text_family_name,text_full_name,text_full_name_honorific',
-                        titleFieldArr: ['text_full_name'],
-                        titleFieldDelim: '',
-                        nameColHdr: '@dmpt-people-tab-name-hdr',
-                        emailColHdr: '@dmpt-people-tab-email-hdr',
-                        validation_required_name: '@dmpt-people-tab-validation-name-required',
-                        validation_required_email: '@dmpt-people-tab-validation-email-required',
-                        validation_invalid_email: '@dmpt-people-tab-validation-email-invalid',
-                        publish: {
-                          onValueUpdate: {
-                            modelEventSource: 'valueChanges'
-                          }
-                        },
-                        subscribe: {
-                          'this': {
-                            onValueUpdate: []
-                          }
+                    class: 'ContributorField',
+                    showHeader: true,
+                    definition: {
+                      name: 'contributor_ci',
+                      required: true,
+                      label: '@dmpt-people-tab-ci',
+                      role: "@dmpt-people-tab-ci-role",
+                      freeText: false,
+                      forceLookupOnly: true,
+                      vocabId: 'Parties AND repository_name:People',
+                      sourceType: 'mint',
+                      fieldNames: [{
+                        'text_full_name': 'text_full_name'
+                      }, {
+                        'full_name_honorific': 'text_full_name_honorific'
+                      }, {
+                        'email': 'Email[0]'
+                      }],
+                      searchFields: 'text_given_name,text_family_name,text_full_name,text_full_name_honorific',
+                      titleFieldArr: ['text_full_name'],
+                      titleFieldDelim: '',
+                      nameColHdr: '@dmpt-people-tab-name-hdr',
+                      emailColHdr: '@dmpt-people-tab-email-hdr',
+                      validation_required_name: '@dmpt-people-tab-validation-name-required',
+                      validation_required_email: '@dmpt-people-tab-validation-email-required',
+                      validation_invalid_email: '@dmpt-people-tab-validation-email-invalid',
+                      publish: {
+                        onValueUpdate: {
+                          modelEventSource: 'valueChanges'
+                        }
+                      },
+                      subscribe: {
+                        'this': {
+                          onValueUpdate: []
                         }
                       }
-                    },
+                    }
+                  },
                     {
                       class: 'ContributorField',
                       showHeader: true,
@@ -467,7 +467,7 @@ module.exports.form = {
                       definition: {
                         name: "contributors",
                         skipClone: ['showHeader', 'initialValue'],
-                        forceClone: [{field:'vocabField', skipClone:['injector']}],
+                        forceClone: [{field: 'vocabField', skipClone: ['injector']}],
                         fields: [{
                           class: 'ContributorField',
                           showHeader: true,
@@ -549,13 +549,13 @@ module.exports.form = {
                   id: "dataCollection",
                   label: "@dmpt-data-collection-tab",
                   fields: [{
-                      class: 'Container',
-                      compClass: 'TextBlockComponent',
-                      definition: {
-                        value: '@dmpt-data-collection-heading',
-                        type: 'h3'
-                      }
-                    },
+                    class: 'Container',
+                    compClass: 'TextBlockComponent',
+                    definition: {
+                      value: '@dmpt-data-collection-heading',
+                      type: 'h3'
+                    }
+                  },
                     {
                       class: 'TextArea',
                       compClass: 'TextAreaComponent',
@@ -642,13 +642,13 @@ module.exports.form = {
                   id: "storage",
                   label: "@dmpt-storage-tab",
                   fields: [{
-                      class: 'Container',
-                      compClass: 'TextBlockComponent',
-                      definition: {
-                        value: '@dmpt-storage-heading',
-                        type: 'h3'
-                      }
-                    },
+                    class: 'Container',
+                    compClass: 'TextBlockComponent',
+                    definition: {
+                      value: '@dmpt-storage-heading',
+                      type: 'h3'
+                    }
+                  },
                     {
                       class: 'SelectionField',
                       compClass: 'DropdownFieldComponent',
@@ -806,13 +806,13 @@ module.exports.form = {
                   id: "retention",
                   label: "@dmpt-retention-tab",
                   fields: [{
-                      class: 'Container',
-                      compClass: 'TextBlockComponent',
-                      definition: {
-                        value: '@dmpt-retention-heading',
-                        type: 'h3'
-                      }
-                    },
+                    class: 'Container',
+                    compClass: 'TextBlockComponent',
+                    definition: {
+                      value: '@dmpt-retention-heading',
+                      type: 'h3'
+                    }
+                  },
                     {
                       class: 'SelectionField',
                       compClass: 'DropdownFieldComponent',
@@ -903,13 +903,13 @@ module.exports.form = {
                   id: "ownership",
                   label: "@dmpt-access-rights-tab",
                   fields: [{
-                      class: 'Container',
-                      compClass: 'TextBlockComponent',
-                      definition: {
-                        value: '@dmpt-access-rights-heading',
-                        type: 'h3'
-                      }
-                    },
+                    class: 'Container',
+                    compClass: 'TextBlockComponent',
+                    definition: {
+                      value: '@dmpt-access-rights-heading',
+                      type: 'h3'
+                    }
+                  },
                     {
                       class: 'SelectionField',
                       compClass: 'DropdownFieldComponent',
@@ -989,9 +989,9 @@ module.exports.form = {
                         defaultValue: '@dmpt-dc:accessRights-manager',
                         controlType: 'radio',
                         options: [{
-                            value: "@dmpt-dc:accessRights-manager",
-                            label: "@dmpt-dc:accessRights-manager"
-                          },
+                          value: "@dmpt-dc:accessRights-manager",
+                          label: "@dmpt-dc:accessRights-manager"
+                        },
                           {
                             value: "@dmpt-dc:accessRights-open",
                             label: "@dmpt-dc:accessRights-open"
@@ -1019,9 +1019,9 @@ module.exports.form = {
                               delim: ''
                             }]
                           }
+                        }
                       }
                     }
-                  }
                   ]
                 }
               },
@@ -1034,13 +1034,13 @@ module.exports.form = {
                   id: "ethics",
                   label: "@dmpt-ethics-tab",
                   fields: [{
-                      class: 'Container',
-                      compClass: 'TextBlockComponent',
-                      definition: {
-                        value: '@dmpt-ethics-heading',
-                        type: 'h3'
-                      }
-                    },
+                    class: 'Container',
+                    compClass: 'TextBlockComponent',
+                    definition: {
+                      value: '@dmpt-ethics-heading',
+                      type: 'h3'
+                    }
+                  },
                     {
                       class: 'TextField',
                       definition: {
@@ -1078,9 +1078,9 @@ module.exports.form = {
                         help: '@dmpt-agls:protectiveMarking_dc:type-help',
                         controlType: 'checkbox',
                         options: [{
-                            value: "agls:protectiveMarking_dc:type.redbox:CommerciallySensitive",
-                            label: "@dmpt-agls:protectiveMarking_dc:type-commercial"
-                          },
+                          value: "agls:protectiveMarking_dc:type.redbox:CommerciallySensitive",
+                          label: "@dmpt-agls:protectiveMarking_dc:type-commercial"
+                        },
                           {
                             value: "agls:protectiveMarking_dc:type.redbox:CulturallySensitive",
                             label: "@dmpt-agls:protectiveMarking_dc:type-cultural"
@@ -1136,13 +1136,13 @@ module.exports.form = {
                   id: "workspaces",
                   label: "@dmpt-workspaces-tab",
                   fields: [{
-                      class: 'Container',
-                      compClass: 'TextBlockComponent',
-                      definition: {
-                        value: '@dmpt-workspaces-heading',
-                        type: 'h3'
-                      }
-                    },
+                    class: 'Container',
+                    compClass: 'TextBlockComponent',
+                    definition: {
+                      value: '@dmpt-workspaces-heading',
+                      type: 'h3'
+                    }
+                  },
                     {
                       class: 'Container',
                       compClass: 'TextBlockComponent',
@@ -1157,15 +1157,27 @@ module.exports.form = {
                       definition: {
                         name: 'workspaces',
                         columns: [{
-                            "label": "Title",
-                            "property": "title"
-                          },
+                          "label": "Title",
+                          "property": "title"
+                        },
                           {
                             "label": "Description",
                             "property": "description"
                           }
                         ]
                       }
+                    },
+                    {
+                      class: "AnchorOrButton",
+                      viewOnly: false,
+                      definition: {
+                        label: 'Connect LabArchives',
+                        value: '/@branding/@portal/record/workspace/edit?rdmp=@oid',
+                        cssClasses: 'btn btn-large btn-info margin-15',
+                        showPencil: false,
+                        controlType: 'anchor'
+                      },
+                      variableSubstitutionFields: ['value']
                     }
                   ]
                 }
@@ -1178,12 +1190,12 @@ module.exports.form = {
           compClass: "ButtonBarContainerComponent",
           definition: {
             fields: [{
-                class: "SaveButton",
-                definition: {
-                  label: 'Save',
-                  cssClasses: 'btn-success'
-                }
-              },
+              class: "SaveButton",
+              definition: {
+                label: 'Save',
+                cssClasses: 'btn-success'
+              }
+            },
               {
                 class: "SaveButton",
                 definition: {
@@ -1200,6 +1212,50 @@ module.exports.form = {
                 }
               }
             ]
+          }
+        }
+      ]
+    },
+    "workspace": {
+      name: 'workspace',
+      type: 'workspace',
+      skipValidationOnSave: true,
+      editCssClasses: 'row col-md-12',
+      viewCssClasses: 'row col-md-offset-1 col-md-10',
+      messages: {
+        "saving": ["@dmpt-form-saving"],
+        "validationFail": ["@dmpt-form-validation-fail-prefix", "@dmpt-form-validation-fail-suffix"],
+        "saveSuccess": ["@dmpt-form-save-success"],
+        "saveError": ["@dmpt-form-save-error"]
+      },
+      fields: [
+        {
+          class: 'Container',
+          compClass: 'TextBlockComponent',
+          viewOnly: false,
+          definition: {
+            name: 'title',
+            type: 'h1'
+          }
+        },
+        {
+          class: "AnchorOrButton",
+          viewOnly: false,
+          definition: {
+            label: 'Back',
+            value: '/@branding/@portal/record/workspace/edit/@rdmp',
+            cssClasses: 'btn btn-large btn-info margin-15',
+            showPencil: true,
+            controlType: 'anchor'
+          },
+          variableSubstitutionFields: ['value']
+        },
+        {
+          class: 'TextArea',
+          viewOnly: false,
+          definition: {
+            name: 'description',
+            label: 'Description'
           }
         }
       ]
