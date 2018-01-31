@@ -21,15 +21,13 @@ import {SimpleComponent} from '../field-simple.component';
 import {FieldBase} from '../field-base';
 import {FormGroup, FormControl, Validators, NgForm} from '@angular/forms';
 import * as _ from "lodash-lib";
-import {RecordsService} from '../records.service';
+import {WSService} from './workspace.service';
 import {UserSimpleService} from "../../user.service-simple";
-
+import {Role, User, LoginResult, SaveResult} from '../../../shared/user-models';
 
 /**
- * Contributor Model
+ * WorkspaceFieldComponent Model
  *
- *
- * @author <a target='_' href='https://github.com/shilob'>Shilo Banihit</a>
  *
  */
 export class WSField extends FieldBase<any> {
@@ -42,28 +40,32 @@ export class WSField extends FieldBase<any> {
   workspaces: object[];
   columns: object[];
   usersService: UserSimpleService;
+  wsService: WSService;
   rdmp: string;
   validToken: boolean;
   name: string;
-  user: object;
+  user: User;
+  userToken: string;
+  wsUser: any;
   permission: object;
 
   constructor(options: any, injector: any) {
     super(options, injector);
-    const params = (new URL(document.location)).searchParams;
-    this.rdmp = params.get('rdmp');
-
-    this.user = {username: null, password: null};
-
+    this.usersService = this.getFromInjector(UserSimpleService);
+    this.wsService = this.getFromInjector(WSService);
+    this.wsUser = {username: '', password: ''};
+    this.user = new User();
     this.workspaces = [];
     this.name = options['name'] || '';
     this.columns = options['columns'] || [];
     this.permission = options['permission'] || {};
+    const params = (new URL(document.location)).searchParams; //How compatible is this with browsers?
+    this.rdmp = params.get('rdmp');
 
-    this.validToken = true;
-    //this.usersService = this.getFromInjector(UserSimpleService);
-    this.workspaces = this.getWorkspaces();
-
+    this.setUserInfo((validToken) => {
+      this.validToken = validToken;
+      this.workspaces = this.getWorkspaces();
+    });
   }
 
 
@@ -92,18 +94,52 @@ export class WSField extends FieldBase<any> {
     return [
       {
         'project': 'project1',
-        'link': 'https://git.research.uts.edu.au/135553/project1',
+        'link': 'https://au-mynotebook.labarchives.com/share/testAPI/MC4wfDM0Mjg4LzAvVHJlZU5vZGUvMzU3MjQ2OTE3OXwwLjA=',
         'status': 'get url of api that discovers the status of the record'
       }
     ]
   }
 
-  onLogin(f: any) {
-    console.log(f);
-
-
+  onLogin(wsUser: any) {
+    console.log(wsUser);
+    this.wsService
+      .getToken(wsUser.username, wsUser.password)
+      .then((response) => {
+        this.userToken = response;
+        this.validToken = true;
+        console.log(response);
+      })
   }
 
+  setUserInfo(cb) {
+    this.usersService.getInfo().then((user: any) => {
+      this.user = user;
+      // check with database the userToken
+      this.userToken = '123123123';
+      //how to check validity of token?
+      //maybe after failed list of workspaces change validToken
+      let validToken = false;
+      if (this.userToken) {
+        validToken = false;
+        cb(validToken);
+      } else {
+        cb(validToken);
+      }
+    });
+  }
+
+  getToken() {
+    return this.wsService
+      .getToken(this.wsUser.username, this.wsUser.password)
+      .subscribe(response => {
+        console.log(response);
+
+      });
+  }
+
+  backToRDMP(){
+    console.log('send location back');
+  }
 }
 
 
@@ -113,17 +149,18 @@ export class WSField extends FieldBase<any> {
  *
  */
 @Component({
-  selector: 'ws-login-field',
+  selector: 'ws-field',
   template: `
   <div>
-    <form #form="ngForm" (ngSubmit)="field.onLogin(this)" novalidate>
+    <form *ngIf="!field.validToken" #form="ngForm" (ngSubmit)="field.onLogin(field.wsUser)" novalidate>
+    <h4>{{ field.permission.step_1 }}</h4>
     <div class="form-group">
       <label>Username</label>
-      <input type="text" class="form-control" name="username" [(ngModel)]="field.user.username">
+      <input type="text" class="form-control" name="username" [(ngModel)]="field.wsUser.username">
     </div>
     <div class="form-group">
       <label>Password</label>
-      <input type="password" class="form-control" name="password" [(ngModel)]="field.user.password">
+      <input type="password" class="form-control" name="password" [(ngModel)]="field.wsUser.password">
     </div>
     <button class="btn btn-primary" type="submit">Login</button>
   </form>
@@ -137,7 +174,7 @@ export class WSField extends FieldBase<any> {
           </button>
         </div>
         <div class="modal-body">
-          <p>{{ field.permission.label }}</p>
+          <p>{{ field.permission.step_2 }}</p>
           <ul>
             <li *ngFor="let permission of field.permission.list">{{ permission }}</li>
           </ul>
@@ -167,6 +204,7 @@ export class WSField extends FieldBase<any> {
       </table>
     </div>
   </div>
+  <button type="button" class="btn btn-default" (click)="field.backToRDMP()"> Back to RDMP </button>
   </div>
 `
 })

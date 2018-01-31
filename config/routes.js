@@ -183,6 +183,14 @@ module.exports.routes = {
   'get /:branding/:portal/api/users': 'typescript/webservice/UserManagementController.listUsers',
   'get /:branding/:portal/api/users/find': 'typescript/webservice/UserManagementController.findUser',
 
-  'post /:branding/:portal/api/sendNotification': 'typescript/EmailController.sendNotification'
+  'post /:branding/:portal/api/sendNotification': 'typescript/EmailController.sendNotification',
 
+
+  /****
+   *
+   * ROUTES for WORKSPACES
+   *
+   ***/
+
+  'post /:branding/:portal/ws/la/token': 'typescript/WorkspaceController.getToken',
 };

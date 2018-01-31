@@ -1239,26 +1239,6 @@ module.exports.form = {
           }
         },
         {
-          class: "AnchorOrButton",
-          viewOnly: false,
-          definition: {
-            label: 'Back',
-            value: '/@branding/@portal/record/workspace/edit/@rdmp',
-            cssClasses: 'btn btn-large btn-info margin-15',
-            showPencil: false,
-            controlType: 'anchor'
-          },
-          variableSubstitutionFields: ['value']
-        },
-        {
-          class: 'Container',
-          compClass: 'TextBlockComponent',
-          definition: {
-            value: '@ws-login-permission:help',
-            type: 'h4'
-          }
-        },
-        {
           class: 'WSField',
           showHeader: true,
           definition: {
@@ -1269,7 +1249,8 @@ module.exports.form = {
               {'label': 'status', 'property': 'status'}
             ],
             permission: {
-              'label': 'Stash is requesting from LabArchives the following permissions',
+              'step_1': 'The provisioner requires permission to create a workspace on your behalf',
+              'step_2': 'Stash is requesting from LabArchives the following permissions',
               list: [
                 'Create Repositories',
                 'Write information into your repositories'
