@@ -1171,7 +1171,7 @@ module.exports.form = {
                       class: "AnchorOrButton",
                       viewOnly: false,
                       definition: {
-                        label: 'Connect LabArchives',
+                        label: 'GitLab',
                         value: '/@branding/@portal/record/workspace/edit?rdmp=@oid',
                         cssClasses: 'btn btn-large btn-info margin-15',
                         showPencil: false,
@@ -1234,23 +1234,24 @@ module.exports.form = {
           compClass: 'TextBlockComponent',
           viewOnly: false,
           definition: {
-            value: 'LabArchives',
+            value: 'git-test.research.uts.edu.au',
             type: 'h2'
           }
         },
         {
-          class: 'WSField',
+          class: 'WSGitlabField',
           showHeader: true,
           definition: {
             name: 'workspaces',
             columns: [
-              {'label': 'project', 'property': 'project'},
-              {'label': 'link', 'property': 'link'},
-              {'label': 'status', 'property': 'status'}
+              {'label': 'name', 'property': 'name'},
+              {'label': 'web_url', 'property': 'web_url'},
+              {'label': 'description', 'property': 'description'},
+              {'label': 'link', 'property': 'link'}
             ],
             permission: {
               'step_1': 'The provisioner requires permission to create a workspace on your behalf',
-              'step_2': 'Stash is requesting from LabArchives the following permissions',
+              'step_2': 'Stash is requesting from GitLab the following permissions:',
               list: [
                 'Create Repositories',
                 'Write information into your repositories'

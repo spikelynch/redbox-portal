@@ -51,7 +51,7 @@ import { CompleterService } from 'ng2-completer';
 import { ConfigService } from '../config-service';
 import { TranslationService } from '../translation-service';
 import { UtilityService } from '../util-service';
-import { WSComponent, WSField } from "./ws/ws-field.component";
+import { WSGitlabComponent, WSGitlabField } from "./ws/ws-gitlab.component";
 /**
  * Field / Model Factory Service...
  *
@@ -78,7 +78,7 @@ export class FieldControlService {
     'LinkValueComponent': {'meta': LinkValue, 'comp': LinkValueComponent },
     'SelectionField': {'meta': SelectionField, 'comp': [ SelectionFieldComponent, DropdownFieldComponent ]},
     'RelatedObjectDataField': {'meta': RelatedObjectDataField, 'comp': RelatedObjectDataComponent, 'lookupService': 'vocabFieldLookupService'},
-    'WSField': {'meta': WSField, 'comp': WSComponent}
+    'WSGitlabField': {'meta': WSGitlabField, 'comp': WSGitlabComponent}
   };
   constructor(@Inject(VocabFieldLookupService) private vocabFieldLookupService: VocabFieldLookupService, @Inject(CompleterService) private completerService: CompleterService,
   @Inject(ConfigService) protected configService: ConfigService,

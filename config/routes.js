@@ -192,5 +192,7 @@ module.exports.routes = {
    *
    ***/
 
-  'post /:branding/:portal/ws/la/token': 'typescript/WorkspaceController.getToken',
+  'post /:branding/:portal/ws/gitlab/token': 'typescript/WSGitlabController.token',
+  'post /:branding/:portal/ws/gitlab/user': 'typescript/WSGitlabController.user',
+  'post /:branding/:portal/ws/gitlab/projects': 'typescript/WSGitlabController.projects',
 };
