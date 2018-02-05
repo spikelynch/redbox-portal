@@ -9,6 +9,7 @@ import {ConfigService} from "../../config-service";
 export class WSGitlabService extends BaseService {
 
   protected baseUrl: any;
+  public recordURL: string = this.brandingAndPortalUrl + '/record/edit';
 
   constructor(@Inject(Http) http: Http, @Inject(ConfigService) protected configService: ConfigService) {
     super(http, configService);
@@ -56,4 +57,16 @@ export class WSGitlabService extends BaseService {
       return this.extractData(res);
     });
   }
+
+  link(token: string, id: number, workspace: any) {
+    const wsUrl = this.brandingAndPortalUrl + '/ws/gitlab/link';
+    return this.http
+    .post(wsUrl, {token: token, id: id, workspace: workspace}, this.options)
+    .toPromise()
+    .then((res: any) => {
+      console.log(res);
+      return this.extractData(res);
+    });
+  }
+
 }

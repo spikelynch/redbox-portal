@@ -22,7 +22,8 @@ export module Controllers {
     protected _exportedMethods: any = [
       'token',
       'user',
-      'projects'
+      'projects',
+      'link'
     ];
 
     public token(req, res) {
@@ -83,6 +84,25 @@ export module Controllers {
       });
 
     }
+
+    public link(req, res) {
+      sails.log.debug('get link');
+
+      const token = req.param('token');
+      const projectId = req.param('projectId');
+      const rdmp = req.param('rdmp');
+
+      const obs = WSGitlabService.link(token, projectId, rdmp);
+
+      obs.subscribe(response => {
+        this.ajaxOk(req, res, null, response.data);
+      }, error => {
+        sails.log.error(error);
+        sails.log.error(`Failed to link workspace with ID: ${workspace.id}`);
+        this.ajaxFail(req, res, null, [], true);
+      });
+    }
+
   }
 }
 

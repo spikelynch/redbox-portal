@@ -1156,13 +1156,18 @@ module.exports.form = {
                       showHeader: true,
                       definition: {
                         name: 'workspaces',
-                        columns: [{
+                        columns: [
+                          {
                           "label": "Title",
                           "property": "title"
-                        },
+                          },
                           {
                             "label": "Description",
                             "property": "description"
+                          },
+                          {
+                            "label": "Type",
+                            "property": "GitLab"
                           }
                         ]
                       }
@@ -1247,7 +1252,6 @@ module.exports.form = {
               {'label': 'name', 'property': 'name'},
               {'label': 'web_url', 'property': 'web_url'},
               {'label': 'description', 'property': 'description'},
-              {'label': 'link', 'property': 'link'}
             ],
             permission: {
               'step_1': 'The provisioner requires permission to create a workspace on your behalf',

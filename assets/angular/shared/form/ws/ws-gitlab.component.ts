@@ -43,6 +43,7 @@ export class WSGitlabField extends FieldBase<any> {
   usersService: UserSimpleService;
   wsGitlabService: WSGitlabService;
   rdmp: string;
+  rdmpLocation: string;
   validToken: boolean;
   name: string;
   user: User;
@@ -64,7 +65,7 @@ export class WSGitlabField extends FieldBase<any> {
     this.permission = options['permission'] || {};
     const params = (new URL(document.location)).searchParams; //How compatible is this with browsers?
     this.rdmp = params.get('rdmp');
-
+    this.rdmpLocation = this.wsGitlabService.recordURL + '/' + this.rdmp + '#workspaces';
     this.setUserInfo((validToken) => {
       this.validToken = validToken;
     });
@@ -107,7 +108,6 @@ export class WSGitlabField extends FieldBase<any> {
         "ssh_url_to_repo": "git@git-test.research.uts.edu.au:135553/my-test-project.git",
         "http_url_to_repo": "https://git-test.research.uts.edu.au/135553/my-test-project.git",
         "web_url": "https://git-test.research.uts.edu.au/135553/my-test-project",
-        "link": "ss"
       }
     ]
     // if(!this.wsUser.id || !this.wsUser.token){
@@ -126,6 +126,18 @@ export class WSGitlabField extends FieldBase<any> {
     this.validToken = true;
   }
 
+  linkWorkspace(id: number) {
+    const workspace = _.find(this.workspaces, {id: id});
+    //this will link the workspace you have selected,
+    //that is create workspace in redbox
+    //then add link information in gitlab
+    jQuery('#gitlabLinkModal').modal('show');
+    this.wsGitlabService.link(this.wsUser.token, this.wsUser.id, workspace)
+    .then(response => {
+      console.log(response);
+      this.backToRDMP();
+    });
+  }
 
   onLogin() {
     jQuery('#gitlabPermissionModal').modal('show');
@@ -170,10 +182,22 @@ export class WSGitlabField extends FieldBase<any> {
 
   backToRDMP() {
     console.log('send location back');
+    document.location = this.rdmpLocation;
+  }
+
+  revokeModal() {
+    jQuery('#gitlabRevokeModal').modal('show');
+  }
+
+  revoke() {
+    //delete workspace record here
+    this.validToken = false;
+    this.wsUser.token = null;
+    jQuery('#gitlabRevokeModal').modal('hide');
   }
 }
 
-declare var aotMode
+declare var aotMode;
 // Setting the template url to a constant rather than directly in the component as the latter breaks document generation
 let rbWSGitlabTemplate = './ws/ws-gitlab.template.html';
 if(typeof aotMode == 'undefined') {
