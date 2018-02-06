@@ -38,8 +38,9 @@ export module Controllers {
         this.ajaxOk(req, res, null, response.data);
       }, error => {
         sails.log.error(error);
-        sails.log.error(`Failed to get token for user: ${username}`);
-        this.ajaxFail(req, res, null, [], true);
+        const errorMessage = `Failed to get token for user: ${username}`
+        sails.log.error(errorMessage);
+        this.ajaxFail(req, res, errorMessage);
       });
     }
 

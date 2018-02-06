@@ -48,15 +48,15 @@ export class WSGitlabField extends FieldBase<any> {
   name: string;
   user: User;
   wsUser: WSUser;
-  username: string;
-  password: string;
+  username: string = '';
+  password: string = '';
   permission: object;
+  loginMessageForm: any = {message: '',class: ''}
 
   constructor(options: any, injector: any) {
     super(options, injector);
     this.usersService = this.getFromInjector(UserSimpleService);
     this.wsGitlabService = this.getFromInjector(WSGitlabService);
-    this.username = 'xxx'; this.password = 'xxxx';
     this.wsUser = new WSUser();
     this.user = new User();
     this.workspaces = [];
@@ -143,23 +143,39 @@ export class WSGitlabField extends FieldBase<any> {
     jQuery('#gitlabPermissionModal').modal('show');
   }
 
-  allow(){
+  allow() {
     jQuery('#gitlabPermissionModal').modal('hide');
     this.wsGitlabService
     .token(this.username, this.password)
     .then(response => {
-      this.wsUser.setToken(response.access_token);
-      return this.wsGitlabService
-      .user(this.wsUser.token)
-      .then(response => {
-        this.wsUser.setId(response.id);
-        return this.getWorkspaces(response.id);
-      })
-      .catch(error => {
-        console.log('error');
-        console.log(error);
-      });
+      if (response.status) {
+        debugger;
+        this.wsUser.token = response.access_token;
+        console.log('token: ' + this.wsUser.token);
+        return this.wsGitlabService
+        .user(this.wsUser.token)
+        .then(response => {
+          if (response.status) {
+            console.log('id: ' + response.id);
+            this.wsUser.id = response.id;
+            return this.getWorkspaces(response.id);
+          } else {
+            console.log('error geting user : ' + response.message);
+          }
+        })
+        .catch(error => {
+          console.log('error');
+          console.log(error);
+        });
+      } else {
+        this.loginMessage(response.message, 'danger');
+      }
     });
+  }
+
+  loginMessage(message, cssClass) {
+    this.loginMessageForm.message = message;
+    this.loginMessageForm.class = cssClass;
   }
 
   setUserInfo(cb) {
@@ -220,11 +236,4 @@ export class WSGitlabComponent extends SimpleComponent {
 class WSUser {
   token: string;
   id: number;
-
-  setId(id: number) {
-    this.id = id;
-  }
-  setToken(token: string) {
-    this.token = token
-  }
 }

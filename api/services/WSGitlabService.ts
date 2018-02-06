@@ -3,7 +3,6 @@ import services = require('../../typescript/services/CoreService.js');
 import {Sails, Model} from "sails";
 import * as request from "request-promise";
 import Gitlab = require('gitlab');
-import axios = require('axios');
 
 declare var RecordsService, BrandingService;
 declare var sails: Sails;
@@ -29,36 +28,34 @@ export module Services {
     constructor() {
       super();
       this.config = sails.config.local.workspaces.gitlab;
-      this.axios = axios.create({
-        baseURL: this.config.host,
-        timeout: this.config.timeout,
-        headers: {
-        }
-      });
       this.recordType = 'workspace';
       this.formName = 'workspace';
     }
 
     token(username: string, password: string) {
-      const post = this.axios.post(
-        '/oauth/token',
-        {grant_type: "password", username: username, password: password}
-      );
+      const post = request({
+        uri: this.config.host + '/oauth/token',
+        method: 'POST',
+        body: {
+          grant_type: 'password', username: username, password: password
+        },
+        json: true
+      });
       return Observable.fromPromise(post);
     }
 
     user(token: string) {
-      const get = this.axios.get(
-        `/api/v4/user?access_token=${token}`
-      )
+      const get = request({
+        uri: this.config.host + `/api/v4/user?access_token=${token}`,
+      });
       return Observable.fromPromise(get);
     }
 
     projects(token: string, id: number) {
       sails.log.debug(`/api/v4/users/${id}/projects?access_token=${token}`)
-      const get = this.axios.get(
-        `/api/v4/users/${id}/projects?access_token=${token}`
-      );
+      const get = request({
+        uri: this.config.host + `/api/v4/users/${id}/projects?access_token=${token}`,
+      });
       return Observable.fromPromise(get);
     }
 
@@ -74,16 +71,17 @@ export module Services {
     }
 
     addWorkspaceInfo(token: string, projectId: number, workspaceId: string) {
-      const filePath = 'stash/workspace.info'
-      const post = this.axios.post(
-        `/api/v4/projects/${projectId}/repository/files/${filePath}?access_token=${token}`,
-        {
+      const filePath = 'stash/workspace.info';
+      const post = request({
+        uri: this.config.host + `/api/v4/projects/${projectId}/repository/files/${filePath}?access_token=${token}`,
+        method: 'POST',
+        body: {
           branch: 'master',
           content: workspaceId,
           author_name: BrandingService.getDefault(),
           commit_message: 'Provisioner'//TODO: define message via config file or form?
         }
-      );
+      });
       return Observable.fromPromise(post);
     }
 
