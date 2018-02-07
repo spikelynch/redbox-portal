@@ -17,19 +17,27 @@ export module Services {
       'token',
       'user',
       'projects',
-      'link'
+      'create',
+      'addWorkspaceInfo',
+      'getRecordMeta',
+      'updateRecordMeta'
     ];
 
     config: any;
     axios: any;
     recordType: string;
     formName: string;
+    brandingAndPortalUrl: string;
+    bearer: string;
 
     constructor() {
       super();
       this.config = sails.config.local.workspaces.gitlab;
       this.recordType = 'workspace';
       this.formName = 'workspace';
+      //TODO: get the brand url with config service
+      this.brandingAndPortalUrl = 'http://localhost:1500/default/rdmp';
+      this.bearer = '123123';
     }
 
     token(username: string, password: string) {
@@ -47,49 +55,79 @@ export module Services {
     user(token: string) {
       const get = request({
         uri: this.config.host + `/api/v4/user?access_token=${token}`,
+        json: true
       });
       return Observable.fromPromise(get);
     }
 
     projects(token: string, id: number) {
-      sails.log.debug(`/api/v4/users/${id}/projects?access_token=${token}`)
       const get = request({
         uri: this.config.host + `/api/v4/users/${id}/projects?access_token=${token}`,
+        json: true
       });
       return Observable.fromPromise(get);
     }
 
-    link(token: string, projectId: number, workspace: any, rdmp: string) {
-      //TODO: maybe this needs to change to the current brand?
-      const brand = BrandingService.getDefault();
-      const record = workspace;
-      var obs = RecordsService.create(brand, record, this.recordType, this.formName);
-      return obs.subscribe(result => {
-        sails.log.debug(result);
-        return this.addWorkspaceInfo(token, projectId, result.oid);
-      });
-    }
-
-    addWorkspaceInfo(token: string, projectId: number, workspaceId: string) {
-      const filePath = 'stash/workspace.info';
+    create(workspace: any) {
+      //TODO: how to get the workflowStage??
       const post = request({
-        uri: this.config.host + `/api/v4/projects/${projectId}/repository/files/${filePath}?access_token=${token}`,
-        method: 'POST',
-        body: {
-          branch: 'master',
-          content: workspaceId,
-          author_name: BrandingService.getDefault(),
-          commit_message: 'Provisioner'//TODO: define message via config file or form?
-        }
-      });
-      return Observable.fromPromise(post);
-    }
-
-    addParentRecordLink(rdmp: string, workspace: string) {
-
-    }
-
+      uri: this.brandingAndPortalUrl + `/api/records/metadata/${this.recordType}`,
+      method: 'POST',
+      body: {metadata: workspace, workflowStage: 'draft'},
+      json: true
+    });
+    return Observable.fromPromise(post);
   }
+
+  addWorkspaceInfo(token: string, projectId: number, workspaceId: string) {
+    const filePath = 'stash.workspace';
+    const post = request({
+      uri: this.config.host + `/api/v4/projects/${projectId}/repository/files/${filePath}?access_token=${token}`,
+      method: 'POST',
+      body: {
+        branch: 'master',
+        content: workspaceId,
+        author_name: 'Stash',
+        commit_message: 'provisioner bot'//TODO: define message via config file or form?
+      },
+      json: true
+    });
+    return Observable.fromPromise(post);
+  }
+
+  getRecordMeta(rdmp: string) {
+    const get = request({
+      uri: this.brandingAndPortalUrl + '/api/records/metadata/' + rdmp,
+      json: true,
+      headers: {
+        'Cache-Control': 'no-cache',
+        'Content-Type': 'application/json',
+      },
+      auth: {
+        'bearer': this.bearer
+      }
+    });
+    return Observable.fromPromise(get);
+  }
+
+  updateRecordMeta(record: {}) {
+    const post = request({
+      uri: this.brandingAndPortalUrl + '/api/records/metadata/' + this.recordType,
+      method: 'POST',
+      body: record,
+      json: true,
+      headers: {
+        'Cache-Control': 'no-cache',
+        'Content-Type': 'application/json',
+      },
+      auth: {
+        'bearer': this.bearer
+      }
+    });
+    return Observable.fromPromise(post);
+  }
+
+}
 
 }
 module.exports = new Services.WSGitlabService().exports();

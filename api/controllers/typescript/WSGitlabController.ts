@@ -35,10 +35,11 @@ export module Controllers {
       const obs = WSGitlabService.token(username, password);
 
       obs.subscribe(response => {
-        this.ajaxOk(req, res, null, response.data);
+        response.status = true;
+        this.ajaxOk(req, res, null, response);
       }, error => {
         sails.log.error(error);
-        const errorMessage = `Failed to get token for user: ${username}`
+        const errorMessage = `Failed to get token for user: ${username}`;
         sails.log.error(errorMessage);
         this.ajaxFail(req, res, errorMessage);
       });
@@ -55,11 +56,13 @@ export module Controllers {
       const obs = WSGitlabService.user(token);
 
       obs.subscribe(response => {
-        this.ajaxOk(req, res, null, response.data);
+        response.status = true;
+        this.ajaxOk(req, res, null, response);
       }, error => {
         sails.log.error(error);
-        sails.log.error(`Failed to get info for with token: ${token}`);
-        this.ajaxFail(req, res, null, [], true);
+        const errorMessage = `Failed to get info for with token: ${token}`;
+        sails.log.error(errorMessage);
+        this.ajaxFail(req, res, errorMessage);
       });
     }
 
@@ -69,19 +72,16 @@ export module Controllers {
       const token = req.param('token');
       const id = req.param('id');
 
-      sails.log.error('token');
-      sails.log.error(token);
-      sails.log.error('id');
-      sails.log.error(id);
-
       const obs = WSGitlabService.projects(token, id);
 
       obs.subscribe(response => {
-        this.ajaxOk(req, res, null, response.data);
+        response.status = true;
+        this.ajaxOk(req, res, null, response);
       }, error => {
         sails.log.error(error);
-        sails.log.error(`Failed to get projects for token: ${token} and user: ${id}`);
-        this.ajaxFail(req, res, null, [], true);
+        const errorMessage = `Failed to get projects for token: ${token} and user: ${id}`;
+        sails.log.error(errorMessage);
+        this.ajaxFail(req, res, errorMessage);
       });
 
     }
@@ -91,17 +91,42 @@ export module Controllers {
 
       const token = req.param('token');
       const projectId = req.param('projectId');
-      const rdmp = req.param('rdmp');
+      const workspace = req.param('workspace');
+      const rdmpId = req.param('rdmpId');
 
-      const obs = WSGitlabService.link(token, projectId, rdmp);
+      let workspaceId = null;
 
-      obs.subscribe(response => {
-        this.ajaxOk(req, res, null, response.data);
+      WSGitlabService
+      .create(workspace)
+      .flatMap(response => {
+        workspaceId = response.oid;
+        return WSGitlabService.addWorkspaceInfo(token, projectId, workspaceId)
+      })
+      .flatMap(response => {
+        return this.addParentRecordLink(rdmpId, workspaceId)
+      })
+      .subscribe(response => {
+        this.ajaxOk(req, res, null, response);
       }, error => {
         sails.log.error(error);
-        sails.log.error(`Failed to link workspace with ID: ${workspace.id}`);
-        this.ajaxFail(req, res, null, [], true);
+        const errorMessage = `Failed to link workspace with ID: ${projectId}`;
+        sails.log.error(errorMessage);
+        this.ajaxFail(req, res, errorMessage);
       });
+    }
+
+    addParentRecordLink(rdmpId: string, workspaceId: string) {
+      return WSGitlabService.getRecordMeta(rdmpId)
+      .flatMap(
+        record => {
+          sails.log.debug(record.metadata);
+          const wss = record.metadata.workspaces.find(id => workspaceId === id);
+          if(!wss) {
+            record.metadata.workspaces.push({id: workspaceId});
+          }
+          return WSGitlabService.updateRecordMeta(record);
+        }
+      )
     }
 
   }

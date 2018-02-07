@@ -58,15 +58,17 @@ export class WSGitlabService extends BaseService {
     });
   }
 
-  link(token: string, id: number, workspace: any) {
+  link(token: string, rdmpId: string, projectId: number, workspace: any) {
     const wsUrl = this.brandingAndPortalUrl + '/ws/gitlab/link';
     return this.http
-    .post(wsUrl, {token: token, id: id, workspace: workspace}, this.options)
-    .toPromise()
-    .then((res: any) => {
-      console.log(res);
-      return this.extractData(res);
-    });
-  }
+    .post(wsUrl,
+      {token: token, rdmpId: rdmpId, projectId: projectId, workspace: workspace},
+      this.options)
+      .toPromise()
+      .then((res: any) => {
+        console.log(res);
+        return this.extractData(res);
+      });
+    }
 
-}
+  }

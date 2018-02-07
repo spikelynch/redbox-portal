@@ -41,6 +41,11 @@
           </tbody>
         </table>
       </div>
+      <div class="row">
+        <div class="row">
+          <button type="button" class="btn btn-default" (click)="field.getWorkspaces()"><i class="fas fa-redo fa-1x"></i>&nbsp;Sync</button>
+        </div>
+      </div>
     </div>
     <div class="panel">
       <div *ngIf="field.validToken" class="row">

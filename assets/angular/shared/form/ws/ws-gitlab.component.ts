@@ -71,7 +71,6 @@ export class WSGitlabField extends FieldBase<any> {
     });
   }
 
-
   createFormModel(valueElem: any = undefined): any {
     if (valueElem) {
       this.value = valueElem;
@@ -93,37 +92,16 @@ export class WSGitlabField extends FieldBase<any> {
     return this.value;
   }
 
-  getWorkspaces(id: number) {
-    this.workspaces  = [
-      {
-        "id": 8,
-        "description": "",
-        "name": "my-test-project",
-        "name_with_namespace": "135553 / my-test-project",
-        "path": "my-test-project",
-        "path_with_namespace": "135553/my-test-project",
-        "created_at": "2018-02-01T17:08:42.451+11:00",
-        "default_branch": null,
-        "tag_list": [],
-        "ssh_url_to_repo": "git@git-test.research.uts.edu.au:135553/my-test-project.git",
-        "http_url_to_repo": "https://git-test.research.uts.edu.au/135553/my-test-project.git",
-        "web_url": "https://git-test.research.uts.edu.au/135553/my-test-project",
-      }
-    ]
-    // if(!this.wsUser.id || !this.wsUser.token){
-    //   alert('no id or token');
-    // } else {
-    //     return this.wsGitlabService.projects(this.wsUser.token, this.wsUser.id)
-    //     .then(response => {
-    //       this.workspaces = response;
-    //       console.log(this.workspaces)
-    //     })
-    //     .catch(error => {
-    //       console.log('error');
-    //       console.log(error);
-    //     });
-    //   }
-    this.validToken = true;
+  getWorkspaces() {
+    return this.wsGitlabService.projects(this.wsUser.token, this.wsUser.id)
+    .then(response => {
+      this.validToken = true;
+      this.workspaces = response;
+    })
+    .catch(error => {
+      console.log('error');
+      console.log(error);
+    });
   }
 
   linkWorkspace(id: number) {
@@ -132,10 +110,11 @@ export class WSGitlabField extends FieldBase<any> {
     //that is create workspace in redbox
     //then add link information in gitlab
     jQuery('#gitlabLinkModal').modal('show');
-    this.wsGitlabService.link(this.wsUser.token, this.wsUser.id, workspace)
+    this.wsGitlabService.link(this.wsUser.token, this.rdmp, id, workspace)
     .then(response => {
-      console.log(response);
-      this.backToRDMP();
+      jQuery('#gitlabLinkModal').modal('hide');
+      //   console.log(response);
+      //   this.backToRDMP();
     });
   }
 
@@ -149,7 +128,6 @@ export class WSGitlabField extends FieldBase<any> {
     .token(this.username, this.password)
     .then(response => {
       if (response.status) {
-        debugger;
         this.wsUser.token = response.access_token;
         console.log('token: ' + this.wsUser.token);
         return this.wsGitlabService
@@ -158,7 +136,7 @@ export class WSGitlabField extends FieldBase<any> {
           if (response.status) {
             console.log('id: ' + response.id);
             this.wsUser.id = response.id;
-            return this.getWorkspaces(response.id);
+            return this.getWorkspaces();
           } else {
             console.log('error geting user : ' + response.message);
           }
@@ -211,6 +189,7 @@ export class WSGitlabField extends FieldBase<any> {
     this.wsUser.token = null;
     jQuery('#gitlabRevokeModal').modal('hide');
   }
+
 }
 
 declare var aotMode;
