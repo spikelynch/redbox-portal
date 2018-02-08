@@ -96,40 +96,41 @@ export module Controllers {
 
       let workspaceId = null;
 
+      sails.log.debug('create')
       WSGitlabService
-      .create(workspace)
+      .create(workspace, 'draft')
       .flatMap(response => {
         workspaceId = response.oid;
-        return WSGitlabService.addWorkspaceInfo(token, projectId, workspaceId)
+        sails.log.debug('addWorkspaceInfo');
+        return WSGitlabService.addWorkspaceInfo(token, projectId, workspaceId);
       })
       .flatMap(response => {
-        return this.addParentRecordLink(rdmpId, workspaceId)
+        // How to drop out error!
+        sails.log.debug('getRecordMeta');
+        return WSGitlabService.getRecordMeta(rdmpId)
       })
-      .subscribe(response => {
-        this.ajaxOk(req, res, null, response);
-      }, error => {
-        sails.log.error(error);
-        const errorMessage = `Failed to link workspace with ID: ${projectId}`;
-        sails.log.error(errorMessage);
-        this.ajaxFail(req, res, errorMessage);
-      });
-    }
-
-    addParentRecordLink(rdmpId: string, workspaceId: string) {
-      return WSGitlabService.getRecordMeta(rdmpId)
-      .flatMap(
-        record => {
-          sails.log.debug(record.metadata);
-          const wss = record.metadata.workspaces.find(id => workspaceId === id);
+      .flatMap(recordMetadata => {
+        sails.log.debug('recordMetadata');
+        if(recordMetadata && recordMetadata.workspaces) {
+          const wss = recordMetadata.workspaces.find(id => workspaceId === id);
           if(!wss) {
-            record.metadata.workspaces.push({id: workspaceId});
+            recordMetadata.workspaces.push({id: workspaceId});
           }
-          return WSGitlabService.updateRecordMeta(record);
         }
-      )
-    }
-
+        return WSGitlabService.updateRecordMeta(recordMetadata, rdmpId);
+      }
+    )
+    .subscribe(response => {
+      this.ajaxOk(req, res, null, response);
+    }, error => {
+      sails.log.error(error);
+      const errorMessage = `Failed to link workspace with ID: ${projectId} : ${JSON.stringify(error)}` ;
+      sails.log.error(errorMessage);
+      this.ajaxFail(req, res, errorMessage);
+    });
   }
+
+}
 }
 
 module.exports = new Controllers.WSGitlabController().exports();

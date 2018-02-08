@@ -29,6 +29,7 @@ export module Services {
     formName: string;
     brandingAndPortalUrl: string;
     bearer: string;
+    redboxHeaders: {};
 
     constructor() {
       super();
@@ -37,7 +38,12 @@ export module Services {
       this.formName = 'workspace';
       //TODO: get the brand url with config service
       this.brandingAndPortalUrl = 'http://localhost:1500/default/rdmp';
-      this.bearer = '123123';
+      this.bearer = 'Bearer 123123';
+      this.redboxHeaders =  {
+        'Cache-Control': 'no-cache',
+        'Content-Type': 'application/json',
+        'Authorization': this.bearer
+      }
     }
 
     token(username: string, password: string) {
@@ -68,13 +74,17 @@ export module Services {
       return Observable.fromPromise(get);
     }
 
-    create(workspace: any) {
+    create(workspace: any, workflowStage: string) {
       //TODO: how to get the workflowStage??
       const post = request({
       uri: this.brandingAndPortalUrl + `/api/records/metadata/${this.recordType}`,
       method: 'POST',
-      body: {metadata: workspace, workflowStage: 'draft'},
-      json: true
+      body: {
+        metadata: { "title": workspace.path_with_namespace, "description": workspace.description},
+        workflowStage: workflowStage
+      },
+      json: true,
+      headers: this.redboxHeaders
     });
     return Observable.fromPromise(post);
   }
@@ -98,31 +108,19 @@ export module Services {
   getRecordMeta(rdmp: string) {
     const get = request({
       uri: this.brandingAndPortalUrl + '/api/records/metadata/' + rdmp,
-      json: true,
-      headers: {
-        'Cache-Control': 'no-cache',
-        'Content-Type': 'application/json',
-      },
-      auth: {
-        'bearer': this.bearer
-      }
+      headers: this.redboxHeaders,
+      json: true
     });
     return Observable.fromPromise(get);
   }
 
-  updateRecordMeta(record: {}) {
+  updateRecordMeta(record: {}, id: string) {
     const post = request({
-      uri: this.brandingAndPortalUrl + '/api/records/metadata/' + this.recordType,
-      method: 'POST',
+      uri: this.brandingAndPortalUrl + '/api/records/metadata/' + id,
+      method: 'PUT',
       body: record,
       json: true,
-      headers: {
-        'Cache-Control': 'no-cache',
-        'Content-Type': 'application/json',
-      },
-      auth: {
-        'bearer': this.bearer
-      }
+      headers: this.redboxHeaders
     });
     return Observable.fromPromise(post);
   }
