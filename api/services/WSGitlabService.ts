@@ -17,10 +17,11 @@ export module Services {
       'token',
       'user',
       'projects',
-      'create',
+      'createWorkspaceRecord',
       'addWorkspaceInfo',
       'getRecordMeta',
-      'updateRecordMeta'
+      'updateRecordMeta',
+      'readFileFromRepo'
     ];
 
     config: any;
@@ -45,6 +46,8 @@ export module Services {
         'Authorization': this.bearer
       }
     }
+
+    //**GITLAB**//
 
     token(username: string, password: string) {
       const post = request({
@@ -74,33 +77,70 @@ export module Services {
       return Observable.fromPromise(get);
     }
 
-    create(workspace: any, workflowStage: string) {
+    forkProject(token: string, id: number, projectOrigin: string, projectDest: string) {
+      projectOrigin = encodeURIComponent(projectOrigin);
+      const post = request({
+        uri: this.config.host + `/api/v4/projects/${projectOrigin}/fork?access_token=${token}`,
+        method: 'POST',
+        body: {namespace: projectDest},
+        json: true,
+        headers: this.redboxHeaders
+      });
+      return Observable.fromPromise(post);
+    }
+
+    deleteForkRel(token: string, namespace: string, project: string) {
+      const projectNameSpace = encodeURIComponent(namespace + '/' + project);
+      const deleteRequest = request({
+        uri: this.config.host + `/api/v4/projects/${projectNameSpace}/fork?access_token=${token}`,
+        method: 'DELETE',
+        json: true,
+        headers: this.redboxHeaders
+      });
+      return Observable.fromPromise(deleteRequest);
+    }
+
+    addWorkspaceInfo(token: string, projectId: number, workspaceId: string, filePath: string) {
+      const post = request({
+        uri: this.config.host + `/api/v4/projects/${projectId}/repository/files/${filePath}?access_token=${token}`,
+        method: 'POST',
+        body: {
+          branch: 'master',
+          content: workspaceId,
+          author_name: 'Stash',
+          commit_message: 'provisioner bot'//TODO: define message via config file or form?
+        },
+        json: true
+      });
+      return Observable.fromPromise(post);
+    }
+
+    readFileFromRepo(token: string, projectNameSpace: string, filePath: string) {
+      projectNameSpace = encodeURIComponent(projectNameSpace);
+      sails.log.debug(this.config.host + `/api/v4/projects/${projectNameSpace}/repository/files/${filePath}?ref=master&access_token=${token}`)
+      const get = request({
+        uri: this.config.host + `/api/v4/projects/${projectNameSpace}/repository/files/${filePath}?ref=master&access_token=${token}`,
+        json: true
+      });
+      return Observable.fromPromise(get);
+    }
+    //**REDBOX-PORTAL**//
+
+    createWorkspaceRecord(workspace: any, workflowStage: string) {
       //TODO: how to get the workflowStage??
       const post = request({
       uri: this.brandingAndPortalUrl + `/api/records/metadata/${this.recordType}`,
       method: 'POST',
       body: {
-        metadata: { "title": workspace.path_with_namespace, "description": workspace.description},
+        metadata: {
+          title: workspace.path_with_namespace,
+          description: workspace.description,
+          type: "GitLab"
+        },
         workflowStage: workflowStage
       },
       json: true,
       headers: this.redboxHeaders
-    });
-    return Observable.fromPromise(post);
-  }
-
-  addWorkspaceInfo(token: string, projectId: number, workspaceId: string) {
-    const filePath = 'stash.workspace';
-    const post = request({
-      uri: this.config.host + `/api/v4/projects/${projectId}/repository/files/${filePath}?access_token=${token}`,
-      method: 'POST',
-      body: {
-        branch: 'master',
-        content: workspaceId,
-        author_name: 'Stash',
-        commit_message: 'provisioner bot'//TODO: define message via config file or form?
-      },
-      json: true
     });
     return Observable.fromPromise(post);
   }

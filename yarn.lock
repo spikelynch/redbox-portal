@@ -4621,12 +4621,12 @@ sails-generate@~0.13.0:
     sails-generate-views "~0.10.5"
     sails-generate-views-jade "~0.10.3"
 
-sails-hook-autoreload@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/sails-hook-autoreload/-/sails-hook-autoreload-1.1.0.tgz#666cab7e0490b7575c970fc830b53f59f3529664"
+sails-hook-autoreload@^0.14.3:
+  version "0.14.3"
+  resolved "https://registry.yarnpkg.com/sails-hook-autoreload/-/sails-hook-autoreload-0.14.3.tgz#b6292609cc590324bea5f9144db8450820f3c350"
   dependencies:
-    "@sailshq/lodash" "^3.10.2"
     chokidar "^1.0.0"
+    lodash "^3.10.1"
 
 sails-hook-orm@~1.0.9:
   version "1.0.9"

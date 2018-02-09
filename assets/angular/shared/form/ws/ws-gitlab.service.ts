@@ -19,7 +19,9 @@ export class WSGitlabService extends BaseService {
     //build wsUrl here with server client
     const wsUrl = this.brandingAndPortalUrl + '/ws/gitlab/token';
     return this.http
-    .post(wsUrl, {username: username, password: password}, this.options)
+    .post(wsUrl,
+      {username: username, password: password},
+      this.options)
     .toPromise()
     .then((res: any) => {
       return this.extractData(res);
@@ -33,7 +35,9 @@ export class WSGitlabService extends BaseService {
   user(token: string) {
     const wsUrl = this.brandingAndPortalUrl + '/ws/gitlab/user';
     return this.http
-    .post(wsUrl, {token: token}, this.options)
+    .post(wsUrl,
+      {token: token},
+      this.options)
     .toPromise()
     .then((res: any) => {
       return this.extractData(res);
@@ -47,7 +51,9 @@ export class WSGitlabService extends BaseService {
   projects(token: string, id: number) {
     const wsUrl = this.brandingAndPortalUrl + '/ws/gitlab/projects';
     return this.http
-    .post(wsUrl, {token: token, id: id}, this.options)
+    .post(wsUrl,
+      {token: token, id: id},
+      this.options)
     .toPromise()
     .then((res: any) => {
       return this.extractData(res)
@@ -70,5 +76,18 @@ export class WSGitlabService extends BaseService {
         return this.extractData(res);
       });
     }
+
+    checkLink(token: string, rdmpId: string, projectNameSpace: string) {
+      const wsUrl = this.brandingAndPortalUrl + '/ws/gitlab/checkLink';
+      return this.http
+      .post(wsUrl,
+        {token: token, rdmpId: rdmpId, projectNameSpace: projectNameSpace},
+        this.options)
+        .toPromise()
+        .then((res: any) => {
+          console.log(res);
+          return this.extractData(res);
+        });
+      }
 
   }

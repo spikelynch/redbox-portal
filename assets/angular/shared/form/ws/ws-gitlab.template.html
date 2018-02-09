@@ -17,7 +17,7 @@
     <button class="btn btn-primary" type="submit">Login</button>
   </form>
   <div class="row"></div>
-  <div *ngIf="field.validToken" class='panel'>
+  <div *ngIf="field.validToken" class="panel">
     <div class="row">
       <table class="table">
         <thead>
@@ -29,13 +29,18 @@
         <tbody>
           <tr *ngFor="let item of field.workspaces">
             <ng-container *ngFor="let column of field.columns">
-              <td  *ngIf='column.show != false'>
-                <span *ngIf='column.link != null; else noProcessing '><a href="/{{ branding }}/{{ portal }}/{{ column.link.pattern}}"></a></span>
+              <td  *ngIf="column.show != false">
+                <span *ngIf="column.link != null; else noProcessing "><a href="/{{ branding }}/{{ portal }}/{{ column.link.pattern}}"></a></span>
                 <ng-template #multivalue></ng-template>
                 <ng-template #noProcessing><span >{{ item[column.property] }}</span></ng-template>
               </td></ng-container>
               <td>
-                <button type="button" class="btn btn-info" (click)="field.linkWorkspace(item.id)"> Link </button>
+                <span *ngIf="item.isLinked; else isNotLinked ">
+                  <button disabled type="button" class="btn btn-info"> Linked </button>
+                </span>
+                <ng-template #isNotLinked>
+                  <button type="button" class="btn btn-info" (click)="field.linkWorkspace(item.id)"> Link </button>
+                </ng-template>
               </td>
             </tr>
           </tbody>
@@ -107,7 +112,17 @@
             </button>
           </div>
           <div class="modal-body">
-            <p>Linking to workspace ...</p>
+            <p>Checking current links ...&nbsp;<span *ngIf="field.checks.link; then isDone; else isSpinning"></span></p>
+            <p>Checking links in Stash ...&nbsp;<span *ngIf="field.checks.link; then isDone; else isSpinning"></span></p>
+            <p>Checking your master workspace link ...&nbsp;<span *ngIf="field.checks.link; then isDone; else isSpinning"></span></p>
+            <p *ngIf="field.checks.link == false">No links, Linking to workspace ...&nbsp;<span *ngIf="field.checks.rdmp; then isDone; else isSpinning"></span></p>
+            <p *ngIf="field.checks.rdmp">Your workspace was linked succesfully</p>
+            <ng-template #isDone>
+              <i class="fa fa-check-circle"></i>
+            </ng-template>
+            <ng-template #isSpinning>
+              <i class="fa fa-spinner fa-spin"></i>
+            </ng-template>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ok</button>

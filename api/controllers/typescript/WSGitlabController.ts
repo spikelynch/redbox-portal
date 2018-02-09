@@ -23,7 +23,8 @@ export module Controllers {
       'token',
       'user',
       'projects',
-      'link'
+      'link',
+      'checkLink'
     ];
 
     public token(req, res) {
@@ -96,18 +97,19 @@ export module Controllers {
 
       let workspaceId = null;
 
-      sails.log.debug('create')
+      sails.log.debug('createWorkspaceRecord')
       WSGitlabService
-      .create(workspace, 'draft')
+      .createWorkspaceRecord(workspace, 'draft')
       .flatMap(response => {
         workspaceId = response.oid;
         sails.log.debug('addWorkspaceInfo');
-        return WSGitlabService.addWorkspaceInfo(token, projectId, workspaceId);
+        return WSGitlabService.addWorkspaceInfo(token, projectId, workspaceId, 'stash.workspace');
       })
       .flatMap(response => {
         // How to drop out error!
-        sails.log.debug('getRecordMeta');
-        return WSGitlabService.getRecordMeta(rdmpId)
+        //this.addParentRecordLink(rdmpId, workspaceId);
+        sails.log.debug('addParentRecordLink');
+        return this.addParentRecordLink(rdmpId, workspaceId)
       })
       .flatMap(recordMetadata => {
         sails.log.debug('recordMetadata');
@@ -118,19 +120,111 @@ export module Controllers {
           }
         }
         return WSGitlabService.updateRecordMeta(recordMetadata, rdmpId);
-      }
-    )
-    .subscribe(response => {
-      this.ajaxOk(req, res, null, response);
-    }, error => {
-      sails.log.error(error);
-      const errorMessage = `Failed to link workspace with ID: ${projectId} : ${JSON.stringify(error)}` ;
-      sails.log.error(errorMessage);
-      this.ajaxFail(req, res, errorMessage);
-    });
-  }
+      })
+      .subscribe(response => {
+        this.ajaxOk(req, res, null, response);
+      }, error => {
+        sails.log.error(error);
+        const errorMessage = `Failed to link workspace with ID: ${projectId} : ${JSON.stringify(error)}` ;
+        sails.log.error(errorMessage);
+        this.ajaxFail(req, res, errorMessage);
+      });
+    }
 
-}
+    addParentRecordLink(rdmpId:string, workspaceId: string) {
+      sails.log.debug('getRecordMeta');
+      return WSGitlabService.getRecordMeta(rdmpId)
+      .flatMap(recordMetadata => {
+        sails.log.debug('recordMetadata');
+        if(recordMetadata && recordMetadata.workspaces) {
+          const wss = recordMetadata.workspaces.find(id => workspaceId === id);
+          if(!wss) {
+            recordMetadata.workspaces.push({id: workspaceId});
+          }
+        }
+        return WSGitlabService.updateRecordMeta(recordMetadata, rdmpId);
+      });
+    }
+
+    public checkRepo(req, res) {
+      sails.log.debug('check link');
+
+      const token = req.param('token');
+      const rdmpId = req.param('rdmpId');
+      const projectNameSpace = req.param('projectNameSpace');
+
+      sails.log.debug('checkLink:readFileFromRepo');
+      let workspaceId = '';
+
+      return WSGitlabService.readFileFromRepo(token, projectNameSpace, 'stash.workspace')
+      .subscribe(fileContent => {
+        sails.log.debug('checkLink:getRecordMeta');
+        workspaceId = Buffer.from(fileContent.content, 'base64').toString('ascii');
+        sails.log.debug(workspaceId);
+        this.ajaxOk(req, res, null, workspaceId);
+      }, error => {
+        sails.log.error(error);
+        const errorMessage = `Failed check link workspace project: ${projectNameSpace} : ${JSON.stringify(error)}` ;
+        sails.log.error(errorMessage);
+        if(error.StatusCodeError === 404 && error.StatusCodeError.match('file not found')){
+          this.ajaxOk(req, res, null, '');
+        }else {
+          this.ajaxFail(req, res, null, errorMessage);
+        }
+      });
+    }
+
+    public checkLink(req, res) {
+      sails.log.debug('check link');
+
+      const token = req.param('token');
+      const rdmpId = req.param('rdmpId');
+      const projectNameSpace = req.param('projectNameSpace');
+
+      sails.log.debug('checkLink:readFileFromRepo');
+      let workspaceId = '';
+
+      return WSGitlabService.readFileFromRepo(token, projectNameSpace, 'stash.workspace')
+      .flatMap(fileContent => {
+        sails.log.debug('checkLink:getRecordMeta');
+        workspaceId = Buffer.from(fileContent.content, 'base64').toString('ascii');
+        sails.log.debug(workspaceId);
+        return WSGitlabService.getRecordMeta(workspaceId);
+      })
+      .flatMap(response => {
+        sails.log.debug('checkLink:getRecordMeta');
+        sails.log.debug(projectNameSpace);
+        sails.log.debug(response.title);
+
+        let exists = false;
+        if(projectNameSpace === response.title){
+          exists = true;
+          return WSGitlabService.getRecordMeta(rdmpId);
+        } else{
+          return Observable.of('');
+        }
+      })
+      .subscribe(rdmp => {
+        sails.log.debug('checkLink:getRecordMeta 2');
+        sails.log.debug(rdmp);
+        let exists = [];
+        if(rdmp && rdmp.workspaces){
+          exists = rdmp.workspaces.find(id => id === workspaceId);
+        }
+        this.ajaxOk(req, res, null, exists);
+      }, error => {
+        sails.log.error(error);
+        const errorMessage = `Failed check link workspace project: ${projectNameSpace} : ${JSON.stringify(error)}` ;
+        sails.log.error(errorMessage);
+        this.ajaxFail(req, res, errorMessage);
+      });
+    }
+
+    getRelatedRecord(rdmp, workspaceId) {
+      return
+    }
+
+  }
 }
 
 module.exports = new Controllers.WSGitlabController().exports();

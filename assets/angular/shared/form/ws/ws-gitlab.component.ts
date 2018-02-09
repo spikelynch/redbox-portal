@@ -51,7 +51,10 @@ export class WSGitlabField extends FieldBase<any> {
   username: string = '';
   password: string = '';
   permission: object;
-  loginMessageForm: any = {message: '',class: ''}
+  loginMessageForm: any = {message: '',class: ''};
+  currentWorkspace: {};
+  linkingMessage: any;
+  checks: Checks;
 
   constructor(options: any, injector: any) {
     super(options, injector);
@@ -69,6 +72,7 @@ export class WSGitlabField extends FieldBase<any> {
     this.setUserInfo((validToken) => {
       this.validToken = validToken;
     });
+    this.checks = new Checks();
   }
 
   createFormModel(valueElem: any = undefined): any {
@@ -104,18 +108,41 @@ export class WSGitlabField extends FieldBase<any> {
     });
   }
 
-  linkWorkspace(id: number) {
-    const workspace = _.find(this.workspaces, {id: id});
+  checkWorkspaceLink(projectNameSpace: string) {
+    this.linkingMessage = 'Cheking links';
+    this.wsGitlabService.checkLink(this.wsUser.token, this.rdmp, projectNameSpace)
+    .then(response => {
+      console.log(response);
+      this.checks.link = response;
+      if(!response){
+        this.createLink(this.currentWorkspace.id);
+      }
+    })
+    .catch(error => {
+      console.log(error);
+    })
+  }
+
+  linkWorkspace(projectId: number) {
+    this.currentWorkspace = _.find(this.workspaces, {id: projectId});
     //this will link the workspace you have selected,
     //that is create workspace in redbox
     //then add link information in gitlab
     jQuery('#gitlabLinkModal').modal('show');
-    this.wsGitlabService.link(this.wsUser.token, this.rdmp, id, workspace)
+    return this.checkWorkspaceLink(this.currentWorkspace.path_with_namespace);
+  }
+
+  createLink(projectId: number) {
+    this.wsGitlabService
+    .link(this.wsUser.token, this.rdmp, projectId, this.currentWorkspace)
     .then(response => {
-      jQuery('#gitlabLinkModal').modal('hide');
+      this.checks.rdmp = true;
       //   console.log(response);
       //   this.backToRDMP();
-    });
+    })
+    .catch(error => {
+      console.log(error);
+    })
   }
 
   onLogin() {
@@ -215,4 +242,9 @@ export class WSGitlabComponent extends SimpleComponent {
 class WSUser {
   token: string;
   id: number;
+}
+
+class Checks {
+  link: any = undefined;
+  rdmp: boolean = false;
 }

@@ -9,7 +9,7 @@ sudo chown -R vagrant:vagrant *
 for var in "$@"
 do
     if [ $var = "install" ]; then
-        docker run -it --rm -v $PWD:$PORTAL_DIR $PORTAL_IMAGE /bin/bash -c "cd $PORTAL_DIR; npm install -g yarn; yarn add sails-hook-autoreload && yarn global add typings && yarn install"
+        docker run -it --rm -v $PWD:$PORTAL_DIR $PORTAL_IMAGE /bin/bash -c "cd $PORTAL_DIR; npm install -g yarn; yarn autoclean --init; yarn add sails-hook-autoreload@for-sails-0.12 && yarn global add typings && yarn install"
     fi
     if [ $var = "jit" ]; then
       linkNodeLib "lodash" "lodash-lib"

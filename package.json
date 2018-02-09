@@ -57,7 +57,7 @@
     "rxjs": "5.4.1",
     "sails": "~0.12.11",
     "sails-disk": "~0.10.9",
-    "sails-hook-autoreload": "github:sgress454/sails-hook-autoreload#for-sails-0.12",
+    "sails-hook-autoreload": "^0.14.3",
     "sails-mongo": "~0.12.2",
     "skipper-gridfs": "~0.5.3",
     "systemjs": "0.19.40",
