@@ -100,13 +100,13 @@ export module Services {
       return Observable.fromPromise(deleteRequest);
     }
 
-    addWorkspaceInfo(token: string, projectId: number, workspaceId: string, filePath: string) {
+    addWorkspaceInfo(token: string, projectId: number, workspaceLink: string, filePath: string) {
       const post = request({
         uri: this.config.host + `/api/v4/projects/${projectId}/repository/files/${filePath}?access_token=${token}`,
         method: 'POST',
         body: {
           branch: 'master',
-          content: workspaceId,
+          content: workspaceLink,
           author_name: 'Stash',
           commit_message: 'provisioner bot'//TODO: define message via config file or form?
         },
@@ -154,7 +154,7 @@ export module Services {
     return Observable.fromPromise(get);
   }
 
-  updateRecordMeta(record: {}, id: string) {
+  updateRecordMeta(record: any, id: string) {
     const post = request({
       uri: this.brandingAndPortalUrl + '/api/records/metadata/' + id,
       method: 'PUT',

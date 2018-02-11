@@ -24,7 +24,7 @@ export module Controllers {
       'user',
       'projects',
       'link',
-      'checkLink'
+      'checkRepo'
     ];
 
     public token(req, res) {
@@ -103,17 +103,16 @@ export module Controllers {
       .flatMap(response => {
         workspaceId = response.oid;
         sails.log.debug('addWorkspaceInfo');
-        return WSGitlabService.addWorkspaceInfo(token, projectId, workspaceId, 'stash.workspace');
+        return WSGitlabService.addWorkspaceInfo(token, projectId, workspaceId + '.' + rdmpId, 'stash.workspace');
       })
       .flatMap(response => {
-        // How to drop out error!
-        //this.addParentRecordLink(rdmpId, workspaceId);
         sails.log.debug('addParentRecordLink');
-        return this.addParentRecordLink(rdmpId, workspaceId)
+        return WSGitlabService.getRecordMeta(rdmpId)
       })
       .flatMap(recordMetadata => {
         sails.log.debug('recordMetadata');
         if(recordMetadata && recordMetadata.workspaces) {
+          sails.log.debug(recordMetadata);
           const wss = recordMetadata.workspaces.find(id => workspaceId === id);
           if(!wss) {
             recordMetadata.workspaces.push({id: workspaceId});
@@ -131,26 +130,10 @@ export module Controllers {
       });
     }
 
-    addParentRecordLink(rdmpId:string, workspaceId: string) {
-      sails.log.debug('getRecordMeta');
-      return WSGitlabService.getRecordMeta(rdmpId)
-      .flatMap(recordMetadata => {
-        sails.log.debug('recordMetadata');
-        if(recordMetadata && recordMetadata.workspaces) {
-          const wss = recordMetadata.workspaces.find(id => workspaceId === id);
-          if(!wss) {
-            recordMetadata.workspaces.push({id: workspaceId});
-          }
-        }
-        return WSGitlabService.updateRecordMeta(recordMetadata, rdmpId);
-      });
-    }
-
     public checkRepo(req, res) {
       sails.log.debug('check link');
 
       const token = req.param('token');
-      const rdmpId = req.param('rdmpId');
       const projectNameSpace = req.param('projectNameSpace');
 
       sails.log.debug('checkLink:readFileFromRepo');
@@ -159,14 +142,13 @@ export module Controllers {
       return WSGitlabService.readFileFromRepo(token, projectNameSpace, 'stash.workspace')
       .subscribe(fileContent => {
         sails.log.debug('checkLink:getRecordMeta');
-        workspaceId = Buffer.from(fileContent.content, 'base64').toString('ascii');
-        sails.log.debug(workspaceId);
-        this.ajaxOk(req, res, null, workspaceId);
+        const wI = this.workspaceInfoFromRepo(fileContent.content);
+        this.ajaxOk(req, res, null, wI);
       }, error => {
         sails.log.error(error);
         const errorMessage = `Failed check link workspace project: ${projectNameSpace} : ${JSON.stringify(error)}` ;
-        sails.log.error(errorMessage);
-        if(error.StatusCodeError === 404 && error.StatusCodeError.match('file not found')){
+        sails.log.error(error.message);
+        if(error.StatusCodeError === 404 && error.StatusCodeError.match(/file not found/gi)){
           this.ajaxOk(req, res, null, '');
         }else {
           this.ajaxFail(req, res, null, errorMessage);
@@ -174,54 +156,41 @@ export module Controllers {
       });
     }
 
-    public checkLink(req, res) {
-      sails.log.debug('check link');
-
-      const token = req.param('token');
+    public compareLink(req, res) {
       const rdmpId = req.param('rdmpId');
       const projectNameSpace = req.param('projectNameSpace');
+      const workspaceId = req.param('workspaceId');
 
-      sails.log.debug('checkLink:readFileFromRepo');
-      let workspaceId = '';
-
-      return WSGitlabService.readFileFromRepo(token, projectNameSpace, 'stash.workspace')
-      .flatMap(fileContent => {
-        sails.log.debug('checkLink:getRecordMeta');
-        workspaceId = Buffer.from(fileContent.content, 'base64').toString('ascii');
-        sails.log.debug(workspaceId);
-        return WSGitlabService.getRecordMeta(workspaceId);
-      })
-      .flatMap(response => {
-        sails.log.debug('checkLink:getRecordMeta');
-        sails.log.debug(projectNameSpace);
-        sails.log.debug(response.title);
-
-        let exists = false;
-        if(projectNameSpace === response.title){
-          exists = true;
-          return WSGitlabService.getRecordMeta(rdmpId);
+      return WSGitlabService.getRecordMeta(rdmpId)
+      .subscribe(recordMetadata => {
+        sails.log.debug('recordMetadata');
+        if(recordMetadata && recordMetadata.workspaces) {
+          const wss = recordMetadata.workspaces.find(id => workspaceId === id);
+          let message = 'workspace match';
+          if(!wss) {
+            message = 'workspace not found';
+          }
+          this.ajaxOk(req, res, null, {workspace: wss, message: message});
         } else{
-          return Observable.of('');
+          const errorMessage = `Failed compare link workspace project: ${projectNameSpace}` ;
+          this.ajaxFail(req, res, null, errorMessage);
         }
-      })
-      .subscribe(rdmp => {
-        sails.log.debug('checkLink:getRecordMeta 2');
-        sails.log.debug(rdmp);
-        let exists = [];
-        if(rdmp && rdmp.workspaces){
-          exists = rdmp.workspaces.find(id => id === workspaceId);
-        }
-        this.ajaxOk(req, res, null, exists);
       }, error => {
-        sails.log.error(error);
-        const errorMessage = `Failed check link workspace project: ${projectNameSpace} : ${JSON.stringify(error)}` ;
+        const errorMessage = `Failed compare link workspace project: ${projectNameSpace} : ${JSON.stringify(error)}` ;
         sails.log.error(errorMessage);
-        this.ajaxFail(req, res, errorMessage);
+        this.ajaxFail(req, res, null, errorMessage);
       });
     }
 
-    getRelatedRecord(rdmp, workspaceId) {
-      return
+    workspaceInfoFromRepo(content: string) {
+      const workspaceLink = Buffer.from(content, 'base64').toString('ascii');
+      sails.log.debug(workspaceLink);
+      if(workspaceLink) {
+        const workspaceInfo = workspaceLink.split('.');
+        return {rdmp: _.first(workspaceInfo), workspace: _.last(workspaceInfo)};
+      } else{
+        return undefined;
+      }
     }
 
   }

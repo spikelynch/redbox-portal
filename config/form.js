@@ -1253,14 +1253,12 @@ module.exports.form = {
               {'label': 'Location', 'property': 'web_url'},
               {'label': 'Description', 'property': 'description'},
             ],
-            permission: {
-              'step_1': 'The provisioner requires permission to create a workspace on your behalf',
-              'step_2': 'Stash is requesting from GitLab the following permissions:',
-              list: [
+            permissionStep_1: 'The provisioner requires permission to create a workspace on your behalf',
+            permissionStep_2: 'Stash is requesting from GitLab the following permissions:',
+            permissionList: [
                 'Create Repositories',
                 'Write information into your repositories'
               ]
-            }
           }
         }
       ]

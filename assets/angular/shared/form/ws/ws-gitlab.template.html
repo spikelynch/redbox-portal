@@ -1,6 +1,6 @@
 <div>
   <form *ngIf="!field.validToken" #form="ngForm" (ngSubmit)="field.onLogin(field.username, field.password)" novalidate autocomplete="off">
-    <h4>{{ field.permission.step_1 }}</h4>
+    <h4>{{ field.permissionStep_1 }}</h4>
     <div class="form-group">
       <label>Username</label>
       <input type="text" class="form-control" name="username" [(ngModel)]="field.username">
@@ -65,15 +65,12 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Requesting Permission</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
+            <h4 class="modal-title">Requesting Permission</h4>
           </div>
           <div class="modal-body">
-            <p>{{ field.permission.step_2 }}</p>
+            <p>{{ field.permissionStep_2 }}</p>
             <ul>
-              <li *ngFor="let permission of field.permission.list">{{ permission }}</li>
+              <li *ngFor="let permission of field.permissionList">{{ permission }}</li>
             </ul>
           </div>
           <div class="modal-footer">
@@ -87,10 +84,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Removing Permissions</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
+            <h4 class="modal-title">Removing Permissions</h4>
           </div>
           <div class="modal-body">
             <p>The permissions for this service will be removed. You will require to grant permissions to this service again.</p>
@@ -106,17 +100,18 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Linking to Workspace</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
+            <h4 class="modal-title">Workspace Linking</h4>
           </div>
           <div class="modal-body">
-            <p>Checking current links ...&nbsp;<span *ngIf="field.checks.link; then isDone; else isSpinning"></span></p>
-            <p>Checking links in Stash ...&nbsp;<span *ngIf="field.checks.link; then isDone; else isSpinning"></span></p>
-            <p>Checking your master workspace link ...&nbsp;<span *ngIf="field.checks.link; then isDone; else isSpinning"></span></p>
+            <h5>Workspace Details</h5>
+            <p>name: {{ field.currentWorkspace.path_with_namespace }}</p>
+            <p>web url: {{ field.currentWorkspace.web_url }}</p>
+            <h5>Processing</h5>
+            <p>Checking your master workspace link ...&nbsp;<span *ngIf="field.checks.master; then isDone; else isSpinning"></span></p>
+            <p *ngIf="field.checks.comparing">Checking current links ...&nbsp;<span *ngIf="field.checks.link; then isDone; else isSpinning"></span></p>
             <p *ngIf="field.checks.link == false">No links, Linking to workspace ...&nbsp;<span *ngIf="field.checks.rdmp; then isDone; else isSpinning"></span></p>
-            <p *ngIf="field.checks.rdmp">Your workspace was linked succesfully</p>
+            <p class="alert alert-success" *ngIf="field.checks.linkCreated">Your workspace was linked succesfully</p>
+            <p class="alert alert-danger" *ngIf="field.checks.linkWithOther">Your workspace is linked with another RDMP</p>
             <ng-template #isDone>
               <i class="fa fa-check-circle"></i>
             </ng-template>

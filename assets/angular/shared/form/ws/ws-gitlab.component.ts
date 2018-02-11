@@ -51,7 +51,7 @@ export class WSGitlabField extends FieldBase<any> {
   username: string = '';
   password: string = '';
   permission: object;
-  loginMessageForm: any = {message: '',class: ''};
+  loginMessageForm: {};
   currentWorkspace: {};
   linkingMessage: any;
   checks: Checks;
@@ -62,6 +62,8 @@ export class WSGitlabField extends FieldBase<any> {
     this.wsGitlabService = this.getFromInjector(WSGitlabService);
     this.wsUser = new WSUser();
     this.user = new User();
+    this.loginMessageForm = {message: '', class: ''};
+    this.currentWorkspace = {path_with_namespace: '', web_url:''};
     this.workspaces = [];
     this.name = options['name'] || '';
     this.columns = options['columns'] || [];
@@ -108,114 +110,116 @@ export class WSGitlabField extends FieldBase<any> {
     });
   }
 
-  checkWorkspaceLink(projectNameSpace: string) {
-    this.linkingMessage = 'Cheking links';
-    this.wsGitlabService.checkLink(this.wsUser.token, this.rdmp, projectNameSpace)
-    .then(response => {
-      console.log(response);
-      this.checks.link = response;
-      if(!response){
-        this.createLink(this.currentWorkspace.id);
-      }
-    })
-    .catch(error => {
-      console.log(error);
-    })
-  }
-
+  // LinkWorkspace will first check links in RDMP and master branch of gitlab projects
+  // Then, it will add link if there is not one in it
   linkWorkspace(projectId: number) {
-    this.currentWorkspace = _.find(this.workspaces, {id: projectId});
-    //this will link the workspace you have selected,
-    //that is create workspace in redbox
-    //then add link information in gitlab
-    jQuery('#gitlabLinkModal').modal('show');
-    return this.checkWorkspaceLink(this.currentWorkspace.path_with_namespace);
-  }
+  jQuery('#gitlabLinkModal').modal('show');
+  this.currentWorkspace = _.find(this.workspaces, {id: projectId});
+  this.wsGitlabService.checkRepo(this.wsUser.token, this.rdmp)
+  .then(response => {
+    console.log(response);
+    if(!response.ws) {
+      this.checks.master = true;
+      return this.createLink(this.currentWorkspace.id);
+    }else {
+      return this.wsGitlabService.compareLink(this.rdmp, this.currentWorkspace.path_with_namespace)
+    }
+  })
+  .then(response => {
+    console.log(response);
+    this.checks.link = response;
+    this.checks.linkCreated = true;
+  })
+  .catch(error => {
+    console.log(error);
+  });
 
-  createLink(projectId: number) {
-    this.wsGitlabService
-    .link(this.wsUser.token, this.rdmp, projectId, this.currentWorkspace)
-    .then(response => {
-      this.checks.rdmp = true;
-      //   console.log(response);
-      //   this.backToRDMP();
-    })
-    .catch(error => {
-      console.log(error);
-    })
-  }
+}
 
-  onLogin() {
-    jQuery('#gitlabPermissionModal').modal('show');
-  }
+createLink(projectId: number) {
+  this.wsGitlabService
+  .link(this.wsUser.token, this.rdmp, projectId, this.currentWorkspace)
+  .then(response => {
+    this.checks.rdmp = true;
+    //   console.log(response);
+    //   this.backToRDMP();
+  })
+  .catch(error => {
+    console.log(error);
+  })
+}
 
-  allow() {
-    jQuery('#gitlabPermissionModal').modal('hide');
-    this.wsGitlabService
-    .token(this.username, this.password)
-    .then(response => {
-      if (response.status) {
-        this.wsUser.token = response.access_token;
-        console.log('token: ' + this.wsUser.token);
-        return this.wsGitlabService
-        .user(this.wsUser.token)
-        .then(response => {
-          if (response.status) {
-            console.log('id: ' + response.id);
-            this.wsUser.id = response.id;
-            return this.getWorkspaces();
-          } else {
-            console.log('error geting user : ' + response.message);
-          }
-        })
-        .catch(error => {
-          console.log('error');
-          console.log(error);
-        });
-      } else {
-        this.loginMessage(response.message, 'danger');
-      }
-    });
-  }
+onLogin() {
+  jQuery('#gitlabPermissionModal').modal('show');
+}
 
-  loginMessage(message, cssClass) {
-    this.loginMessageForm.message = message;
-    this.loginMessageForm.class = cssClass;
-  }
+allow() {
+  jQuery('#gitlabPermissionModal').modal('hide');
+  this.wsGitlabService
+  .token(this.username, this.password)
+  .then(response => {
+    if (response.status) {
+      this.wsUser.token = response.access_token;
+      console.log('token: ' + this.wsUser.token);
+      return this.wsGitlabService
+      .user(this.wsUser.token)
+      .then(response => {
+        if (response.status) {
+          console.log('id: ' + response.id);
+          this.wsUser.id = response.id;
+          return this.getWorkspaces();
+        } else {
+          console.log('error geting user : ' + response.message);
+        }
+      })
+      .catch(error => {
+        console.log('error');
+        console.log(error);
+      });
+    } else {
+      this.loginMessage(response.message, 'danger');
+    }
+  });
+}
 
-  setUserInfo(cb) {
-    this.usersService.getInfo().then((user: any) => {
-      this.user = user;
-      // check with database the userToken
-      this.wsUser.token = '123123123';
-      //how to check validity of token?
-      //maybe after failed list of workspaces change validToken
-      let validToken = false;
-      if (this.wsUser.token) {
-        validToken = false;
-        cb(validToken);
-      } else {
-        cb(validToken);
-      }
-    });
-  }
+loginMessage(message, cssClass) {
+  this.loginMessageForm.message = message;
+  this.loginMessageForm.class = cssClass;
+}
+
+setUserInfo(cb) {
+  this.usersService.getInfo().then((user: any) => {
+    this.user = user;
+    // check with database the userToken
+    this.wsUser.token = '123123123';
+    //how to check validity of token?
+    //maybe after failed list of workspaces change validToken
+    let validToken = false;
+    if (this.wsUser.token) {
+      validToken = false;
+      cb(validToken);
+    } else {
+      cb(validToken);
+    }
+  });
+}
 
 
-  backToRDMP() {
-    console.log('send location back');
-    document.location = this.rdmpLocation;
-  }
+backToRDMP() {
+  console.log('send location back');
+  document.location = this.rdmpLocation;
+}
 
-  revokeModal() {
-    jQuery('#gitlabRevokeModal').modal('show');
-  }
+revokeModal() {
+  jQuery('#gitlabRevokeModal').modal('show');
+}
 
-  revoke() {
-    //delete workspace record here
-    this.validToken = false;
-    this.wsUser.token = null;
-    jQuery('#gitlabRevokeModal').modal('hide');
-  }
+revoke() {
+  //delete workspace record here
+  this.validToken = false;
+  this.wsUser.token = null;
+  jQuery('#gitlabRevokeModal').modal('hide');
+}
 
 }
 
@@ -247,4 +251,8 @@ class WSUser {
 class Checks {
   link: any = undefined;
   rdmp: boolean = false;
+  linkCreated: boolean = false;
+  linkWithOther: boolean = false;
+  master: boolean = false;
+  comparing: boolean = false;
 }

@@ -196,5 +196,5 @@ module.exports.routes = {
   'post /:branding/:portal/ws/gitlab/user': 'typescript/WSGitlabController.user',
   'post /:branding/:portal/ws/gitlab/projects': 'typescript/WSGitlabController.projects',
   'post /:branding/:portal/ws/gitlab/link': 'typescript/WSGitlabController.link',
-  'post /:branding/:portal/ws/gitlab/checkLink': 'typescript/WSGitlabController.checkLink',
+  'post /:branding/:portal/ws/gitlab/checkRepo': 'typescript/WSGitlabController.checkRepo',
 };
