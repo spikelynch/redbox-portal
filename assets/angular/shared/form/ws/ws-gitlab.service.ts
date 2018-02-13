@@ -138,4 +138,19 @@ export class WSGitlabService extends BaseService {
     });
   }
 
+  createWorkspace(token: string, rdmp: string, namespace: string) {
+    const wsUrl = this.brandingAndPortalUrl + '/ws/gitlab/create';
+    //TODO: check namespace when creation
+    return this.http.post(
+      wsUrl,
+      {token: token, rdmp: rdmp, namespace: namespace},
+      this.options
+    )
+    .toPromise()
+    .then((res: any) => {
+      console.log(res);
+      return this.extractData(res);
+    });
+  }
+
 }

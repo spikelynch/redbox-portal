@@ -58,6 +58,7 @@ export class WSGitlabField extends FieldBase<any> {
   currentWorkspace: {};
   linkingMessage: any;
   checks: Checks;
+  creation: Creation;
 
   constructor(options: any, injector: any) {
     super(options, injector);
@@ -65,6 +66,7 @@ export class WSGitlabField extends FieldBase<any> {
     this.wsGitlabService = this.getFromInjector(WSGitlabService);
     this.wsUser = new WSUser();
     this.user = new User();
+    this.creation = new Creation();
     this.loginMessageForm = {message: '', class: ''};
     this.currentWorkspace = {path_with_namespace: '', web_url:''};
     this.workspaces = [];
@@ -143,6 +145,23 @@ export class WSGitlabField extends FieldBase<any> {
   .catch(error => {
     console.log(error);
   });
+
+}
+createWorkspace() {
+  jQuery('#gitlabCreateModal').modal('show');
+}
+create() {
+  //TODO: check the namespace what is needed here
+  this.wsGitlabService.createWorkspace(this.wsUser.token, this.rdmp, this.creation.name)
+  .then(response => {
+    console.log(response);
+  })
+  .catch(error => {
+    console.log(error);
+  })
+}
+
+checkName(){
 
 }
 
@@ -270,4 +289,10 @@ class Checks {
   linkWithOther: boolean = false;
   master: boolean = false;
   comparing: boolean = false;
+}
+
+class Creation {
+  created: boolean = false;
+  name: string;
+  group: string;
 }

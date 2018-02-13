@@ -47,9 +47,8 @@
         </table>
       </div>
       <div class="row">
-        <div class="row">
-          <button type="button" class="btn btn-default" (click)="field.getWorkspaces()"><i class="fas fa-redo fa-1x"></i>&nbsp;Sync</button>
-        </div>
+          <button type="button" class="btn btn-default" (click)="field.getWorkspaces()"><i class="fa fa-refresh"></i>&nbsp;Sync</button>
+          <button type="button" class="btn btn-success" (click)="field.createWorkspace()"><i class="fa fa-plus-square"></i>&nbsp;Create</button>
       </div>
     </div>
     <div class="panel">
@@ -125,5 +124,56 @@
         </div>
       </div>
     </div>
-
+    <div id="gitlabCreateModal" class="modal fade">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Create Workspace</h4>
+          </div>
+          <div class="modal-body">
+            <h5>Workspace Details</h5>
+            <form *ngIf="!field.creation.created" #form="ngForm" (ngSubmit)="field.checkName()" novalidate autocomplete="off">
+              <h4>Select Group</h4>
+              <div class="form-group">
+                <input type="text" class="form-control" name="group" [(ngModel)]="field.creation.group">
+              </div>
+              <h4>Name your workspace</h4>
+              <div class="form-group">
+                <input type="text" class="form-control" name="name" [(ngModel)]="field.creation.name">
+              </div>
+              <div class="form-group">
+                <div *ngIf="field.creation.message" class="alert alert-{{ field.loginMessageForm.class }}" class="form-group">
+                  {{ null }}
+                </div>
+              </div>
+              <div class="form-group">
+                <button disabled class="btn btn-primary" type="submit">Check Name</button>
+              </div>
+              <div class="form-group">
+                <div class="alert alert-success">Available&nbsp;<i class="fa fa-check-circle"></i></div>
+              </div>
+            </form>
+            <form *ngIf="!field.creation.created" #form="ngForm" (ngSubmit)="field.checkName()" novalidate autocomplete="off">
+              <h4>Select Template</h4>
+              <div class="form-group">
+                <input type="text" class="form-control" name="template" [(ngModel)]="field.creation.template">
+              </div>
+              <h4>Or Blank</h4>
+              <div class="form-group">
+                <input type="checkbox" class="form-control" name="blank" [(ngModel)]="field.creation.blank">
+              </div>
+              <div class="form-group">
+                <div *ngIf="field.creation.message" class="alert alert-{{ field.loginMessageForm.class }}" class="form-group">
+                  {{ null }}
+                </div>
+              </div>
+              <button class="btn btn-primary" type="submit">Create</button>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Ok</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
