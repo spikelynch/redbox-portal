@@ -1,5 +1,5 @@
 declare var module;
-declare var sails;
+declare var sails, Model;
 import {Observable} from 'rxjs/Rx';
 
 declare var WSGitlabService;
@@ -24,7 +24,8 @@ export module Controllers {
       'user',
       'projects',
       'link',
-      'checkRepo'
+      'checkRepo',
+      'revokeToken'
     ];
 
     public token(req, res) {
@@ -32,15 +33,38 @@ export module Controllers {
 
       const username = req.param('username');
       const password = req.param('password');
+      const user = req.param('user');
 
       const obs = WSGitlabService.token(username, password);
 
-      obs.subscribe(response => {
-        response.status = true;
-        this.ajaxOk(req, res, null, response);
+      obs.flatMap(response => {
+        sails.log.debug('token');
+        return WSGitlabService.updateUser(user, response, username);
+      })
+      .subscribe(response => {
+        sails.log.debug('updateUser');
+        sails.log.debug(response);
+        this.ajaxOk(req, res, null, {status: true});
       }, error => {
         sails.log.error(error);
         const errorMessage = `Failed to get token for user: ${username}`;
+        sails.log.error(errorMessage);
+        this.ajaxFail(req, res, errorMessage);
+      });
+    }
+
+    public revokeToken(req, res) {
+      sails.log.debug('revokeToken');
+      const user = req.param('user');
+
+      return WSGitlabService.revokeToken(user)
+      .subscribe(response => {
+        sails.log.debug('updateUser');
+        sails.log.debug(response);
+        this.ajaxOk(req, res, null, {status: true});
+      }, error => {
+        sails.log.error(error);
+        const errorMessage = `Failed to get token for user: ${user.username}`;
         sails.log.error(errorMessage);
         this.ajaxFail(req, res, errorMessage);
       });

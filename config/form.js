@@ -1239,8 +1239,17 @@ module.exports.form = {
           compClass: 'TextBlockComponent',
           viewOnly: false,
           definition: {
-            value: 'git-test.research.uts.edu.au',
+            value: 'GitLab',
             type: 'h2'
+          }
+        },
+        {
+          class: 'Container',
+          compClass: 'TextBlockComponent',
+          viewOnly: false,
+          definition: {
+            value: 'Workspaces',
+            type: 'h3'
           }
         },
         {
@@ -1248,17 +1257,19 @@ module.exports.form = {
           showHeader: true,
           definition: {
             name: 'workspaces',
+            permissionStep1: 'The provisioner requires permission to create a workspace on your behalf',
+            permissionStep2: 'Stash is requesting from GitLab the following permissions:',
+            permissionRevoke: 'The permissions for this service will be removed. You will require to grant permissions to this service again.',
+            permissionList: [
+                'Create Repositories',
+                'Write information into your repositories'
+              ],
+            backToRDMP: 'Back to your Plan',
             columns: [
               {'label': 'Name', 'property': 'name'},
               {'label': 'Location', 'property': 'web_url'},
               {'label': 'Description', 'property': 'description'},
-            ],
-            permissionStep_1: 'The provisioner requires permission to create a workspace on your behalf',
-            permissionStep_2: 'Stash is requesting from GitLab the following permissions:',
-            permissionList: [
-                'Create Repositories',
-                'Write information into your repositories'
-              ]
+            ]
           }
         }
       ]

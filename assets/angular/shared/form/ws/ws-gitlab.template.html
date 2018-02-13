@@ -1,6 +1,6 @@
 <div>
-  <form *ngIf="!field.validToken" #form="ngForm" (ngSubmit)="field.onLogin(field.username, field.password)" novalidate autocomplete="off">
-    <h4>{{ field.permissionStep_1 }}</h4>
+  <form *ngIf="!field.wsUser.token" #form="ngForm" (ngSubmit)="field.onLogin(field.username, field.password)" novalidate autocomplete="off">
+    <h4>{{ field.permissionStep1 }}</h4>
     <div class="form-group">
       <label>Username</label>
       <input type="text" class="form-control" name="username" [(ngModel)]="field.username">
@@ -17,7 +17,7 @@
     <button class="btn btn-primary" type="submit">Login</button>
   </form>
   <div class="row"></div>
-  <div *ngIf="field.validToken" class="panel">
+  <div *ngIf="field.wsUser.token" class="panel">
     <div class="row">
       <table class="table">
         <thead>
@@ -53,12 +53,12 @@
       </div>
     </div>
     <div class="panel">
-      <div *ngIf="field.validToken" class="row">
+      <div *ngIf="field.wsUser.token" class="row">
         <button type="button" class="btn btn-danger" (click)="field.revokeModal()"> Revoke Permissions </button>
       </div>
       <br/>
       <div class="row">
-        <button type="button" class="btn btn-default" (click)="field.backToRDMP()"> Back to RDMP </button>
+        <button type="button" class="btn btn-default" (click)="field.sendToRDMP()">{{ field.backToRDMP }}</button>
       </div>
     </div>
     <div id="gitlabPermissionModal" class="modal fade">
@@ -68,7 +68,7 @@
             <h4 class="modal-title">Requesting Permission</h4>
           </div>
           <div class="modal-body">
-            <p>{{ field.permissionStep_2 }}</p>
+            <p>{{ field.permissionStep2 }}</p>
             <ul>
               <li *ngFor="let permission of field.permissionList">{{ permission }}</li>
             </ul>
@@ -87,7 +87,7 @@
             <h4 class="modal-title">Removing Permissions</h4>
           </div>
           <div class="modal-body">
-            <p>The permissions for this service will be removed. You will require to grant permissions to this service again.</p>
+            <p>{{ field.permissionRevoke }}</p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" (click)="field.revoke()">Revoke</button>

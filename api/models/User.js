@@ -14,6 +14,7 @@ module.exports = {
     name : { type: 'string', required: true},
     email: { type: 'string'},
     token: { type: 'string'},
+    accessToken: { type: 'json', required: false },
     // users have many roles
     roles: { collection: 'role', via: 'users'},
     toJSON: function() {

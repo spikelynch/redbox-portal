@@ -7,7 +7,7 @@ import Gitlab = require('gitlab');
 declare var RecordsService, BrandingService;
 declare var sails: Sails;
 declare var _this;
-declare var Institution: Model;
+declare var Institution, User: Model;
 
 export module Services {
 
@@ -16,12 +16,14 @@ export module Services {
     protected _exportedMethods: any = [
       'token',
       'user',
+      'updateUser',
       'projects',
       'createWorkspaceRecord',
       'addWorkspaceInfo',
       'getRecordMeta',
       'updateRecordMeta',
-      'readFileFromRepo'
+      'readFileFromRepo',
+      'revokeToken'
     ];
 
     config: any;
@@ -126,6 +128,25 @@ export module Services {
     }
     //**REDBOX-PORTAL**//
 
+    updateUser(user: any, access: any, gitlabUserName: string) {
+      return super.getObservable(
+        //TODO: Update without removing other accessTokens.
+        User.update(
+          {username: user.username},
+          {accessToken: { gitlab: {access: access}}}
+        )
+      );
+    }
+
+    revokeToken(user: any) {
+      return super.getObservable(
+        //TODO: Update without removing other accessTokens.
+        User.update(
+          {username: user.username},
+          {accessToken: { gitlab: {}}}
+        )
+      );
+    }
     createWorkspaceRecord(workspace: any, workflowStage: string) {
       //TODO: how to get the workflowStage??
       const post = request({
