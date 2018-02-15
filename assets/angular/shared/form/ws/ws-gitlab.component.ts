@@ -116,14 +116,9 @@ export class WSGitlabField extends FieldBase<any> {
   }
 
   getWorkspaces() {
-    if(!this.wsUser.id){
-      this.wsGitlabService.user(this.wsUser.token).then(response => {
-        this.wsUser.id = response.id
-        this.wsGitlabService.projects(this.wsUser.token, this.wsUser.id).then(w => this.workspaces = w).catch(e => console.log(e));
-      })
-    }else {
-      this.wsGitlabService.projects(this.wsUser.token, this.wsUser.id).then(w => this.workspaces = w).catch(e => console.log(e));
-    }
+      this.wsGitlabService.projects(this.wsUser.token)
+      .then(w => this.workspaces = w)
+      .catch(e => console.log(e));
   }
 
   // LinkWorkspace will first check links in RDMP and master branch of gitlab projects
@@ -234,7 +229,6 @@ allow() {
         if (response && response.status) {
           console.log('id: ' + response.id);
           this.wsUser.id = response.id;
-          this.wsUser.validToken = true;
           this.getWorkspaces();
         } else {
           console.log('error geting user : ' + response.message);
@@ -269,7 +263,6 @@ revoke() {
   this.wsGitlabService
   .revokeToken(this.user)
   .then(response => {
-    this.wsUser.validToken = false;
     this.wsUser.token = null;
     jQuery('#gitlabRevokeModal').modal('hide');
   })
@@ -301,9 +294,8 @@ export class WSGitlabComponent extends SimpleComponent {
 }
 
 class WSUser {
-  token: string;
+  token: string = null;
   id: number;
-  validToken: boolean = false;
 
   set(user: any) {
     if(user.accessToken && user.accessToken.gitlab) {

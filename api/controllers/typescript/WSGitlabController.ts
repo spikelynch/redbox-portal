@@ -97,16 +97,15 @@ export module Controllers {
       sails.log.debug('get projects');
 
       const token = req.param('token');
-      const id = req.param('id');
 
-      const obs = WSGitlabService.projects(token, id);
+      const obs = WSGitlabService.projects(token);
 
       obs.subscribe(response => {
         response.status = true;
         this.ajaxOk(req, res, null, response);
       }, error => {
         sails.log.error(error);
-        const errorMessage = `Failed to get projects for token: ${token} and user: ${id}`;
+        const errorMessage = `Failed to get projects for token: ${token}`;
         sails.log.error(errorMessage);
         this.ajaxFail(req, res, errorMessage);
       });

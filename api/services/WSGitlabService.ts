@@ -73,7 +73,7 @@ export module Services {
       return Observable.fromPromise(get);
     }
 
-    projects(token: string, id: number) {
+    projects(token: string) {
       const get = request({
         uri: this.config.host + `/api/v4/projects?membership=true&access_token=${token}`,
         json: true
