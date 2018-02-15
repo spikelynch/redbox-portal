@@ -1,64 +1,60 @@
-<div>
-  <form *ngIf="!field.wsUser.token" #form="ngForm" (ngSubmit)="field.onLogin(field.username, field.password)" novalidate autocomplete="off">
-    <h4>{{ field.permissionStep1 }}</h4>
-    <div class="form-group">
-      <label>Username</label>
-      <input type="text" class="form-control" name="username" [(ngModel)]="field.username">
-    </div>
-    <div class="form-group">
-      <label>Password</label>
-      <input type="password" class="form-control" name="password" [(ngModel)]="field.password">
-    </div>
-    <div class="form-group">
-      <div *ngIf="field.loginMessageForm.message" class="alert alert-{{ field.loginMessageForm.class }}" class="form-group">
-        {{ field.loginMessageForm.message }}
+<div class="container">
+  <div *ngIf="!field.wsUser.token" class="row">
+    <form  #form="ngForm" (ngSubmit)="field.onLogin(field.username, field.password)" novalidate autocomplete="off">
+      <h4>{{ field.permissionStep1 }}</h4>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" class="form-control" name="username" [(ngModel)]="field.username">
       </div>
-    </div>
-    <button class="btn btn-primary" type="submit">Login</button>
-  </form>
-  <div class="row"></div>
-  <div *ngIf="field.wsUser.token" class="panel">
-    <div class="row">
-      <table class="table">
-        <thead>
-          <tr>
-            <ng-container *ngFor="let header of field.columns"><th>{{ header.label }}</th></ng-container>
-            <th>Workspaces</th>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" class="form-control" name="password" [(ngModel)]="field.password">
+      </div>
+      <div class="form-group">
+        <div *ngIf="field.loginMessageForm.message" class="alert alert-{{ field.loginMessageForm.class }}" class="form-group">
+          {{ field.loginMessageForm.message }}
+        </div>
+      </div>
+      <button class="btn btn-primary" type="submit">Login</button>
+    </form>
+  </div>
+  <div *ngIf="field.wsUser.token" class="row mt-3 form-group">
+    <table class="table">
+      <thead>
+        <tr>
+          <ng-container *ngFor="let header of field.columns"><th>{{ header.label }}</th></ng-container>
+          <th>RDMP</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of field.workspaces">
+          <ng-container *ngFor="let column of field.columns">
+            <td  *ngIf="column.show != false">
+              <span *ngIf="column.link != null; else noProcessing "><a href="/{{ branding }}/{{ portal }}/{{ column.link.pattern}}"></a></span>
+              <ng-template #multivalue></ng-template>
+              <ng-template #noProcessing><span >{{ item[column.property] }}</span></ng-template>
+            </td></ng-container>
+            <td>
+              <span *ngIf="item.isLinked; else isNotLinked ">
+                <button disabled type="button" class="btn btn-info"> Linked </button>
+              </span>
+              <ng-template #isNotLinked>
+                <button type="button" class="btn btn-info" (click)="field.linkWorkspace(item.id)"> Check Link </button>
+              </ng-template>
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let item of field.workspaces">
-            <ng-container *ngFor="let column of field.columns">
-              <td  *ngIf="column.show != false">
-                <span *ngIf="column.link != null; else noProcessing "><a href="/{{ branding }}/{{ portal }}/{{ column.link.pattern}}"></a></span>
-                <ng-template #multivalue></ng-template>
-                <ng-template #noProcessing><span >{{ item[column.property] }}</span></ng-template>
-              </td></ng-container>
-              <td>
-                <span *ngIf="item.isLinked; else isNotLinked ">
-                  <button disabled type="button" class="btn btn-info"> Linked </button>
-                </span>
-                <ng-template #isNotLinked>
-                  <button type="button" class="btn btn-info" (click)="field.linkWorkspace(item.id)"> Link </button>
-                </ng-template>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="row">
-          <button type="button" class="btn btn-default" (click)="field.getWorkspaces()"><i class="fa fa-refresh"></i>&nbsp;Sync</button>
-          <button type="button" class="btn btn-success" (click)="field.createWorkspace()"><i class="fa fa-plus-square"></i>&nbsp;Create</button>
+        </tbody>
+      </table>
+      <div>
+        <button type="button" class="btn btn-default" (click)="field.getWorkspaces()"><i class="fa fa-refresh"></i>&nbsp;Sync</button>
+        <button type="button" class="btn btn-success" (click)="field.createWorkspace()"><i class="fa fa-plus-square"></i>&nbsp;Create</button>
       </div>
     </div>
-    <div class="panel">
-      <div *ngIf="field.wsUser.token" class="row">
-        <button type="button" class="btn btn-danger" (click)="field.revokeModal()"> Revoke Permissions </button>
-      </div>
-      <br/>
-      <div class="row">
-        <button type="button" class="btn btn-default" (click)="field.sendToRDMP()">{{ field.backToRDMP }}</button>
-      </div>
+    <div *ngIf="field.wsUser.token" class="row mt-3 form-group">
+      <button type="button" class="btn btn-danger" (click)="field.revokeModal()">{{ field.revokeMessage }}</button>
+    </div>
+    <div class="row mt-3 form-group">
+      <button type="button" class="btn btn-default" (click)="field.sendToRDMP()">{{ field.backToRDMP }}</button>
     </div>
     <div id="gitlabPermissionModal" class="modal fade">
       <div class="modal-dialog" role="document">
@@ -133,13 +129,20 @@
           <div class="modal-body">
             <h5>Workspace Details</h5>
             <form *ngIf="!field.creation.created" #form="ngForm" (ngSubmit)="field.checkName()" novalidate autocomplete="off">
-              <h4>Select Group</h4>
               <div class="form-group">
-                <input type="text" class="form-control" name="group" [(ngModel)]="field.creation.group">
+                <h4>Select Space</h4>
+                <select class="form-control" [(ngModel)]="field.creation.namespace" name="creationNamespace">
+                  <option *ngFor="let g of field.groups" [value]="g.namespace"
+                  [selected]="g.name == field.creation.namespace">{{g.name }}</option>
+                </select>
               </div>
-              <h4>Name your workspace</h4>
               <div class="form-group">
+                <h4>Name your workspace</h4>
                 <input type="text" class="form-control" name="name" [(ngModel)]="field.creation.name">
+              </div>
+              <div class="form-group">
+                <h4>Add a description</h4>
+                <input type="text" class="form-control" name="description" [(ngModel)]="field.creation.description">
               </div>
               <div class="form-group">
                 <div *ngIf="field.creation.message" class="alert alert-{{ field.loginMessageForm.class }}" class="form-group">
@@ -153,14 +156,13 @@
                 <div class="alert alert-success">Available&nbsp;<i class="fa fa-check-circle"></i></div>
               </div>
             </form>
-            <form *ngIf="!field.creation.created" #form="ngForm" (ngSubmit)="field.checkName()" novalidate autocomplete="off">
-              <h4>Select Template</h4>
+            <form *ngIf="!field.creation.created" #form="ngForm" (ngSubmit)="field.create()" novalidate autocomplete="off">
               <div class="form-group">
-                <input type="text" class="form-control" name="template" [(ngModel)]="field.creation.template">
-              </div>
-              <h4>Or Blank</h4>
-              <div class="form-group">
-                <input type="checkbox" class="form-control" name="blank" [(ngModel)]="field.creation.blank">
+                <h4>Select Template</h4>
+                <select class="form-control" [(ngModel)]="field.creation.template" name="creationTemplate">
+                  <option *ngFor="let t of field.templates" [value]="t.pathWithNamespace"
+                  [selected]="t.pathWithNamespace == field.creation.template">{{ t.pathWithNamespace || 'No Template' }}</option>
+                </select>
               </div>
               <div class="form-group">
                 <div *ngIf="field.creation.message" class="alert alert-{{ field.loginMessageForm.class }}" class="form-group">
@@ -171,7 +173,7 @@
             </form>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Ok</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           </div>
         </div>
       </div>

@@ -59,6 +59,9 @@ export class WSGitlabField extends FieldBase<any> {
   linkingMessage: any;
   checks: Checks;
   creation: Creation;
+  groups: Array<Group> = [];
+  templates: Array<Template> = [];
+  revokeMessage: string;
 
   constructor(options: any, injector: any) {
     super(options, injector);
@@ -77,6 +80,7 @@ export class WSGitlabField extends FieldBase<any> {
     this.permissionStep2 = options['permissionStep2'] || '';
     this.permissionRevoke = options['permissionRevoke'] || '';
     this.backToRDMP = options['backToRDMP'] || 'go back';
+    this.revokeMessage = options['revokeMessage'] || '';
     const params = (new URL(document.location)).searchParams; //How compatible is this with browsers?
     this.rdmp = params.get('rdmp');
     this.rdmpLocation = this.wsGitlabService.recordURL + '/' + this.rdmp + '#workspaces';
@@ -147,12 +151,39 @@ export class WSGitlabField extends FieldBase<any> {
   });
 
 }
+
 createWorkspace() {
+  const group1 = {id: '2', name: '135553'};
+  const group2 = {id: '7', name: 'open-source'};
+  this.groups = [group1, group2];
+  const template1 = {pathWithNamespace: undefined};
+  const template2 = {pathWithNamespace: 'open-source/template'};
+  this.templates = [template1, template2]
   jQuery('#gitlabCreateModal').modal('show');
 }
+
 create() {
   //TODO: check the namespace what is needed here
-  this.wsGitlabService.createWorkspace(this.wsUser.token, this.rdmp, this.creation.name)
+  console.log(this.creation)
+  // this.wsGitlabService.createWorkspace(this.wsUser.token, this.rdmp, this.creation)
+  // .then(response => {
+  //   debugger;
+  //   return this.checkCreation().delay(3000);
+  // })
+  // .catch(error => {
+  //   console.log(error);
+  // })
+}
+
+checkCreation() {
+  let pathWithNamespace = '';
+  if(this.creation.isGroup){
+    pathWithNamespace = this.creation.group + '/' + this.creation.name;
+  }else {
+    pathWithNamespace = this.creation.name;
+  }
+  return this.wsGitlabService
+  .project(this.wsUser.token, pathWithNamespace)
   .then(response => {
     console.log(response);
   })
@@ -291,8 +322,22 @@ class Checks {
   comparing: boolean = false;
 }
 
+class Group {
+  name: string;
+  id: string;
+}
+
+class Template {
+  pathWithNamespace: string;
+}
+
 class Creation {
   created: boolean = false;
   name: string;
+  namespace: string;
+  blank: boolean = true;
+  template: string;
+  description: string;
   group: string;
+  isGroup: boolean = false;
 }

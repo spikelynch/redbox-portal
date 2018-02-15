@@ -25,7 +25,9 @@ export module Controllers {
       'projects',
       'link',
       'checkRepo',
-      'revokeToken'
+      'revokeToken',
+      'create',
+      'project'
     ];
 
     public token(req, res) {
@@ -215,6 +217,51 @@ export module Controllers {
       } else{
         return undefined;
       }
+    }
+
+    create(req, res) {
+      const token = req.param('token');
+      const rdmpId = req.param('rdmpId');
+      const creation = req.param('creation');
+
+      let workspaceId = '';
+      const namespace = creation.group + '/' + creation.name;
+
+      return WSGitlabService
+      .user(token)
+      .flatMap(response => {
+        //I'm not saving into mongo because the way to authorize is by login,
+        //once we have the login token we dont ask anymore, until that token is invalid
+        //It could be a reason/I might be wrong about saving the ID of the gitlab user?
+        sails.log.debug('get gitlab user');
+        return WSGitlabService.create(token, response.id, creation)
+      })
+      .subscribe(response => {
+        sails.log.debug('updateRecordMeta');
+        this.ajaxOk(req, res, null, response);
+      }, error => {
+        sails.log.error(error);
+        const errorMessage = `Failed to create workspace with: ${namespace} : ${JSON.stringify(error)}` ;
+        sails.log.error(errorMessage);
+        this.ajaxFail(req, res, errorMessage);
+      });
+    }
+
+    project(req, res) {
+      const token = req.param('token');
+      const pathWithNamespace = req.param('pathWithNamespace');
+
+      return WSGitlabService
+      .project(token, pathWithNamespace)
+      .subscribe(response => {
+        sails.log.debug('project');
+        this.ajaxOk(req, res, null, response);
+      }, error => {
+        sails.log.error(error);
+        const errorMessage = `Failed to check project with: ${pathWithNamespace} : ${JSON.stringify(error)}` ;
+        sails.log.error(errorMessage);
+        this.ajaxFail(req, res, errorMessage);
+      });
     }
 
   }

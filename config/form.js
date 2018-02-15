@@ -1259,16 +1259,17 @@ module.exports.form = {
             name: 'workspaces',
             permissionStep1: 'The provisioner requires permission to create a workspace on your behalf',
             permissionStep2: 'Stash is requesting from GitLab the following permissions:',
-            permissionRevoke: 'The permissions for this service will be removed. You will require to grant permissions to this service again.',
+            permissionRevoke: 'The permissions for this service will be removed. You will require to grant permissions to GitLab again.',
             permissionList: [
                 'Create Repositories',
                 'Write information into your repositories'
               ],
+            revokeMessage: 'Revoke Login Consent',
             backToRDMP: 'Back to your Plan',
             columns: [
               {'label': 'Name', 'property': 'name'},
-              {'label': 'Location', 'property': 'web_url'},
               {'label': 'Description', 'property': 'description'},
+              {'label': 'Location', 'property': 'web_url'}
             ]
           }
         }
