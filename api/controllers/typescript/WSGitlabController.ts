@@ -1,6 +1,8 @@
 declare var module;
 declare var sails, Model;
 import {Observable} from 'rxjs/Rx';
+import 'rxjs/add/operator/map';
+const url = require('url');
 
 declare var WSGitlabService;
 /**
@@ -27,7 +29,8 @@ export module Controllers {
       'checkRepo',
       'revokeToken',
       'create',
-      'project'
+      'project',
+      'projectsRelatedRecord'
     ];
 
     public token(req, res) {
@@ -97,10 +100,8 @@ export module Controllers {
       sails.log.debug('get projects');
 
       const token = req.param('token');
-
-      const obs = WSGitlabService.projects(token);
-
-      obs.subscribe(response => {
+      WSGitlabService.projects(token)
+      .subscribe(response => {
         response.status = true;
         this.ajaxOk(req, res, null, response);
       }, error => {
@@ -109,8 +110,44 @@ export module Controllers {
         sails.log.error(errorMessage);
         this.ajaxFail(req, res, errorMessage);
       });
-
     }
+
+    public projectsRelatedRecord(req, res) {
+      sails.log.debug('get related projects');
+
+      const token = req.param('token');
+      let currentProjects = [];
+      let projectsWithInfo = [];
+
+      WSGitlabService.projects(token)
+      .flatMap(response => {
+        let obs = [];
+        currentProjects = response.slice(0);
+        for (let r of currentProjects) {
+          obs.push(WSGitlabService.readFileFromRepo(token, r.path_with_namespace, 'stash.workspace'));
+        }
+        return Observable.merge(...obs);
+      })
+      .subscribe(response => {
+        const parsedResponse = this.parseResponseFromRepo(response);
+        projectsWithInfo.push({
+          path: parsedResponse.path,
+          info: parsedResponse.content ? this.workspaceInfoFromRepo(parsedResponse.content) : {}
+        });
+      }, error => {
+        const errorMessage = `Failed to get projectsRelatedRecord for token: ${token}`;
+        sails.log.debug(errorMessage);
+        this.ajaxFail(req, res, errorMessage);
+      }, () => {
+        sails.log.debug('complete');
+        currentProjects.map(p => {
+          p.rdmp = projectsWithInfo.find(pwi => pwi.path === p.path_with_namespace);
+        });
+        this.ajaxOk(req, res, null, currentProjects);
+      });
+    }
+
+
 
     public link(req, res) {
       sails.log.debug('get link');
@@ -128,7 +165,7 @@ export module Controllers {
       .flatMap(response => {
         workspaceId = response.oid;
         sails.log.debug('addWorkspaceInfo');
-        return WSGitlabService.addWorkspaceInfo(token, projectId, workspaceId + '.' + rdmpId, 'stash.workspace');
+        return WSGitlabService.addWorkspaceInfo(token, projectId, rdmpId + '.' + workspaceId, 'stash.workspace');
       })
       .flatMap(response => {
         sails.log.debug('addParentRecordLink');
@@ -137,7 +174,6 @@ export module Controllers {
       .flatMap(recordMetadata => {
         sails.log.debug('recordMetadata');
         if(recordMetadata && recordMetadata.workspaces) {
-          sails.log.debug(recordMetadata);
           const wss = recordMetadata.workspaces.find(id => workspaceId === id);
           if(!wss) {
             recordMetadata.workspaces.push({id: workspaceId});
@@ -161,23 +197,18 @@ export module Controllers {
       const token = req.param('token');
       const projectNameSpace = req.param('projectNameSpace');
 
-      sails.log.debug('checkLink:readFileFromRepo');
-      let workspaceId = '';
-
       return WSGitlabService.readFileFromRepo(token, projectNameSpace, 'stash.workspace')
-      .subscribe(fileContent => {
+      .subscribe(response => {
         sails.log.debug('checkLink:getRecordMeta');
-        const wI = this.workspaceInfoFromRepo(fileContent.content);
+        const parsedResponse = this.parseResponseFromRepo(response);
+        const wI = parsedResponse.content ? this.workspaceInfoFromRepo(parsedResponse.content) : {rdmp: null, workspace: null};
+        sails.log.debug(wI);
         this.ajaxOk(req, res, null, wI);
       }, error => {
         sails.log.error(error);
         const errorMessage = `Failed check link workspace project: ${projectNameSpace} : ${JSON.stringify(error)}` ;
         sails.log.error(error.message);
-        if(error.StatusCodeError === 404 && error.StatusCodeError.match(/file not found/gi)){
-          this.ajaxOk(req, res, null, '');
-        }else {
-          this.ajaxFail(req, res, null, errorMessage);
-        }
+        this.ajaxFail(req, res, null, errorMessage);
       });
     }
 
@@ -207,18 +238,7 @@ export module Controllers {
       });
     }
 
-    workspaceInfoFromRepo(content: string) {
-      const workspaceLink = Buffer.from(content, 'base64').toString('ascii');
-      sails.log.debug(workspaceLink);
-      if(workspaceLink) {
-        const workspaceInfo = workspaceLink.split('.');
-        return {rdmp: _.first(workspaceInfo), workspace: _.last(workspaceInfo)};
-      } else{
-        return undefined;
-      }
-    }
-
-    create(req, res) {
+    public create(req, res) {
       const token = req.param('token');
       const rdmpId = req.param('rdmpId');
       const creation = req.param('creation');
@@ -246,7 +266,7 @@ export module Controllers {
       });
     }
 
-    project(req, res) {
+    public project(req, res) {
       const token = req.param('token');
       const pathWithNamespace = req.param('pathWithNamespace');
 
@@ -261,6 +281,30 @@ export module Controllers {
         sails.log.error(errorMessage);
         this.ajaxFail(req, res, errorMessage);
       });
+    }
+
+    workspaceInfoFromRepo(content: string) {
+      const workspaceLink = Buffer.from(content, 'base64').toString('ascii');
+      if(workspaceLink) {
+        const workspaceInfo = workspaceLink.split('.');
+        return {rdmp: _.first(workspaceInfo), workspace: _.last(workspaceInfo)};
+      } else{
+        return {rdmp: null, workspace: null};
+      }
+    }
+
+    parseResponseFromRepo(response) {
+      const result = {content: null, path:''};
+      if(response.body && response.body.content) {
+        result.content = response.body.content;
+        var url_parts = url.parse(response.request.uri.href, true);
+        var query = url_parts.query;
+        result.path = query.namespace;
+      } else {
+        result.content = null;
+        result.path = response.path;
+      }
+      return result;
     }
 
   }

@@ -89,7 +89,7 @@ export class WSGitlabField extends FieldBase<any> {
       this.user = user;
       this.wsUser.set(user);
       if(this.wsUser.token) {
-        this.getWorkspaces();
+        this.getWorkspacesRelated();
       }
     });
   }
@@ -121,14 +121,19 @@ export class WSGitlabField extends FieldBase<any> {
       .catch(e => console.log(e));
   }
 
+  getWorkspacesRelated() {
+      this.wsGitlabService.projectsRelatedRecord(this.wsUser.token)
+      .then(w => {this.workspaces = w})
+      .catch(e => console.log(e));
+  }
+
   // LinkWorkspace will first check links in RDMP and master branch of gitlab projects
   // Then, it will add link if there is not one in it
   linkWorkspace(projectId: number) {
   jQuery('#gitlabLinkModal').modal('show');
   this.currentWorkspace = _.find(this.workspaces, {id: projectId});
-  this.wsGitlabService.checkRepo(this.wsUser.token, this.rdmp)
+  this.wsGitlabService.checkRepo(this.wsUser.token, this.currentWorkspace.path_with_namespace)
   .then(response => {
-    console.log(response);
     if(!response.ws) {
       this.checks.master = true;
       return this.createLink(this.currentWorkspace.id);
@@ -229,7 +234,7 @@ allow() {
         if (response && response.status) {
           console.log('id: ' + response.id);
           this.wsUser.id = response.id;
-          this.getWorkspaces();
+          this.getWorkspacesRelated();
         } else {
           console.log('error geting user : ' + response.message);
         }

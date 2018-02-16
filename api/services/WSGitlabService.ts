@@ -120,12 +120,20 @@ export module Services {
     }
 
     readFileFromRepo(token: string, projectNameSpace: string, filePath: string) {
-      projectNameSpace = encodeURIComponent(projectNameSpace);
+      const encodeProjectNameSpace = encodeURIComponent(projectNameSpace);
       const get = request({
-        uri: this.config.host + `/api/v4/projects/${projectNameSpace}/repository/files/${filePath}?ref=master&access_token=${token}`,
-        json: true
+        uri: this.config.host + `/api/v4/projects/${encodeProjectNameSpace}/repository/files/${filePath}?ref=master&access_token=${token}&namespace=${encodeProjectNameSpace}`,
+        json: true,
+        method: 'GET',
+        resolveWithFullResponse: true
       });
-      return Observable.fromPromise(get);
+      return Observable.fromPromise(get).catch(error => {
+        if(error.statusCode === 404 || error.statusCode === 403) {
+          return Observable.of({path: projectNameSpace, content: {}});
+        } else {
+          return Observable.throw(error);
+        }
+      });
     }
 
     create(token: string, id: string, creation: any) {

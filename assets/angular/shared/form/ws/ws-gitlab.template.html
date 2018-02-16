@@ -35,20 +35,24 @@
               <ng-template #noProcessing><span >{{ item[column.property] }}</span></ng-template>
             </td></ng-container>
             <td>
-              <span *ngIf="item.isLinked; else isNotLinked ">
-                <button disabled type="button" class="btn btn-info"> Linked </button>
+              <span *ngIf="item.rdmp.info && item.rdmp.info.rdmp; else isNotLinked ">
+                <button disabled type="button" class="btn btn-success" *ngIf="item.rdmp.info.rdmp === field.rdmp"> Linked </button>
+                <button disabled type="button" class="btn btn-info" *ngIf="item.rdmp.info.rdmp != field.rdmp"> Linked to another RDMP</button>
               </span>
               <ng-template #isNotLinked>
-                <button type="button" class="btn btn-info" (click)="field.linkWorkspace(item.id)"> Check Link </button>
+                <button type="button" class="btn btn-info" (click)="field.linkWorkspace(item.id)"> Link </button>
               </ng-template>
             </td>
           </tr>
         </tbody>
       </table>
       <div>
-        <button type="button" class="btn btn-default" (click)="field.getWorkspaces()"><i class="fa fa-refresh"></i>&nbsp;Sync</button>
+        <button type="button" class="btn btn-default" (click)="field.getWorkspacesRelated()"><i class="fa fa-refresh"></i>&nbsp;Sync</button>
         <button type="button" class="btn btn-success" (click)="field.createWorkspace()"><i class="fa fa-plus-square"></i>&nbsp;Create</button>
       </div>
+    </div>
+    <div style="display:none">
+      <button type="button" class="btn btn-default" (click)="field.getWorkspacesRelated()"><i class="fa fa-refresh"></i>&nbsp;Sync</button>
     </div>
     <div *ngIf="field.wsUser.token" class="row mt-3 form-group">
       <button type="button" class="btn btn-danger" (click)="field.revokeModal()">{{ field.revokeMessage }}</button>
