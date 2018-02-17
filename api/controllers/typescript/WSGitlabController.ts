@@ -240,21 +240,13 @@ export module Controllers {
 
     public create(req, res) {
       const token = req.param('token');
-      const rdmpId = req.param('rdmpId');
       const creation = req.param('creation');
 
       let workspaceId = '';
       const namespace = creation.group + '/' + creation.name;
 
       return WSGitlabService
-      .user(token)
-      .flatMap(response => {
-        //I'm not saving into mongo because the way to authorize is by login,
-        //once we have the login token we dont ask anymore, until that token is invalid
-        //It could be a reason/I might be wrong about saving the ID of the gitlab user?
-        sails.log.debug('get gitlab user');
-        return WSGitlabService.create(token, response.id, creation)
-      })
+      .create(token, creation)
       .subscribe(response => {
         sails.log.debug('updateRecordMeta');
         this.ajaxOk(req, res, null, response);

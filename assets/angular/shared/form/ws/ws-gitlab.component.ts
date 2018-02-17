@@ -116,15 +116,15 @@ export class WSGitlabField extends FieldBase<any> {
   }
 
   getWorkspaces() {
-      this.wsGitlabService.projects(this.wsUser.token)
-      .then(w => this.workspaces = w)
-      .catch(e => console.log(e));
+    this.wsGitlabService.projects(this.wsUser.token)
+    .then(w => this.workspaces = w)
+    .catch(e => console.log(e));
   }
 
   getWorkspacesRelated() {
-      this.wsGitlabService.projectsRelatedRecord(this.wsUser.token)
-      .then(w => {this.workspaces = w})
-      .catch(e => console.log(e));
+    this.wsGitlabService.projectsRelatedRecord(this.wsUser.token)
+    .then(w => {this.workspaces = w})
+    .catch(e => console.log(e));
   }
 
   // LinkWorkspace will first check links in RDMP and master branch of gitlab projects
@@ -136,7 +136,10 @@ export class WSGitlabField extends FieldBase<any> {
   .then(response => {
     if(!response.ws) {
       this.checks.master = true;
-      return this.createLink(this.currentWorkspace.id);
+      return this.createLink(this.currentWorkspace.id)
+      .then(response => {
+        this.checks.rdmp = true;
+      });
     }else {
       return this.wsGitlabService.compareLink(this.rdmp, this.currentWorkspace.path_with_namespace)
     }
@@ -163,50 +166,36 @@ createWorkspace() {
 }
 
 create() {
-  //TODO: check the namespace what is needed here
+  this.creation.message = 'creating workspace';
   console.log(this.creation)
-  // this.wsGitlabService.createWorkspace(this.wsUser.token, this.rdmp, this.creation)
-  // .then(response => {
-  //   debugger;
-  //   return this.checkCreation().delay(3000);
-  // })
-  // .catch(error => {
-  //   console.log(error);
-  // })
+  this.wsGitlabService.createWorkspace(this.wsUser.token, this.creation)
+  .then(response => {
+    return this.checkCreation();
+  }).then(response => {
+    this.creation.message = 'linking workspace';
+    return this.createLink(response.id)
+    .then(response => {
+      this.creation.message = 'workspace created and linked';
+    });
+  })
+  .catch(error => {
+    console.log(error);
+  })
 }
 
 checkCreation() {
   let pathWithNamespace = '';
-  if(this.creation.isGroup){
-    pathWithNamespace = this.creation.group + '/' + this.creation.name;
-  }else {
-    pathWithNamespace = this.creation.name;
-  }
-  return this.wsGitlabService
-  .project(this.wsUser.token, pathWithNamespace)
-  .then(response => {
-    console.log(response);
-  })
-  .catch(error => {
-    console.log(error);
-  })
+  pathWithNamespace = this.creation.group + '/' + this.creation.name;
+  return this.wsGitlabService.project(this.wsUser.token, pathWithNamespace);
 }
 
 checkName(){
-
+  //TODO: check workspace name if it is available
 }
 
 createLink(projectId: number) {
-  this.wsGitlabService
+  return this.wsGitlabService
   .link(this.wsUser.token, this.rdmp, projectId, this.currentWorkspace)
-  .then(response => {
-    this.checks.rdmp = true;
-    //   console.log(response);
-    //   this.backToRDMP();
-  })
-  .catch(error => {
-    console.log(error);
-  })
 }
 
 onLogin() {

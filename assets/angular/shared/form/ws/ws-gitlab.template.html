@@ -135,9 +135,9 @@
             <form *ngIf="!field.creation.created" #form="ngForm" (ngSubmit)="field.checkName()" novalidate autocomplete="off">
               <div class="form-group">
                 <h4>Select Space</h4>
-                <select class="form-control" [(ngModel)]="field.creation.namespace" name="creationNamespace">
-                  <option *ngFor="let g of field.groups" [value]="g.namespace"
-                  [selected]="g.name == field.creation.namespace">{{g.name }}</option>
+                <select class="form-control" [(ngModel)]="field.creation.group" name="creationNamespace">
+                  <option *ngFor="let g of field.groups" [value]="g.name"
+                  [selected]="field.creation.group === g.name">{{ g.name }}</option>
                 </select>
               </div>
               <div class="form-group">
@@ -165,12 +165,12 @@
                 <h4>Select Template</h4>
                 <select class="form-control" [(ngModel)]="field.creation.template" name="creationTemplate">
                   <option *ngFor="let t of field.templates" [value]="t.pathWithNamespace"
-                  [selected]="t.pathWithNamespace == field.creation.template">{{ t.pathWithNamespace || 'No Template' }}</option>
+                  [selected]="field.creation.template === t.pathWithNamespace">{{ t.pathWithNamespace || 'No Template' }}</option>
                 </select>
               </div>
               <div class="form-group">
-                <div *ngIf="field.creation.message" class="alert alert-{{ field.loginMessageForm.class }}" class="form-group">
-                  {{ null }}
+                <div *ngIf="field.creation.message" class="alert alert-{{ field.creation.createdClass }}" class="form-group">
+                  {{ field.creation.message }}
                 </div>
               </div>
               <button class="btn btn-primary" type="submit">Create</button>

@@ -136,9 +136,8 @@ export module Services {
       });
     }
 
-    create(token: string, id: string, creation: any) {
+    create(token: string, creation: any) {
       const body = {
-        user_id: id,
         name: creation.name,
         description: creation.description
       };

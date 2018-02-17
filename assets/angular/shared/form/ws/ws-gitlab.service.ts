@@ -2,6 +2,7 @@ import {Injectable, Inject} from '@angular/core';
 import {BaseService} from "../../base-service";
 import {Http} from '@angular/http';
 import 'rxjs/add/operator/toPromise';
+import 'rxjs/add/operator/delay';
 import {Observable} from 'rxjs/Observable';
 import {ConfigService} from "../../config-service";
 
@@ -153,12 +154,12 @@ export class WSGitlabService extends BaseService {
     });
   }
 
-  createWorkspace(token: string, rdmpId: string, creation: any) {
+  createWorkspace(token: string, creation: any) {
     const wsUrl = this.brandingAndPortalUrl + '/ws/gitlab/create';
     //TODO: check namespace when creation
     return this.http.post(
       wsUrl,
-      {token: token, rdmpId: rdmpId, creation: creation},
+      {token: token, creation: creation},
       this.options
     )
     .toPromise()
@@ -176,6 +177,7 @@ export class WSGitlabService extends BaseService {
       {token: token, pathWithNamespace: pathWithNamespace},
       this.options
     )
+    .delay(5000)
     .toPromise()
     .then((res: any) => {
       console.log(res);
