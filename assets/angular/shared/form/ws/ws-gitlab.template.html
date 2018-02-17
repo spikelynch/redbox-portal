@@ -149,11 +149,6 @@
                 <input type="text" class="form-control" name="description" [(ngModel)]="field.creation.description">
               </div>
               <div class="form-group">
-                <div *ngIf="field.creation.message" class="alert alert-{{ field.loginMessageForm.class }}" class="form-group">
-                  {{ null }}
-                </div>
-              </div>
-              <div class="form-group">
                 <button disabled class="btn btn-primary" type="submit">Check Name</button>
               </div>
               <div class="form-group">
@@ -169,8 +164,14 @@
                 </select>
               </div>
               <div class="form-group">
-                <div *ngIf="field.creation.message" class="alert alert-{{ field.creation.createdClass }}" class="form-group">
-                  {{ field.creation.message }}
+                <div *ngIf="field.creation.message" class="alert alert-{{ field.creation.creationAlert }}" class="form-group">
+                  <span *ngIf="field.creation.creationAlert == 'danger' || field.creation.creationAlert == 'success'; then isDone; else isSpinning"></span>{{ field.creation.message }}
+                  <ng-template #isDone>
+                    <i class="fa fa-check-circle"></i>
+                  </ng-template>
+                  <ng-template #isSpinning>
+                    <i class="fa fa-spinner fa-spin"></i>
+                  </ng-template>
                 </div>
               </div>
               <button class="btn btn-primary" type="submit">Create</button>

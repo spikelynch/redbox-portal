@@ -166,19 +166,23 @@ createWorkspace() {
 }
 
 create() {
-  this.creation.message = 'creating workspace';
+  this.creation.message = 'Creating workspace';
+  this.creation.creationAlert = 'info';
   console.log(this.creation)
   this.wsGitlabService.createWorkspace(this.wsUser.token, this.creation)
   .then(response => {
     return this.checkCreation();
   }).then(response => {
-    this.creation.message = 'linking workspace';
+    this.creation.message = 'Linking workspace';
+    this.creation.creationAlert = 'warning';
     return this.createLink(response.id)
     .then(response => {
-      this.creation.message = 'workspace created and linked';
+      this.creation.message = 'Workspace created and linked';
+      this.creation.creationAlert = 'success';
     });
   })
   .catch(error => {
+    this.creation.creationAlert = 'danger';
     console.log(error);
   })
 }
@@ -321,6 +325,7 @@ class Creation {
   created: boolean = false;
   name: string;
   namespace: string;
+  creationAlert: string;
   blank: boolean = true;
   template: string;
   description: string;
