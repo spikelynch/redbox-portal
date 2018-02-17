@@ -156,13 +156,17 @@ export class WSGitlabField extends FieldBase<any> {
 }
 
 createWorkspace() {
-  const group1 = {id: '2', name: '135553'};
-  const group2 = {id: '7', name: 'open-source'};
-  this.groups = [group1, group2];
+  const group1 = {id: this.wsUser.id, path: this.wsUser.username};
+  this.groups = [group1];
   const template1 = {pathWithNamespace: undefined};
   const template2 = {pathWithNamespace: 'open-source/template'};
   this.templates = [template1, template2]
-  jQuery('#gitlabCreateModal').modal('show');
+  this.wsGitlabService.groups(this.wsUser.token)
+  .then(response => {
+    this.groups = this.groups.concat(response);
+    jQuery('#gitlabCreateModal').modal('show');
+  });
+
 }
 
 create() {
@@ -183,6 +187,7 @@ create() {
   })
   .catch(error => {
     this.creation.creationAlert = 'danger';
+    this.creation.message = 'There was a problem creating and linking your workspace';
     console.log(error);
   })
 }
@@ -227,6 +232,7 @@ allow() {
         if (response && response.status) {
           console.log('id: ' + response.id);
           this.wsUser.id = response.id;
+          this.wsUser.username = response.username;
           this.getWorkspacesRelated();
         } else {
           console.log('error geting user : ' + response.message);
@@ -294,11 +300,14 @@ export class WSGitlabComponent extends SimpleComponent {
 class WSUser {
   token: string = null;
   id: number;
+  username: string;
 
   set(user: any) {
     if(user.accessToken && user.accessToken.gitlab) {
-      const accessInfo = user.accessToken.gitlab.access;
-      this.token = accessInfo.access_token;
+      const gitlab = user.accessToken.gitlab;
+      this.token = gitlab.accessToken.access_token;
+      this.username = gitlab.user.username;
+      this.id = gitlab.user.id;
     }
   }
 }

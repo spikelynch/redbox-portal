@@ -136,8 +136,8 @@
               <div class="form-group">
                 <h4>Select Space</h4>
                 <select class="form-control" [(ngModel)]="field.creation.group" name="creationNamespace">
-                  <option *ngFor="let g of field.groups" [value]="g.name"
-                  [selected]="field.creation.group === g.name">{{ g.name }}</option>
+                  <option *ngFor="let g of field.groups" [value]="field.creation.group"
+                  [selected]="field.creation.group === g.path">{{ g.path }}</option>
                 </select>
               </div>
               <div class="form-group">
@@ -159,7 +159,7 @@
               <div class="form-group">
                 <h4>Select Template</h4>
                 <select class="form-control" [(ngModel)]="field.creation.template" name="creationTemplate">
-                  <option *ngFor="let t of field.templates" [value]="t.pathWithNamespace"
+                  <option *ngFor="let t of field.templates" [value]="field.creation.template"
                   [selected]="field.creation.template === t.pathWithNamespace">{{ t.pathWithNamespace || 'No Template' }}</option>
                 </select>
               </div>

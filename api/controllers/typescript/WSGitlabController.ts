@@ -30,7 +30,8 @@ export module Controllers {
       'revokeToken',
       'create',
       'project',
-      'projectsRelatedRecord'
+      'projectsRelatedRecord',
+      'groups'
     ];
 
     public token(req, res) {
@@ -40,11 +41,22 @@ export module Controllers {
       const password = req.param('password');
       const user = req.param('user');
 
-      const obs = WSGitlabService.token(username, password);
+      let accessToken = {};
 
-      obs.flatMap(response => {
+      WSGitlabService.token(username, password)
+      .flatMap(response => {
         sails.log.debug('token');
-        return WSGitlabService.updateUser(user, response, username);
+        sails.log.debug(response);
+        accessToken = response;
+        return WSGitlabService.user(accessToken.access_token);
+      }).flatMap(response => {
+        sails.log.debug('user');
+        sails.log.debug(response);
+        const gitlabUser = {
+          username: response.username,
+          id: response.id
+        };
+        return WSGitlabService.updateUser(user, {user: gitlabUser, accessToken: accessToken});
       })
       .subscribe(response => {
         sails.log.debug('updateUser');
@@ -270,6 +282,21 @@ export module Controllers {
       }, error => {
         sails.log.error(error);
         const errorMessage = `Failed to check project with: ${pathWithNamespace} : ${JSON.stringify(error)}` ;
+        sails.log.error(errorMessage);
+        this.ajaxFail(req, res, errorMessage);
+      });
+    }
+
+    public groups(req, res) {
+      const token = req.param('token');
+
+      return WSGitlabService.groups(token)
+      .subscribe(response => {
+        sails.log.debug('groups');
+        this.ajaxOk(req, res, null, response);
+      }, error => {
+        sails.log.error(error);
+        const errorMessage = `Failed to get groups : ${JSON.stringify(error)}` ;
         sails.log.error(errorMessage);
         this.ajaxFail(req, res, errorMessage);
       });

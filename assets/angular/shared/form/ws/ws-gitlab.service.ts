@@ -185,4 +185,19 @@ export class WSGitlabService extends BaseService {
     });
   }
 
+  groups(token: string) {
+    const wsUrl = this.brandingAndPortalUrl + '/ws/gitlab/groups';
+    //TODO: check namespace when creation
+    return this.http.post(
+      wsUrl,
+      {token: token},
+      this.options
+    )
+    .toPromise()
+    .then((res: any) => {
+      console.log(res);
+      return this.extractData(res);
+    });
+  }
+
 }
