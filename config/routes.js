@@ -200,6 +200,6 @@ module.exports.routes = {
   'post /:branding/:portal/ws/gitlab/checkRepo': 'typescript/WSGitlabController.checkRepo',
   'post /:branding/:portal/ws/gitlab/create': 'typescript/WSGitlabController.create',
   'post /:branding/:portal/ws/gitlab/project': 'typescript/WSGitlabController.project',
-  'post /:branding/:portal/ws/gitlab/groups': 'typescript/WSGitlabController.groups',
+  'get /:branding/:portal/ws/gitlab/groups': 'typescript/WSGitlabController.groups',
   'get /:branding/:portal/ws/gitlab/templates': 'typescript/WSGitlabController.templates'
 };

@@ -160,7 +160,7 @@ createWorkspace() {
   this.groups = [group1];
   const template1 = {pathWithNamespace: undefined};
   this.templates = [template1]
-  this.wsGitlabService.groups(this.wsUser.token)
+  this.wsGitlabService.groups()
   .then(response => {
     this.groups = this.groups.concat(response);
     return this.wsGitlabService.templates();

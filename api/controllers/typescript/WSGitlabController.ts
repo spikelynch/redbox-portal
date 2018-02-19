@@ -313,18 +313,24 @@ export module Controllers {
     }
 
     public groups(req, res) {
-      const token = req.param('token');
-
-      return WSGitlabService.groups(token)
-      .subscribe(response => {
-        sails.log.debug('groups');
-        this.ajaxOk(req, res, null, response);
-      }, error => {
-        sails.log.error(error);
-        const errorMessage = `Failed to get groups : ${JSON.stringify(error)}` ;
-        sails.log.error(errorMessage);
-        this.ajaxFail(req, res, errorMessage);
-      });
+      if (!req.isAuthenticated()) {
+        this.ajaxFail(req, res, `User not authenticated`);
+      } else {
+        const userId = req.user.id;
+        return WSGitlabService.userInfo(userId)
+        .flatMap(user => {
+          const gitlab = user.accessToken.gitlab;
+          return WSGitlabService.groups(gitlab.accessToken.access_token)
+        }).subscribe(response => {
+          sails.log.debug('groups');
+          this.ajaxOk(req, res, null, response);
+        }, error => {
+          sails.log.error(error);
+          const errorMessage = `Failed to get groups : ${JSON.stringify(error)}` ;
+          sails.log.error(errorMessage);
+          this.ajaxFail(req, res, errorMessage);
+        });
+      }
     }
 
     workspaceInfoFromRepo(content: string) {
