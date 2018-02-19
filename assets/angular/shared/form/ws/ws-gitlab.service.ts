@@ -200,4 +200,17 @@ export class WSGitlabService extends BaseService {
     });
   }
 
+  templates() {
+    const wsUrl = this.brandingAndPortalUrl + '/ws/gitlab/templates';
+    //TODO: check namespace when creation
+    return this.http.get(
+      wsUrl,
+      this.options
+    )
+    .toPromise()
+    .then((res: any) => {
+      console.log(res);
+      return this.extractData(res);
+    });
+  }
 }

@@ -31,7 +31,8 @@ export module Controllers {
       'create',
       'project',
       'projectsRelatedRecord',
-      'groups'
+      'groups',
+      'templates'
     ];
 
     public token(req, res) {
@@ -285,6 +286,30 @@ export module Controllers {
         sails.log.error(errorMessage);
         this.ajaxFail(req, res, errorMessage);
       });
+    }
+
+    public templates(req, res) {
+      if (!req.isAuthenticated()) {
+        this.ajaxFail(req, res, `User not authenticated`);
+      } else {
+        const userId = req.user.id;
+        return WSGitlabService.userInfo(userId)
+        .flatMap(user => {
+          const gitlab = user.accessToken.gitlab;
+          return WSGitlabService.templates(gitlab.accessToken.access_token, 'provisioner_template');
+        }).subscribe(response => {
+          let simple = [];
+          if(response.value){
+            simple = response.value.map(p => {return {id: p.id, pathWithNamespace: p.path_with_namespace}});
+          }
+          this.ajaxOk(req, res, null, simple);
+        }, error => {
+          sails.log.error(error);
+          const errorMessage = `Failed to check templates : ${JSON.stringify(error)}` ;
+          sails.log.error(errorMessage);
+          this.ajaxFail(req, res, errorMessage);
+        });
+      }
     }
 
     public groups(req, res) {

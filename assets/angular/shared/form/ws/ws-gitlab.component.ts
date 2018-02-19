@@ -159,11 +159,13 @@ createWorkspace() {
   const group1 = {id: this.wsUser.id, path: this.wsUser.username};
   this.groups = [group1];
   const template1 = {pathWithNamespace: undefined};
-  const template2 = {pathWithNamespace: 'open-source/template'};
-  this.templates = [template1, template2]
+  this.templates = [template1]
   this.wsGitlabService.groups(this.wsUser.token)
   .then(response => {
     this.groups = this.groups.concat(response);
+    return this.wsGitlabService.templates();
+  }).then(response => {
+    this.templates = this.templates.concat(response);
     jQuery('#gitlabCreateModal').modal('show');
   });
 

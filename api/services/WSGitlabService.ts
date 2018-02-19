@@ -26,7 +26,9 @@ export module Services {
       'revokeToken',
       'create',
       'project',
-      'groups'
+      'groups',
+      'templates',
+      'userInfo'
     ];
 
     config: any;
@@ -34,6 +36,7 @@ export module Services {
     recordType: string;
     formName: string;
     brandingAndPortalUrl: string;
+    parentRecord: string;
     bearer: string;
     redboxHeaders: {};
 
@@ -42,6 +45,7 @@ export module Services {
       this.config = sails.config.local.workspaces.gitlab;
       this.recordType = 'workspace';
       this.formName = 'workspace';
+      this.parentRecord = 'rdmp';
       //TODO: get the brand url with config service
       this.brandingAndPortalUrl = 'http://localhost:1500/default/rdmp';
       this.bearer = 'Bearer 123123';
@@ -170,11 +174,26 @@ export module Services {
       });
       return Observable.fromPromise(get);
     }
+
+    templates(token: string, templateTag: string) {
+      const get = request({
+        uri: this.config.host + `/api/v4/projects?access_token=${token}`,
+        json: true
+      });
+      return get
+      .then(response => {
+        const templates = response.filter(o => o.tag_list.find(t => t === templateTag));
+        return Observable.of(templates);
+      }).catch(error => {
+        return Observable.throw(error);
+      });
+    }
+
     //**REDBOX-PORTAL**//
 
     updateUser(user: any, gitlab: any) {
+      //TODO: Update without removing other accessTokens.
       return super.getObservable(
-        //TODO: Update without removing other accessTokens.
         User.update({username: user.username},
           {accessToken: { gitlab: gitlab}}
         )
@@ -189,44 +208,50 @@ export module Services {
     );
   }
 
+  userInfo(userId: string) {
+    return super.getObservable(
+      User.findOne({ id: userId })
+    )
+  }
+
   createWorkspaceRecord(workspace: any, workflowStage: string) {
     //TODO: how to get the workflowStage??
     const post = request({
-      uri: this.brandingAndPortalUrl + `/api/records/metadata/${this.recordType}`,
-      method: 'POST',
-      body: {
-        metadata: {
-          title: workspace.path_with_namespace,
-          description: workspace.description,
-          type: "GitLab"
-        },
-        workflowStage: workflowStage
+    uri: this.brandingAndPortalUrl + `/api/records/metadata/${this.recordType}`,
+    method: 'POST',
+    body: {
+      metadata: {
+        title: workspace.path_with_namespace,
+        description: workspace.description,
+        type: "GitLab"
       },
-      json: true,
-      headers: this.redboxHeaders
-    });
-    return Observable.fromPromise(post);
-  }
+      workflowStage: workflowStage
+    },
+    json: true,
+    headers: this.redboxHeaders
+  });
+  return Observable.fromPromise(post);
+}
 
-  getRecordMeta(rdmp: string) {
-    const get = request({
-      uri: this.brandingAndPortalUrl + '/api/records/metadata/' + rdmp,
-      headers: this.redboxHeaders,
-      json: true
-    });
-    return Observable.fromPromise(get);
-  }
+getRecordMeta(rdmp: string) {
+  const get = request({
+    uri: this.brandingAndPortalUrl + '/api/records/metadata/' + rdmp,
+    headers: this.redboxHeaders,
+    json: true
+  });
+  return Observable.fromPromise(get);
+}
 
-  updateRecordMeta(record: any, id: string) {
-    const post = request({
-      uri: this.brandingAndPortalUrl + '/api/records/metadata/' + id,
-      method: 'PUT',
-      body: record,
-      json: true,
-      headers: this.redboxHeaders
-    });
-    return Observable.fromPromise(post);
-  }
+updateRecordMeta(record: any, id: string) {
+  const post = request({
+    uri: this.brandingAndPortalUrl + '/api/records/metadata/' + id,
+    method: 'PUT',
+    body: record,
+    json: true,
+    headers: this.redboxHeaders
+  });
+  return Observable.fromPromise(post);
+}
 
 }
 
