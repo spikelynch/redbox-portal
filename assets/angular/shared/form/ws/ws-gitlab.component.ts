@@ -116,7 +116,7 @@ export class WSGitlabField extends FieldBase<any> {
   }
 
   getWorkspaces() {
-    this.wsGitlabService.projects(this.wsUser.token)
+    this.wsGitlabService.projects()
     .then(w => this.workspaces = w)
     .catch(e => console.log(e));
   }

@@ -194,7 +194,7 @@ module.exports.routes = {
   'post /:branding/:portal/ws/gitlab/token': 'typescript/WSGitlabController.token',
   'get /:branding/:portal/ws/gitlab/revokeToken': 'typescript/WSGitlabController.revokeToken',
   'get /:branding/:portal/ws/gitlab/user': 'typescript/WSGitlabController.user',
-  'post /:branding/:portal/ws/gitlab/projects': 'typescript/WSGitlabController.projects',
+  'get /:branding/:portal/ws/gitlab/projects': 'typescript/WSGitlabController.projects',
   'post /:branding/:portal/ws/gitlab/projectsRelatedRecord': 'typescript/WSGitlabController.projectsRelatedRecord',
   'post /:branding/:portal/ws/gitlab/link': 'typescript/WSGitlabController.link',
   'post /:branding/:portal/ws/gitlab/checkRepo': 'typescript/WSGitlabController.checkRepo',

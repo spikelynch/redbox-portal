@@ -65,10 +65,11 @@ export class WSGitlabService extends BaseService {
     });
   }
 
-  projects(token: string) {
+  projects() {
     const wsUrl = this.brandingAndPortalUrl + '/ws/gitlab/projects';
-    return this.http.post(
-      wsUrl, {token: token}, this.options
+    return this.http.get(
+      wsUrl,
+      this.options
     )
     .toPromise()
     .then((res: any) => {

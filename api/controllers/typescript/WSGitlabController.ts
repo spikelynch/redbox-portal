@@ -130,18 +130,25 @@ export module Controllers {
 
     public projects(req, res) {
       sails.log.debug('get projects');
-
-      const token = req.param('token');
-      WSGitlabService.projects(token)
-      .subscribe(response => {
-        response.status = true;
-        this.ajaxOk(req, res, null, response);
-      }, error => {
-        sails.log.error(error);
-        const errorMessage = `Failed to get projects for token: ${token}`;
-        sails.log.error(errorMessage);
-        this.ajaxFail(req, res, errorMessage);
-      });
+      if (!req.isAuthenticated()) {
+        this.ajaxFail(req, res, `User not authenticated`);
+      } else {
+        const userId = req.user.id;
+        return WSGitlabService
+        .userInfo(userId)
+        .flatMap(user => {
+          const gitlab = user.accessToken.gitlab;
+          return WSGitlabService.projects(gitlab.accessToken.access_token)
+        }).subscribe(response => {
+          response.status = true;
+          this.ajaxOk(req, res, null, response);
+        }, error => {
+          sails.log.error(error);
+          const errorMessage = `Failed to get projects for token: ${token}`;
+          sails.log.error(errorMessage);
+          this.ajaxFail(req, res, errorMessage);
+        });
+      }
     }
 
     public projectsRelatedRecord(req, res) {
