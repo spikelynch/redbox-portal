@@ -200,43 +200,52 @@ export module Controllers {
     public link(req, res) {
       sails.log.debug('get link');
 
-      const token = req.param('token');
       const projectId = req.param('projectId');
       const workspace = req.param('workspace');
       const rdmpId = req.param('rdmpId');
 
       let workspaceId = null;
+      let gitlab = {};
 
       sails.log.debug('createWorkspaceRecord')
-      WSGitlabService
-      .createWorkspaceRecord(workspace, 'draft')
-      .flatMap(response => {
-        workspaceId = response.oid;
-        sails.log.debug('addWorkspaceInfo');
-        return WSGitlabService.addWorkspaceInfo(token, projectId, rdmpId + '.' + workspaceId, 'stash.workspace');
-      })
-      .flatMap(response => {
-        sails.log.debug('addParentRecordLink');
-        return WSGitlabService.getRecordMeta(rdmpId)
-      })
-      .flatMap(recordMetadata => {
-        sails.log.debug('recordMetadata');
-        if(recordMetadata && recordMetadata.workspaces) {
-          const wss = recordMetadata.workspaces.find(id => workspaceId === id);
-          if(!wss) {
-            recordMetadata.workspaces.push({id: workspaceId});
+      if (!req.isAuthenticated()) {
+        this.ajaxFail(req, res, `User not authenticated`);
+      } else {
+        const userId = req.user.id;
+        return WSGitlabService
+        .userInfo(userId)
+        .flatMap(user => {
+          gitlab = user.accessToken.gitlab;
+          return WSGitlabService
+          .createWorkspaceRecord(workspace, 'draft');
+        }).flatMap(response => {
+          workspaceId = response.oid;
+          sails.log.debug('addWorkspaceInfo');
+          return WSGitlabService.addWorkspaceInfo(gitlab.accessToken.access_token, projectId, rdmpId + '.' + workspaceId, 'stash.workspace');
+        })
+        .flatMap(response => {
+          sails.log.debug('addParentRecordLink');
+          return WSGitlabService.getRecordMeta(rdmpId)
+        })
+        .flatMap(recordMetadata => {
+          sails.log.debug('recordMetadata');
+          if(recordMetadata && recordMetadata.workspaces) {
+            const wss = recordMetadata.workspaces.find(id => workspaceId === id);
+            if(!wss) {
+              recordMetadata.workspaces.push({id: workspaceId});
+            }
           }
-        }
-        return WSGitlabService.updateRecordMeta(recordMetadata, rdmpId);
-      })
-      .subscribe(response => {
-        this.ajaxOk(req, res, null, response);
-      }, error => {
-        sails.log.error(error);
-        const errorMessage = `Failed to link workspace with ID: ${projectId} : ${JSON.stringify(error)}` ;
-        sails.log.error(errorMessage);
-        this.ajaxFail(req, res, errorMessage);
-      });
+          return WSGitlabService.updateRecordMeta(recordMetadata, rdmpId);
+        })
+        .subscribe(response => {
+          this.ajaxOk(req, res, null, response);
+        }, error => {
+          sails.log.error(error);
+          const errorMessage = `Failed to link workspace with ID: ${projectId} : ${JSON.stringify(error)}` ;
+          sails.log.error(errorMessage);
+          this.ajaxFail(req, res, errorMessage);
+        });
+      }
     }
 
     public checkRepo(req, res) {

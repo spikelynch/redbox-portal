@@ -208,7 +208,7 @@ checkName(){
 
 createLink(projectId: number) {
   return this.wsGitlabService
-  .link(this.wsUser.token, this.rdmp, projectId, this.currentWorkspace)
+  .link(this.rdmp, projectId, this.currentWorkspace)
 }
 
 onLogin() {
