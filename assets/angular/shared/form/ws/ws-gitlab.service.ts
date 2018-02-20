@@ -154,12 +154,12 @@ export class WSGitlabService extends BaseService {
     });
   }
 
-  createWorkspace(token: string, creation: any) {
+  createWorkspace(creation: any) {
     const wsUrl = this.brandingAndPortalUrl + '/ws/gitlab/create';
     //TODO: check namespace when creation
     return this.http.post(
       wsUrl,
-      {token: token, creation: creation},
+      {creation: creation},
       this.options
     )
     .toPromise()

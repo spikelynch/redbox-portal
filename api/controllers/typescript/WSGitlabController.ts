@@ -252,23 +252,28 @@ export module Controllers {
     }
 
     public create(req, res) {
-      const token = req.param('token');
       const creation = req.param('creation');
 
       let workspaceId = '';
       const namespace = creation.group + '/' + creation.name;
-
-      return WSGitlabService
-      .create(token, creation)
-      .subscribe(response => {
-        sails.log.debug('updateRecordMeta');
-        this.ajaxOk(req, res, null, response);
-      }, error => {
-        sails.log.error(error);
-        const errorMessage = `Failed to create workspace with: ${namespace} : ${JSON.stringify(error)}` ;
-        sails.log.error(errorMessage);
-        this.ajaxFail(req, res, errorMessage);
-      });
+      if (!req.isAuthenticated()) {
+        this.ajaxFail(req, res, `User not authenticated`);
+      } else {
+        const userId = req.user.id;
+        return WSGitlabService.userInfo(userId)
+        .flatMap(user => {
+          const gitlab = user.accessToken.gitlab;
+          return WSGitlabService.create(gitlab.accessToken.access_token, creation);
+        }).subscribe(response => {
+          sails.log.debug('updateRecordMeta');
+          this.ajaxOk(req, res, null, response);
+        }, error => {
+          sails.log.error(error);
+          const errorMessage = `Failed to create workspace with: ${namespace} : ${JSON.stringify(error)}` ;
+          sails.log.error(errorMessage);
+          this.ajaxFail(req, res, errorMessage);
+        });
+      }
     }
 
     public project(req, res) {

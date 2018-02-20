@@ -158,8 +158,10 @@ export class WSGitlabField extends FieldBase<any> {
 createWorkspace() {
   const group1 = {id: this.wsUser.id, path: this.wsUser.username};
   this.groups = [group1];
+  this.creation.group = group1.path;
   const template1 = {pathWithNamespace: undefined};
   this.templates = [template1]
+  this.creation.template = template1.pathWithNamespace;
   this.wsGitlabService.groups()
   .then(response => {
     this.groups = this.groups.concat(response);
@@ -175,7 +177,7 @@ create() {
   this.creation.message = 'Creating workspace';
   this.creation.creationAlert = 'info';
   console.log(this.creation)
-  this.wsGitlabService.createWorkspace(this.wsUser.token, this.creation)
+  this.wsGitlabService.createWorkspace(this.creation)
   .then(response => {
     return this.checkCreation();
   }).then(response => {
@@ -195,6 +197,7 @@ create() {
 }
 
 checkCreation() {
+  debugger;
   let pathWithNamespace = '';
   pathWithNamespace = this.creation.group + '/' + this.creation.name;
   return this.wsGitlabService.project(this.wsUser.token, pathWithNamespace);
