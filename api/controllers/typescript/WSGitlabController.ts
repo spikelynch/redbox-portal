@@ -37,38 +37,46 @@ export module Controllers {
 
     public token(req, res) {
       sails.log.debug('get token:');
-
+      //TODO: do we need other form of security?
       const username = req.param('username');
       const password = req.param('password');
-      const user = req.param('user');
 
       let accessToken = {};
-
-      WSGitlabService.token(username, password)
-      .flatMap(response => {
-        sails.log.debug('token');
-        sails.log.debug(response);
-        accessToken = response;
-        return WSGitlabService.user(accessToken.access_token);
-      }).flatMap(response => {
-        sails.log.debug('user');
-        sails.log.debug(response);
-        const gitlabUser = {
-          username: response.username,
-          id: response.id
-        };
-        return WSGitlabService.updateUser(user, {user: gitlabUser, accessToken: accessToken});
-      })
-      .subscribe(response => {
-        sails.log.debug('updateUser');
-        sails.log.debug(response);
-        this.ajaxOk(req, res, null, {status: true});
-      }, error => {
-        sails.log.error(error);
-        const errorMessage = `Failed to get token for user: ${username}`;
-        sails.log.error(errorMessage);
-        this.ajaxFail(req, res, errorMessage);
-      });
+      let user = {};
+      if (!req.isAuthenticated()) {
+        this.ajaxFail(req, res, `User not authenticated`);
+      } else {
+        const userId = req.user.id;
+        return WSGitlabService.userInfo(userId)
+        .flatMap(response => {
+          user = response;
+          return WSGitlabService.token(username, password)
+        })
+        .flatMap(response => {
+          sails.log.debug('token');
+          sails.log.debug(response);
+          accessToken = response;
+          return WSGitlabService.user(accessToken.access_token);
+        }).flatMap(response => {
+          sails.log.debug('user');
+          sails.log.debug(response);
+          const gitlabUser = {
+            username: response.username,
+            id: response.id
+          };
+          return WSGitlabService.updateUser(user.id, {user: gitlabUser, accessToken: accessToken});
+        })
+        .subscribe(response => {
+          sails.log.debug('updateUser');
+          sails.log.debug(response);
+          this.ajaxOk(req, res, null, {status: true});
+        }, error => {
+          sails.log.error(error);
+          const errorMessage = `Failed to get token for user: ${username}`;
+          sails.log.error(errorMessage);
+          this.ajaxFail(req, res, errorMessage);
+        });
+      }
     }
 
     public revokeToken(req, res) {

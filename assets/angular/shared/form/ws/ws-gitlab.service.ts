@@ -16,12 +16,12 @@ export class WSGitlabService extends BaseService {
     super(http, configService);
   }
 
-  token(user: any, username: string, password: string) {
+  token(username: string, password: string) {
     //build wsUrl here with server client
     const wsUrl = this.brandingAndPortalUrl + '/ws/gitlab/token';
     return this.http.post(
       wsUrl,
-      {user: user, username: username, password: password}, this.options
+      {username: username, password: password}, this.options
     )
     .toPromise()
     .then((res: any) => {

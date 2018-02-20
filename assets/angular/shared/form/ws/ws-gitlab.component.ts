@@ -197,7 +197,6 @@ create() {
 }
 
 checkCreation() {
-  debugger;
   let pathWithNamespace = '';
   pathWithNamespace = this.creation.group + '/' + this.creation.name;
   return this.wsGitlabService.project(this.wsUser.token, pathWithNamespace);
@@ -219,7 +218,7 @@ onLogin() {
 allow() {
   jQuery('#gitlabPermissionModal').modal('hide');
   this.wsGitlabService
-  .token(this.user, this.username, this.password)
+  .token(this.username, this.password)
   .then(response => {
     if (response && response.status) {
       return this.usersService.getInfo()

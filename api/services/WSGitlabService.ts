@@ -191,10 +191,10 @@ export module Services {
 
     //**REDBOX-PORTAL**//
 
-    updateUser(user: any, gitlab: any) {
+    updateUser(userId: string, gitlab: any) {
       //TODO: Update without removing other accessTokens.
       return super.getObservable(
-        User.update({username: user.username},
+        User.update({id: userId},
           {accessToken: { gitlab: gitlab}}
         )
       );
