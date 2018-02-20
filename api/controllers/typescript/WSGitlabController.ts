@@ -106,22 +106,26 @@ export module Controllers {
     public user(req, res) {
       sails.log.debug('get user:');
 
-      const token = req.param('token');
-
       sails.log.error('token');
-      sails.log.error(token);
-
-      const obs = WSGitlabService.user(token);
-
-      obs.subscribe(response => {
-        response.status = true;
-        this.ajaxOk(req, res, null, response);
-      }, error => {
-        sails.log.error(error);
-        const errorMessage = `Failed to get info for with token: ${token}`;
-        sails.log.error(errorMessage);
-        this.ajaxFail(req, res, errorMessage);
-      });
+      if (!req.isAuthenticated()) {
+        this.ajaxFail(req, res, `User not authenticated`);
+      } else {
+        const userId = req.user.id;
+        return WSGitlabService
+        .userInfo(userId)
+        .flatMap(user => {
+          const gitlab = user.accessToken.gitlab;
+          return WSGitlabService.user(gitlab.accessToken.access_token)
+        }).subscribe(response => {
+          response.status = true;
+          this.ajaxOk(req, res, null, response);
+        }, error => {
+          sails.log.error(error);
+          const errorMessage = `Failed to get info for with token: ${token}`;
+          sails.log.error(errorMessage);
+          this.ajaxFail(req, res, errorMessage);
+        });
+      }
     }
 
     public projects(req, res) {

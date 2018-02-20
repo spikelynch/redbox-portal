@@ -49,10 +49,11 @@ export class WSGitlabService extends BaseService {
     });
   }
 
-  user(token: string) {
+  user() {
     const wsUrl = this.brandingAndPortalUrl + '/ws/gitlab/user';
-    return this.http.post(
-      wsUrl, {token: token}, this.options
+    return this.http.get(
+      wsUrl,
+      this.options
     )
     .toPromise()
     .then((res: any) => {

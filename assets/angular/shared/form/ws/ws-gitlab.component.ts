@@ -231,7 +231,7 @@ allow() {
       this.wsUser.set(this.user);
       console.log('token: ' + this.wsUser.token);
       return this.wsGitlabService
-      .user(this.wsUser.token)
+      .user()
       .then(response => {
         if (response && response.status) {
           console.log('id: ' + response.id);
