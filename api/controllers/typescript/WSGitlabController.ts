@@ -74,8 +74,8 @@ export module Controllers {
         })
         .flatMap(response => {
           sails.log.debug('token');
-          sails.log.debug(response);
           accessToken = response;
+          sails.log.debug(accessToken);
           return WSGitlabService.user(this.config, accessToken.access_token);
         }).flatMap(response => {
           sails.log.debug('user');
@@ -127,21 +127,21 @@ export module Controllers {
       sails.log.debug('get user:');
 
       sails.log.error('token');
+      let gitlab = {};
       if (!req.isAuthenticated()) {
         this.ajaxFail(req, res, `User not authenticated`);
       } else {
         const userId = req.user.id;
-        return WSGitlabService
-        .userInfo(userId)
+        return WSGitlabService.userInfo(userId)
         .flatMap(user => {
-          const gitlab = user.accessToken.gitlab;
-          return WSGitlabService.user(gitlab.accessToken.access_token)
+          gitlab = user.accessToken.gitlab;
+          return WSGitlabService.user(this.config, gitlab.accessToken.access_token)
         }).subscribe(response => {
           response.status = true;
           this.ajaxOk(req, res, null, response);
         }, error => {
           sails.log.error(error);
-          const errorMessage = `Failed to get info for with token: ${token}`;
+          const errorMessage = `Failed to get info for with token: ${gitlab.accessToken.access_token}`;
           sails.log.error(errorMessage);
           this.ajaxFail(req, res, errorMessage);
         });

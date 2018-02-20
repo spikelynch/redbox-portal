@@ -58,7 +58,7 @@ export module Services {
       return Observable.fromPromise(post);
     }
 
-    user(config: any token: string) {
+    user(config: any, token: string) {
       const get = request({
         uri: config.host + `/api/v4/user?access_token=${token}`,
         json: true

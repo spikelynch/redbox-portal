@@ -122,6 +122,7 @@ export class WSGitlabField extends FieldBase<any> {
   }
 
   getWorkspacesRelated() {
+    this.workspaces = [];
     this.wsGitlabService.projectsRelatedRecord()
     .then(w => {this.workspaces = w})
     .catch(e => console.log(e));
@@ -272,6 +273,7 @@ revoke() {
   .revokeToken()
   .then(response => {
     this.wsUser.token = null;
+    this.workspaces = [];
     jQuery('#gitlabRevokeModal').modal('hide');
   })
   .catch(error => {
