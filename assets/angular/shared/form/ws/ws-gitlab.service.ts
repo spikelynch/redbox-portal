@@ -172,12 +172,12 @@ export class WSGitlabService extends BaseService {
     });
   }
 
-  project(token: string, pathWithNamespace: string) {
+  project(pathWithNamespace: string) {
     const wsUrl = this.brandingAndPortalUrl + '/ws/gitlab/project';
     //TODO: check namespace when creation
     return this.http.post(
       wsUrl,
-      {token: token, pathWithNamespace: pathWithNamespace},
+      {pathWithNamespace: pathWithNamespace},
       this.options
     )
     .delay(5000)

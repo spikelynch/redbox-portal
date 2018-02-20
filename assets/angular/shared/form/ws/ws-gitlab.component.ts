@@ -199,7 +199,7 @@ create() {
 checkCreation() {
   let pathWithNamespace = '';
   pathWithNamespace = this.creation.group + '/' + this.creation.name;
-  return this.wsGitlabService.project(this.wsUser.token, pathWithNamespace);
+  return this.wsGitlabService.project(pathWithNamespace);
 }
 
 checkName(){
