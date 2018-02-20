@@ -132,7 +132,7 @@ export class WSGitlabField extends FieldBase<any> {
   linkWorkspace(projectId: number) {
   jQuery('#gitlabLinkModal').modal('show');
   this.currentWorkspace = _.find(this.workspaces, {id: projectId});
-  this.wsGitlabService.checkRepo(this.wsUser.token, this.currentWorkspace.path_with_namespace)
+  this.wsGitlabService.checkRepo(this.currentWorkspace.path_with_namespace)
   .then(response => {
     if(!response.ws) {
       this.checks.master = true;

@@ -250,23 +250,30 @@ export module Controllers {
 
     public checkRepo(req, res) {
       sails.log.debug('check link');
-
-      const token = req.param('token');
       const projectNameSpace = req.param('projectNameSpace');
-
-      return WSGitlabService.readFileFromRepo(token, projectNameSpace, 'stash.workspace')
-      .subscribe(response => {
-        sails.log.debug('checkLink:getRecordMeta');
-        const parsedResponse = this.parseResponseFromRepo(response);
-        const wI = parsedResponse.content ? this.workspaceInfoFromRepo(parsedResponse.content) : {rdmp: null, workspace: null};
-        sails.log.debug(wI);
-        this.ajaxOk(req, res, null, wI);
-      }, error => {
-        sails.log.error(error);
-        const errorMessage = `Failed check link workspace project: ${projectNameSpace} : ${JSON.stringify(error)}` ;
-        sails.log.error(error.message);
-        this.ajaxFail(req, res, null, errorMessage);
-      });
+      let gitlab = {};
+      if (!req.isAuthenticated()) {
+        this.ajaxFail(req, res, `User not authenticated`);
+      } else {
+        const userId = req.user.id;
+        return WSGitlabService
+        .userInfo(userId)
+        .flatMap(user => {
+          gitlab = user.accessToken.gitlab;
+          return WSGitlabService.readFileFromRepo(gitlab.accessToken.access_token, projectNameSpace, 'stash.workspace');
+        }).subscribe(response => {
+          sails.log.debug('checkLink:getRecordMeta');
+          const parsedResponse = this.parseResponseFromRepo(response);
+          const wI = parsedResponse.content ? this.workspaceInfoFromRepo(parsedResponse.content) : {rdmp: null, workspace: null};
+          sails.log.debug(wI);
+          this.ajaxOk(req, res, null, wI);
+        }, error => {
+          sails.log.error(error);
+          const errorMessage = `Failed check link workspace project: ${projectNameSpace} : ${JSON.stringify(error)}` ;
+          sails.log.error(error.message);
+          this.ajaxFail(req, res, null, errorMessage);
+        });
+      }
     }
 
     public compareLink(req, res) {

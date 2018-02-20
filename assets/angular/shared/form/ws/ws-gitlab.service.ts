@@ -129,11 +129,11 @@ export class WSGitlabService extends BaseService {
     });
   }
 
-  checkRepo(token: string, projectNameSpace: string) {
+  checkRepo(projectNameSpace: string) {
     const wsUrl = this.brandingAndPortalUrl + '/ws/gitlab/checkRepo';
     return this.http.post(
       wsUrl,
-      {token: token, projectNameSpace: projectNameSpace},
+      {projectNameSpace: projectNameSpace},
       this.options
     )
     .toPromise()
