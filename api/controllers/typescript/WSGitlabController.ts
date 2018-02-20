@@ -81,19 +81,26 @@ export module Controllers {
 
     public revokeToken(req, res) {
       sails.log.debug('revokeToken');
-      const user = req.param('user');
-
-      return WSGitlabService.revokeToken(user)
-      .subscribe(response => {
-        sails.log.debug('updateUser');
-        sails.log.debug(response);
-        this.ajaxOk(req, res, null, {status: true});
-      }, error => {
-        sails.log.error(error);
-        const errorMessage = `Failed to get token for user: ${user.username}`;
-        sails.log.error(errorMessage);
-        this.ajaxFail(req, res, errorMessage);
-      });
+      if (!req.isAuthenticated()) {
+        this.ajaxFail(req, res, `User not authenticated`);
+      } else {
+        const userId = req.user.id;
+        return WSGitlabService
+        .userInfo(userId)
+        .flatMap(user => {
+          return WSGitlabService.revokeToken(user.id);
+        })
+        .subscribe(response => {
+          sails.log.debug('updateUser');
+          sails.log.debug(response);
+          this.ajaxOk(req, res, null, {status: true});
+        }, error => {
+          sails.log.error(error);
+          const errorMessage = `Failed to get token for user: ${user.username}`;
+          sails.log.error(errorMessage);
+          this.ajaxFail(req, res, errorMessage);
+        });
+      }
     }
 
     public user(req, res) {

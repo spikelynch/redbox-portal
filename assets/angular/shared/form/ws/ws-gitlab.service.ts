@@ -33,11 +33,11 @@ export class WSGitlabService extends BaseService {
     });
   }
 
-  revokeToken(user: any){
+  revokeToken(){
     const wsUrl = this.brandingAndPortalUrl + '/ws/gitlab/revokeToken';
-    return this.http.post(
+    return this.http.get(
       wsUrl,
-      {user: user}, this.options
+      this.options
     )
     .toPromise()
     .then((res: any) => {

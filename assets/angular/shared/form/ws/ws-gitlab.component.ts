@@ -269,7 +269,7 @@ revokeModal() {
 revoke() {
   //delete workspace record here
   this.wsGitlabService
-  .revokeToken(this.user)
+  .revokeToken()
   .then(response => {
     this.wsUser.token = null;
     jQuery('#gitlabRevokeModal').modal('hide');

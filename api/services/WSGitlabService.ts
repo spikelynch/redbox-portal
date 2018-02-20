@@ -200,10 +200,10 @@ export module Services {
       );
     }
 
-  revokeToken(user: any) {
+  revokeToken(userId: string) {
     return super.getObservable(
       //TODO: Update without removing other accessTokens.
-      User.update({username: user.username},
+      User.update({id: userId},
       {accessToken: { gitlab: {} } })
     );
   }
