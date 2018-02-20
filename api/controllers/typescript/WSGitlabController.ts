@@ -4,7 +4,7 @@ import {Observable} from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 const url = require('url');
 
-declare var WSGitlabService;
+declare var WSGitlabService, BrandingService;
 /**
 * Package that contains all Controllers.
 */
@@ -34,10 +34,30 @@ export module Controllers {
       'groups',
       'templates'
     ];
+    protected config: any;
+
+    constructor(){
+      super();
+      this.config = {
+        host: sails.config.local.workspaces.gitlab.host,
+        recordType: sails.config.local.workspaces.recordType,
+        formName: sails.config.local.workspaces.formName,
+        parentRecord: sails.config.local.workspaces.parentRecord,
+        provisionerUser: sails.config.local.workspaces.provisionerUser,
+        //TODO: get the brand url with config service
+        brandingAndPortalUrl: '',
+        redboxHeaders:  {
+          'Cache-Control': 'no-cache',
+          'Content-Type': 'application/json',
+          'Authorization': '',
+        }
+      }
+    }
 
     public token(req, res) {
       sails.log.debug('get token:');
-      //TODO: do we need other form of security?
+
+      //TODO: do we need another form of security?
       const username = req.param('username');
       const password = req.param('password');
 
@@ -50,13 +70,13 @@ export module Controllers {
         return WSGitlabService.userInfo(userId)
         .flatMap(response => {
           user = response;
-          return WSGitlabService.token(username, password)
+          return WSGitlabService.token(this.config, username, password)
         })
         .flatMap(response => {
           sails.log.debug('token');
           sails.log.debug(response);
           accessToken = response;
-          return WSGitlabService.user(accessToken.access_token);
+          return WSGitlabService.user(this.config, accessToken.access_token);
         }).flatMap(response => {
           sails.log.debug('user');
           sails.log.debug(response);
@@ -138,7 +158,7 @@ export module Controllers {
         .userInfo(userId)
         .flatMap(user => {
           const gitlab = user.accessToken.gitlab;
-          return WSGitlabService.projects(gitlab.accessToken.access_token)
+          return WSGitlabService.projects(this.config, gitlab.accessToken.access_token)
         }).subscribe(response => {
           response.status = true;
           this.ajaxOk(req, res, null, response);
@@ -165,13 +185,13 @@ export module Controllers {
         .userInfo(userId)
         .flatMap(user => {
           gitlab = user.accessToken.gitlab;
-          return WSGitlabService.projects(gitlab.accessToken.access_token)
+          return WSGitlabService.projects(this.config, gitlab.accessToken.access_token)
         })
         .flatMap(response => {
           let obs = [];
           currentProjects = response.slice(0);
           for (let r of currentProjects) {
-            obs.push(WSGitlabService.readFileFromRepo(gitlab.accessToken.access_token, r.path_with_namespace, 'stash.workspace'));
+            obs.push(WSGitlabService.readFileFromRepo(this.config, gitlab.accessToken.access_token, r.path_with_namespace, 'stash.workspace'));
           }
           return Observable.merge(...obs);
         })
@@ -195,37 +215,37 @@ export module Controllers {
       }
     }
 
-
-
     public link(req, res) {
       sails.log.debug('get link');
-
-      const projectId = req.param('projectId');
-      const workspace = req.param('workspace');
-      const rdmpId = req.param('rdmpId');
-
-      let workspaceId = null;
-      let gitlab = {};
-
       sails.log.debug('createWorkspaceRecord')
       if (!req.isAuthenticated()) {
         this.ajaxFail(req, res, `User not authenticated`);
       } else {
-        const userId = req.user.id;
-        return WSGitlabService
-        .userInfo(userId)
+        this.config.brandingAndPortalUrl = sails.getBaseUrl() + BrandingService.getBrandAndPortalPath(req);
+        const projectId = req.param('projectId');
+        const workspace = req.param('workspace');
+        const rdmpId = req.param('rdmpId');
+
+        let workspaceId = null;
+        let gitlab = {};
+
+        return WSGitlabService.provisionerUser(this.config.provisionerUser)
+        .flatMap(response => {
+          this.config.redboxHeaders['Authorization'] = 'Bearer ' + response.token;
+          const userId = req.user.id;
+          return WSGitlabService.userInfo(userId)
+        })
         .flatMap(user => {
           gitlab = user.accessToken.gitlab;
-          return WSGitlabService
-          .createWorkspaceRecord(workspace, 'draft');
+          return WSGitlabService.createWorkspaceRecord(this.config, workspace, 'draft');
         }).flatMap(response => {
           workspaceId = response.oid;
           sails.log.debug('addWorkspaceInfo');
-          return WSGitlabService.addWorkspaceInfo(gitlab.accessToken.access_token, projectId, rdmpId + '.' + workspaceId, 'stash.workspace');
+          return WSGitlabService.addWorkspaceInfo(this.config, gitlab.accessToken.access_token, projectId, rdmpId + '.' + workspaceId, 'stash.workspace');
         })
         .flatMap(response => {
           sails.log.debug('addParentRecordLink');
-          return WSGitlabService.getRecordMeta(rdmpId)
+          return WSGitlabService.getRecordMeta(this.config, rdmpId);
         })
         .flatMap(recordMetadata => {
           sails.log.debug('recordMetadata');
@@ -235,7 +255,7 @@ export module Controllers {
               recordMetadata.workspaces.push({id: workspaceId});
             }
           }
-          return WSGitlabService.updateRecordMeta(recordMetadata, rdmpId);
+          return WSGitlabService.updateRecordMeta(this.config, recordMetadata, rdmpId);
         })
         .subscribe(response => {
           this.ajaxOk(req, res, null, response);
@@ -250,17 +270,18 @@ export module Controllers {
 
     public checkRepo(req, res) {
       sails.log.debug('check link');
-      const projectNameSpace = req.param('projectNameSpace');
-      let gitlab = {};
       if (!req.isAuthenticated()) {
         this.ajaxFail(req, res, `User not authenticated`);
       } else {
+        const projectNameSpace = req.param('projectNameSpace');
+        let gitlab = {};
         const userId = req.user.id;
+
         return WSGitlabService
         .userInfo(userId)
         .flatMap(user => {
           gitlab = user.accessToken.gitlab;
-          return WSGitlabService.readFileFromRepo(gitlab.accessToken.access_token, projectNameSpace, 'stash.workspace');
+          return WSGitlabService.readFileFromRepo(this.config, gitlab.accessToken.access_token, projectNameSpace, 'stash.workspace');
         }).subscribe(response => {
           sails.log.debug('checkLink:getRecordMeta');
           const parsedResponse = this.parseResponseFromRepo(response);
@@ -281,7 +302,13 @@ export module Controllers {
       const projectNameSpace = req.param('projectNameSpace');
       const workspaceId = req.param('workspaceId');
 
-      return WSGitlabService.getRecordMeta(rdmpId)
+      this.config.brandingAndPortalUrl = sails.getBaseUrl() + BrandingService.getBrandAndPortalPath(req);
+
+      return WSGitlabService.provisionerUser(this.config.provisionerUser)
+      .flatMap(response => {
+        this.config.redboxHeaders['Authorization'] = 'Bearer ' + response.token;
+        return WSGitlabService.getRecordMeta(this.config, rdmpId)
+      })
       .subscribe(recordMetadata => {
         sails.log.debug('recordMetadata');
         if(recordMetadata && recordMetadata.workspaces) {
@@ -314,7 +341,7 @@ export module Controllers {
         return WSGitlabService.userInfo(userId)
         .flatMap(user => {
           const gitlab = user.accessToken.gitlab;
-          return WSGitlabService.create(gitlab.accessToken.access_token, creation);
+          return WSGitlabService.create(this.config, gitlab.accessToken.access_token, creation);
         }).subscribe(response => {
           sails.log.debug('updateRecordMeta');
           this.ajaxOk(req, res, null, response);
@@ -339,7 +366,7 @@ export module Controllers {
         .flatMap(user => {
           const gitlab = user.accessToken.gitlab;
           return WSGitlabService
-          .project(gitlab.accessToken.access_token, pathWithNamespace);
+          .project(this.config, gitlab.accessToken.access_token, pathWithNamespace);
         })
         .subscribe(response => {
           sails.log.debug('project');
@@ -361,7 +388,7 @@ export module Controllers {
         return WSGitlabService.userInfo(userId)
         .flatMap(user => {
           const gitlab = user.accessToken.gitlab;
-          return WSGitlabService.templates(gitlab.accessToken.access_token, 'provisioner_template');
+          return WSGitlabService.templates(this.config, gitlab.accessToken.access_token, 'provisioner_template');
         }).subscribe(response => {
           let simple = [];
           if(response.value){
@@ -385,7 +412,7 @@ export module Controllers {
         return WSGitlabService.userInfo(userId)
         .flatMap(user => {
           const gitlab = user.accessToken.gitlab;
-          return WSGitlabService.groups(gitlab.accessToken.access_token)
+          return WSGitlabService.groups(this.config, gitlab.accessToken.access_token)
         }).subscribe(response => {
           sails.log.debug('groups');
           this.ajaxOk(req, res, null, response);
