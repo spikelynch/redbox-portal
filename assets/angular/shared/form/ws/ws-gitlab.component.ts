@@ -122,7 +122,7 @@ export class WSGitlabField extends FieldBase<any> {
   }
 
   getWorkspacesRelated() {
-    this.wsGitlabService.projectsRelatedRecord(this.wsUser.token)
+    this.wsGitlabService.projectsRelatedRecord()
     .then(w => {this.workspaces = w})
     .catch(e => console.log(e));
   }

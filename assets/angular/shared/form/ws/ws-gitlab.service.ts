@@ -81,10 +81,11 @@ export class WSGitlabService extends BaseService {
     });
   }
 
-  projectsRelatedRecord(token: string) {
+  projectsRelatedRecord() {
     const wsUrl = this.brandingAndPortalUrl + '/ws/gitlab/projectsRelatedRecord';
-    return this.http.post(
-      wsUrl, {token: token}, this.options
+    return this.http.get(
+      wsUrl,
+      this.options
     )
     .toPromise()
     .then((res: any) => {

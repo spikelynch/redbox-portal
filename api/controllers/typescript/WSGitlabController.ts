@@ -154,36 +154,45 @@ export module Controllers {
     public projectsRelatedRecord(req, res) {
       sails.log.debug('get related projects');
 
-      const token = req.param('token');
       let currentProjects = [];
       let projectsWithInfo = [];
-
-      WSGitlabService.projects(token)
-      .flatMap(response => {
-        let obs = [];
-        currentProjects = response.slice(0);
-        for (let r of currentProjects) {
-          obs.push(WSGitlabService.readFileFromRepo(token, r.path_with_namespace, 'stash.workspace'));
-        }
-        return Observable.merge(...obs);
-      })
-      .subscribe(response => {
-        const parsedResponse = this.parseResponseFromRepo(response);
-        projectsWithInfo.push({
-          path: parsedResponse.path,
-          info: parsedResponse.content ? this.workspaceInfoFromRepo(parsedResponse.content) : {}
+      let gitlab = {};
+      if (!req.isAuthenticated()) {
+        this.ajaxFail(req, res, `User not authenticated`);
+      } else {
+        const userId = req.user.id;
+        return WSGitlabService
+        .userInfo(userId)
+        .flatMap(user => {
+          gitlab = user.accessToken.gitlab;
+          return WSGitlabService.projects(gitlab.accessToken.access_token)
+        })
+        .flatMap(response => {
+          let obs = [];
+          currentProjects = response.slice(0);
+          for (let r of currentProjects) {
+            obs.push(WSGitlabService.readFileFromRepo(gitlab.accessToken.access_token, r.path_with_namespace, 'stash.workspace'));
+          }
+          return Observable.merge(...obs);
+        })
+        .subscribe(response => {
+          const parsedResponse = this.parseResponseFromRepo(response);
+          projectsWithInfo.push({
+            path: parsedResponse.path,
+            info: parsedResponse.content ? this.workspaceInfoFromRepo(parsedResponse.content) : {}
+          });
+        }, error => {
+          const errorMessage = `Failed to get projectsRelatedRecord for token: ${gitlab.accessToken.access_token}`;
+          sails.log.debug(errorMessage);
+          this.ajaxFail(req, res, errorMessage);
+        }, () => {
+          sails.log.debug('complete');
+          currentProjects.map(p => {
+            p.rdmp = projectsWithInfo.find(pwi => pwi.path === p.path_with_namespace);
+          });
+          this.ajaxOk(req, res, null, currentProjects);
         });
-      }, error => {
-        const errorMessage = `Failed to get projectsRelatedRecord for token: ${token}`;
-        sails.log.debug(errorMessage);
-        this.ajaxFail(req, res, errorMessage);
-      }, () => {
-        sails.log.debug('complete');
-        currentProjects.map(p => {
-          p.rdmp = projectsWithInfo.find(pwi => pwi.path === p.path_with_namespace);
-        });
-        this.ajaxOk(req, res, null, currentProjects);
-      });
+      }
     }
 
 
