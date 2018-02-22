@@ -36,11 +36,11 @@
             </td></ng-container>
             <td>
               <span *ngIf="item.rdmp.info && item.rdmp.info.rdmp; else isNotLinked ">
-                <button disabled type="button" class="btn btn-success" *ngIf="item.rdmp.info.rdmp === field.rdmp"> Linked </button>
-                <button disabled type="button" class="btn btn-info" *ngIf="item.rdmp.info.rdmp != field.rdmp"> Linked to another RDMP</button>
+                <button disabled type="button" class="btn btn-success btn-block" *ngIf="item.rdmp.info.rdmp === field.rdmp"> Linked </button>
+                <button disabled type="button" class="btn btn-info btn-block" *ngIf="item.rdmp.info.rdmp != field.rdmp"> Linked to another RDMP</button>
               </span>
               <ng-template #isNotLinked>
-                <button type="button" class="btn btn-info" (click)="field.linkWorkspace(item.id)"> Link </button>
+                <button type="button" class="btn btn-info btn-block" (click)="field.linkWorkspace(item.id)"> Link </button>
               </ng-template>
             </td>
           </tr>
