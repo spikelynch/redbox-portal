@@ -49,8 +49,9 @@ module.exports = {
         id: "mainTab",
         fields: [
           // -------------------------------------------------------------------
-          // Welcome Tab
+          // Welcome Tab - removed before launch be agreement
           // -------------------------------------------------------------------
+/*
           {
             class: "Container",
             editOnly: true,
@@ -97,6 +98,7 @@ module.exports = {
               ]
             }
           },
+*/
           // -------------------------------------------------------------------
           // Project Tab
           // -------------------------------------------------------------------
@@ -105,7 +107,9 @@ module.exports = {
             definition: {
               id: "project",
               label: "@dmpt-project-tab",
-              fields: [{
+              active: true,
+              fields: [
+                {
                   class: 'Container',
                   compClass: 'TextBlockComponent',
                   definition: {
@@ -299,6 +303,7 @@ module.exports = {
                     }
                   }
                 },
+/* removed due to decision not to require TOA
                 {
                   class: 'SelectionField',
                   compClass: 'DropdownFieldComponent',
@@ -329,6 +334,7 @@ module.exports = {
                     ]
                   }
                 },
+*/
                 {
                   class: 'ANDSVocab',
                   compClass: 'ANDSVocabComponent',
@@ -618,6 +624,7 @@ module.exports = {
           // -------------------------------------------------------------------
           // Storage Tab
           // -------------------------------------------------------------------
+/* data storage tab removed by agreement at UAT meeting as it is not used
           {
             class: "Container",
             definition: {
@@ -631,6 +638,7 @@ module.exports = {
                     type: 'h3'
                   }
                 },
+
                 {
                   class: 'SelectionField',
                   compClass: 'DropdownFieldComponent',
@@ -661,6 +669,7 @@ module.exports = {
                     }
                   }
                 },
+/* following is moved to workspace tab
                 {
                   class: 'SelectionField',
                   compClass: 'DropdownFieldComponent',
@@ -773,9 +782,11 @@ module.exports = {
                     columns: 10
                   }
                 }
+
               ]
             }
           },
+*/
           // -------------------------------------------------------------------
           // Retention Tab
           // -------------------------------------------------------------------
@@ -816,13 +827,14 @@ module.exports = {
                         label: "@dmpt-redbox:retentionPeriod_dc:date-7years"
                       },
                       {
-                        value: "15years",
-                        label: "@dmpt-redbox:retentionPeriod_dc:date-15years"
+                        value: "25years",
+                        label: "@dmpt-redbox:retentionPeriod_dc:date-25years"
                       },
-                      {
+/*                      {
                         value: "20years",
                         label: "@dmpt-redbox:retentionPeriod_dc:date-20years"
                       },
+*/
                       {
                         value: "permanent",
                         label: "@dmpt-redbox:retentionPeriod_dc:date-permanent"
@@ -1207,7 +1219,121 @@ module.exports = {
                       }
                     ]
                   }
+                },
+                {
+                  class: 'SelectionField',
+                  compClass: 'DropdownFieldComponent',
+                  definition: {
+                    name: 'vivo:Dataset_dc:location_rdf:PlainLiteral',
+                    label: '@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral',
+                    help: '@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-help',
+                    options: [{
+                        value: "",
+                        label: "@dmpt-select:Empty"
+                      },
+                      {
+                        label: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-personal-equipment",
+                        value: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-personal-equipment"
+                      },
+                      {
+                        label: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-eresearch-platforms",
+                        value: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-eresearch-platforms"
+                      },
+                      {
+                        label: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-eresearch-store",
+                        value: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-eresearch-store"
+                      },
+                      {
+                        label: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-share-drive",
+                        value: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-share-drive"
+                      },
+                      {
+                        label: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-survey-platform",
+                        value: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-survey-platform"
+                      },
+                      {
+                        label: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-collab-space",
+                        value: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-collab-space"
+                      },
+                      {
+                        label: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-other",
+                        value: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-other"
+                      }
+                    ],
+                    required: false,
+                    validationMessages: {
+                      required: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-required"
+                    }
+                  }
+                },
+                {
+                  class: 'TextArea',
+                  compClass: 'TextAreaComponent',
+                  definition: {
+                    name: 'vivo:Dataset_dc:location_skos:note',
+                    label: '@dmpt-vivo:Dataset_dc:location_skos:note',
+                    rows: 5,
+                    columns: 10
+                  }
+                },
+/* this may not be required
+                {
+                  class: 'SelectionField',
+                  compClass: 'DropdownFieldComponent',
+                  definition: {
+                    name: 'vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral',
+                    label: '@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral',
+                    help: '@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-help',
+                    options: [{
+                        value: "",
+                        label: "@dmpt-select:Empty"
+                      },
+                      {
+                        label: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-personal",
+                        value: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-personal"
+                      },
+                      {
+                        label: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-eresearch-plat",
+                        value: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-eresearch-plat"
+                      },
+                      {
+                        label: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-eresearch-store",
+                        value: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-eresearch-store"
+                      },
+                      {
+                        label: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-shared",
+                        value: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-shared"
+                      },
+                      {
+                        label: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-survey-plat",
+                        value: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-survey-plat"
+                      },
+                      {
+                        label: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-collab",
+                        value: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-collab"
+                      },
+                      {
+                        label: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-other",
+                        value: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-other"
+                      }
+                    ],
+                    required: false,
+                    validationMessages: {
+                      required: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-required"
+                    }
+                  }
+                },
+                {
+                  class: 'TextArea',
+                  compClass: 'TextAreaComponent',
+                  definition: {
+                    name: 'vivo:Dataset_dc:source_dc:location_skos:note',
+                    label: '@dmpt-vivo:Dataset_dc:source_dc:location_skos:note',
+                    rows: 5,
+                    columns: 10
+                  }
                 }
+*/
               ]
             }
           }

@@ -662,13 +662,14 @@ module.exports = {
                         label: "@dmpt-redbox:retentionPeriod_dc:date-7years"
                       },
                       {
-                        value: "15years",
-                        label: "@dmpt-redbox:retentionPeriod_dc:date-15years"
+                        value: "25years",
+                        label: "@dmpt-redbox:retentionPeriod_dc:date-25years"
                       },
-                      {
+  /*                    {
                         value: "20years",
                         label: "@dmpt-redbox:retentionPeriod_dc:date-20years"
                       },
+*/
                       {
                         value: "permanent",
                         label: "@dmpt-redbox:retentionPeriod_dc:date-permanent"
