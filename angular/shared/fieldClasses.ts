@@ -31,6 +31,8 @@ import { GenericGroupComponent, RepeatableGroupComponent } from './form/field-gr
 import { WorkspaceSelectorField } from './form/workspace-field.component';
 import { WorkspaceSelectorComponent, WorkspaceSelectorFieldComponent } from './form/workspace-selector.component';
 import { ANDSVocabField, ANDSVocabComponent } from './form/field-andsvocab.component'
+import { PDFListField, PDFListComponent } from './form/field-pdflist.component';
+import { AsynchField, AsynchComponent } from './form/field-asynch.component';
 
 export const fieldClasses=  {
   'TextField': { 'meta': TextField, 'comp': TextFieldComponent },
@@ -63,5 +65,7 @@ export const fieldClasses=  {
   'PublishDataLocationSelector':{ 'meta': PublishDataLocationSelectorField, 'comp': PublishDataLocationSelectorComponent},
   'TabNavButton': {'meta': TabNavButton, 'comp': TabNavButtonComponent},
   'Spacer': {'meta': Spacer, 'comp': SpacerComponent},
-  'ANDSVocab':{ 'meta': ANDSVocabField, 'comp': ANDSVocabComponent}
+  'ANDSVocab':{ 'meta': ANDSVocabField, 'comp': ANDSVocabComponent},
+  'PDFList': { 'meta': PDFListField, 'comp': PDFListComponent},
+  'AsynchField': {'meta': AsynchField, 'comp': AsynchComponent }
 };

@@ -327,14 +327,15 @@ module.exports = {
                   definition: {
                     name: "dataLocations",
                     subscribe: {
-                    'dataRecord': {
-                      relatedObjectSelected: [{
-                        action: 'populateDataLocation'
-                      }]
+                      'dataRecordGetter': {
+                        onValueUpdate: [{
+                          action: 'utilityService.getPropertyFromObject',
+                          field: 'dataLocations'
+                        }]
+                      }
                     }
                   }
                 }
-              }
               ]
             }
           },
@@ -671,6 +672,32 @@ module.exports = {
                     cssClasses: "btn btn-primary",
                     targetAction: "publishToCKAN"
                   }
+                },
+                {
+                  class: 'AsynchField',
+                  definition: {
+                    name: 'asynchprogress',
+                    label:"@asynch-label",
+                    nameLabel: "@asynch-name",
+                    statusLabel: "@asynch-status",
+                    dateStartedLabel: "@asynch-dateStarted",
+                    dateCompletedLabel: "@asynch-dateCompleted",
+                    startedByLabel: "@asynch-startedBy",
+                    messageLabel: "@asynch-message",
+                    completionLabel: "@asynch-completion",
+                    lastUpdateLabel: "@asynch-lastUpdate",
+                    listenType: "taskType",
+                    taskType: "publication",
+                    relatedRecordId: "@oid",
+                    criteria: {
+                      where: {
+                        relatedRecordId: "@oid",
+                        taskType: "publication"
+                      }
+                    },
+                    dateFormat: 'L LT'
+                  },
+                  variableSubstitutionFields: ['relatedRecordId']
                 }
               ]
             }

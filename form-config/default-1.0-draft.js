@@ -23,16 +23,33 @@ module.exports = {
       }
     },
     {
-      class: "AnchorOrButton",
-      viewOnly: true,
+      class: 'Container',
+      compClass: 'GenericGroupComponent',
       definition: {
-        label: '@dmp-edit-record-link',
-        value: '/@branding/@portal/record/edit/@oid',
-        cssClasses: 'btn btn-large btn-info margin-15',
-        showPencil: true,
-        controlType: 'anchor'
-      },
-      variableSubstitutionFields: ['value']
+        cssClasses: "form-inline",
+        fields: [{
+            class: "AnchorOrButton",
+            viewOnly: true,
+            definition: {
+              label: '@dmp-edit-record-link',
+              value: '/@branding/@portal/record/edit/@oid',
+              cssClasses: 'btn btn-large btn-info margin-15',
+              showPencil: true,
+              controlType: 'anchor'
+            },
+            variableSubstitutionFields: ['value']
+          },
+          {
+            class: 'PDFList',
+            viewOnly: true,
+            definition: {
+              name: 'pdf',
+              label: 'pdf',
+              cssClasses: 'btn btn-large btn-info margin-15'
+            }
+          }
+        ]
+      }
     },
     {
       class: 'TextArea',
@@ -369,10 +386,12 @@ module.exports = {
               fields: [{
                   class: 'ContributorField',
                   showHeader: true,
+                  showRole: false,
                   definition: {
                     name: 'contributor_ci',
                     required: true,
                     label: '@dmpt-people-tab-ci',
+                    help: '@dmpt-people-tab-ci-help',
                     role: "@dmpt-people-tab-ci-role",
                     freeText: false,
                     forceLookupOnly: true,
@@ -414,6 +433,7 @@ module.exports = {
                     name: 'contributor_data_manager',
                     required: true,
                     label: '@dmpt-people-tab-data-manager',
+                    help: '@dmpt-people-tab-data-manager-help',
                     role: "@dmpt-people-tab-data-manager-role",
                     freeText: false,
                     vocabId: 'Parties AND repository_name:People',
@@ -432,6 +452,7 @@ module.exports = {
                     nameColHdr: '@dmpt-people-tab-name-hdr',
                     emailColHdr: '@dmpt-people-tab-email-hdr',
                     orcidColHdr: '@dmpt-people-tab-orcid-hdr',
+                    showRole: false,
                     publish: {
                       onValueUpdate: {
                         modelEventSource: 'valueChanges'
@@ -441,8 +462,15 @@ module.exports = {
                       'this': {
                         onValueUpdate: []
                       }
+                    },
+                    value: {
+                      name: '@user_name',
+                      email: '@user_email',
+                      username: '@user_username',
+                      text_full_name: '@user_name'
                     }
-                  }
+                  },
+                  variableSubstitutionFields: ['value.name', 'value.email', 'value.username', 'value.text_full_name']
                 },
                 {
                   class: 'RepeatableContributor',
@@ -460,6 +488,7 @@ module.exports = {
                       definition: {
                         required: false,
                         label: '@dmpt-people-tab-contributors',
+                        help: '@dmpt-people-tab-contributors-help',
                         role: "@dmpt-people-tab-contributors-role",
                         freeText: false,
                         vocabId: 'Parties AND repository_name:People',
@@ -477,6 +506,7 @@ module.exports = {
                         nameColHdr: '@dmpt-people-tab-name-hdr',
                         emailColHdr: '@dmpt-people-tab-email-hdr',
                         orcidColHdr: '@dmpt-people-tab-orcid-hdr',
+                        showRole: false,
                         publish: {
                           onValueUpdate: {
                             modelEventSource: 'valueChanges'
@@ -498,6 +528,7 @@ module.exports = {
                     name: 'contributor_supervisor',
                     required: false,
                     label: '@dmpt-people-tab-supervisor',
+                    help: '@dmpt-people-tab-supervisor-help',
                     role: "@dmpt-people-tab-supervisor-role",
                     freeText: false,
                     forceLookupOnly: true,
@@ -516,6 +547,7 @@ module.exports = {
                     nameColHdr: '@dmpt-people-tab-name-hdr',
                     emailColHdr: '@dmpt-people-tab-email-hdr',
                     orcidColHdr: '@dmpt-people-tab-orcid-hdr',
+                    showRole: false,
                     publish: {
                       onValueUpdate: {
                         modelEventSource: 'valueChanges'
@@ -1041,8 +1073,10 @@ module.exports = {
                           delim: ''
                         }]
                       }
-                    }
-                  }
+                    },
+                    value: '@user_name'
+                  },
+                  variableSubstitutionFields: ['value']
                 }
               ]
             }
@@ -1212,12 +1246,10 @@ module.exports = {
                     help: '@dmpt-workspace-select-help',
                     open: '@dmpt-workspace-open',
                     saveFirst: '@dmpt-workspace-saveFirst',
-                    defaultSelection: [
-                      {
-                        name: '',
-                        label: '@dmpt-select:Empty'
-                      }
-                    ]
+                    defaultSelection: [{
+                      name: '',
+                      label: '@dmpt-select:Empty'
+                    }]
                   }
                 },
                 {
@@ -1344,8 +1376,8 @@ module.exports = {
       class: "ButtonBarContainer",
       compClass: "ButtonBarContainerComponent",
       definition: {
-        fields: [
-          {
+        editOnly: true,
+        fields: [{
             class: "TabNavButton",
             definition: {
               id: 'mainTabNav',
