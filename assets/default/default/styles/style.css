@@ -16,6 +16,30 @@
     display: -webkit-flex;
     display: flex;
 }
+/* add typography
+
+don't need this one. Couldnt get a light version so using png instead */
+/* @font-face{font-family:'NB International';
+src:url("http://www.uts.edu.au/themes/uts_theme/src/vendor/neubauberlin/nb_international_pro_regular-webfont.woff2") format("woff2"),
+url("http://www.uts.edu.au/themes/uts_theme/src/vendor/neubauberlin/nb_international_pro_regular-webfont.woff") format("woff");font-weight:normal;
+*/
+
+@font-face{font-family:'NB Akademie Std';
+src:url("nb_akademie_std_regular-webfont.woff2") format("woff2"),
+url("nb_akademie_std_regular-webfont.woff") format("woff");font-weight:normal;
+}
+/* rc:url("http://www.uts.edu.au/themes/uts_theme/src/vendor/neubauberlin/nb_akademie_std_regular-webfont.woff2") format("woff2"),
+url("http://www.uts.edu.au/themes/uts_theme/src/vendor/neubauberlin/nb_akademie_std_regular-webfont.woff") format("woff");font-weight:normal;
+*/
+@font-face{font-family:'NB Akademie Std';
+src:url("nb_akademie_std_bold-webfont.woff2") format("woff2"),
+url("nb_akademie_std_bold-webfont.woff") format("woff");font-weight:bold;
+}
+/*
+src:url("http://www.uts.edu.au/themes/uts_theme/src/vendor/neubauberlin/nb_akademie_std_bold-webfont.woff2") format("woff2"),
+url("http://www.uts.edu.au/themes/uts_theme/src/vendor/neubauberlin/nb_akademie_std_bold-webfont.woff") format("woff");font-weight:bold;
+*/
+
 a:focus { outline: 0px solid }
 img {
     max-width: 100%;
@@ -31,12 +55,13 @@ h6 {
     font-weight: 700;
     margin: 0 0 15px;
 }
-body { font-family: 'Titillium Web', sans-serif; }
 
-
+body {
+    font-family: 'NB Akademie Std',Arial,sans-serif;
+}
 
 .header-area {
-    background: none repeat scroll 0 0 #f4f4f4;
+    background: none repeat scroll 0 0 #ffffff;
 }
 .header-area a {
     color: #888;
@@ -78,31 +103,36 @@ body { font-family: 'Titillium Web', sans-serif; }
     text-align: center;
 }
 
-.mainmenu-area {background: none repeat scroll 0 0 #500005;
-font-family: "Roboto Condensed",sans-serif;
-text-transform: uppercase;
+.mainmenu-area {background: none repeat scroll 0 0 #000000;
+/* font-family: 'NB Akademie Std',Arial,sans-serif; */
+/* text-transform: uppercase; */
 width: 100%;
 z-index: 999;}
 
-
-
+/*
 .logo h1 {
-    font-size: 40px;
-    margin: 40px 0;font-weight: 400;
+    font-size: 50px;
+    margin: 0px 0;
+    font-family: 'NB International',Arial,sans-serif;
 }
+*/
+
 .logo h1 a {
-    color: #999;
+    color: #000000;
 }
 .logo h1 a:hover {text-decoration: none;opacity: .7}
 .logo h1 a span {
-    color: #428bca;
+    color: #ffffff;
 }
 
 .mainmenu-area ul.navbar-nav li a {
+/* font-family: 'NB Akademie Std',Arial,sans-serif; */
     font-size: 16px;
-    font-weight: 700;
+    font-weight: 200;
     padding: 20px;
     color: white;
+    padding-left: 30px;
+    padding-right: 30px;
 }
 
  .mainmenu-area ul.navbar-nav li.active a {
@@ -115,8 +145,89 @@ z-index: 999;}
     background-color: #222222;
 }
 
-.mainmenu-area ul.navbar-nav li:hover a, .mainmenu-area ul.navbar-nav li.active a {}
+.mainmenu-area ul.navbar-nav li:hover a,
+.mainmenu-area ul.navbar-nav li.active a {}
 .mainmenu-area .nav > li > a:focus {color: #000}
+.mainmenu-area .nav > li > a:hover {background-color: #222222}
+/* over ride left nav */
+
+.nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus {
+    color: #fff;
+    background-color: #000;
+}
+
+/* Style help button
+*/
+.btn-default {
+    color: #0d41d1;
+    background-color: #fff;
+    border-color: #fff;
+}
+/* change messages colour to UTS branding */
+.text-danger {
+    color: #ff2305;
+}
+
+.bg-success {
+    background-color: #adcdad;
+}
+.text-success {
+    color: #002f00;
+}
+
+.has-error .control-label, .has-error .radio, .has-error .checkbox, .has-error .radio-inline, .has-error .checkbox-inline
+{
+    color: #ff2305;
+}
+
+.has-error .help-block{
+    color: #0d41d1;
+}
+
+/* change help text colour per UTS branding */
+.help-block {
+   display: block;
+   margin-top: 5px;
+   margin-bottom: 10px;
+   color: #0d41d1;
+ }
+ /* change button colour per UTS branding */
+
+ .btn-danger {
+     color: #fff;
+     background-color: #ff7d6b;
+     border-color: #ff7d6b;
+ }
+
+ .btn-warning {
+     color: #fff;
+     background-color: #f09d38;
+     border-color: #f09d38;
+}
+
+ .btn-success {
+     color: #fff;
+     background-color: #32cd32;
+     border-color: #32cd32;
+ }
+ .btn-primary {
+     color: #fff;
+     background-color: #0f4beb;
+     border-color: #0f4beb;
+ }
+
+ .btn-info {
+     color: #fff;
+     background-color: #0f4beb;
+     border-color: #0f4beb;
+}
+
+ .pagination>.active>a, .pagination>.active>span, .pagination>.active>a:hover, .pagination>.active>span:hover, .pagination>.active>a:focus, .pagination>.active>span:focus {
+    color: #fff;
+    cursor: default;
+    background-color: #0d41d1;
+    border-color: #0d41d1;
+}
 
 .slider-area {clear: both}
 .slider-area, .promo-area, .brands-area, .maincontent-area, .footer-top-area, .product-widget-area, .product-breadcroumb-area, .single-product-area {position: relative;overflow: hidden}
@@ -222,9 +333,8 @@ z-index: 9;
 .single-promo:hover {color: #fff;background: #222;border-color: #222}
 
 .section-title {
-  font-family: "Raleway",sans-serif;
   font-size: 50px;
-  font-weight: 100;
+  font-weight: normal;
   margin-bottom: 50px;
   text-align: center;
 }
@@ -465,7 +575,8 @@ padding: 35px 0 180px;}
 .newsletter-form {
     margin-top: 25px;
 }
-a {color: #428bca}
+a {color: #000;
+  font-family: inherit}
 
 .footer-bottom-area {
   background: none repeat scroll 0 0 #000;
@@ -543,11 +654,11 @@ width: 10px;
 }
 
 .site-branding-area {
-  background-color: #b1101a;
+  background-color: #fff;
 }
 
 .site-branding-area h1 {
-  color: #FFF;
+  color: #000;
 }
 
 
