@@ -20,7 +20,7 @@ import { Input, Component, OnInit, Inject, Injector, EventEmitter} from '@angula
 import { SimpleComponent } from './field-simple.component';
 import { FieldBase } from './field-base';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import * as _ from "lodash-es";
+import * as _ from "lodash";
 import { DashboardService } from '../dashboard-service';
 import { PlanTable, Plan } from '../dashboard-models';
 
@@ -47,6 +47,7 @@ export class RelatedObjectSelectorField extends FieldBase<any> {
   columnTitle:string;
 
   relatedObjectSelected:EventEmitter<string> = new EventEmitter<string>();
+  resetSelectorEvent: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(options: any, injector: any) {
     super(options, injector);
@@ -59,18 +60,21 @@ export class RelatedObjectSelectorField extends FieldBase<any> {
     var that = this;
     this.dashboardService.getAllRecordsCanEdit(this.recordType,'').then((draftPlans: PlanTable) => {
       this.plans = draftPlans;
-      this.onFilterChange();
     });
   }
 
-
-  recordSelected(record, event) {
+  recordSelected(record: any, config: any) {
+    this.setValue({oid: record.oid, title:record.title});
+  }
+  
+  recordSelectedEmit(record, event) {
     this.setValue({oid: record.oid, title:record.title});
     this.relatedObjectSelected.emit(record.oid);
   }
 
   resetSelector() {
     this.setEmptyValue();
+    this.resetSelectorEvent.emit();
   }
 
   createFormModel(valueElem: any = undefined): any {
@@ -124,6 +128,9 @@ export class RelatedObjectSelectorField extends FieldBase<any> {
   templateUrl: './field-relatedobjectselector.html'
 })
 export class RelatedObjectSelectorComponent extends SimpleComponent {
-  field: RelatedObjectSelectorField;
+  @Input() field: RelatedObjectSelectorField;
 
+  hasFilteredResults() {
+    return this.field.searchFilterName && !_.isEmpty(_.trim(this.field.searchFilterName)) && this.field.filteredPlans && this.field.filteredPlans.length > 0;
+  }
 }

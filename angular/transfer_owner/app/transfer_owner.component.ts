@@ -20,7 +20,7 @@ import { DOCUMENT } from '@angular/platform-browser';
 import { Component, Injectable, Inject, ApplicationRef, ElementRef } from '@angular/core';
 import { FormArray, FormGroup, FormControl, Validators } from '@angular/forms';
 import { DashboardService } from './shared/dashboard-service';
-import * as _ from "lodash-es";
+import * as _ from "lodash";
 import { LoadableComponent } from './shared/loadable.component';
 import { TranslationService } from './shared/translation-service';
 import { PlanTable, Plan } from './shared/dashboard-models';
@@ -59,6 +59,7 @@ export class TransferOwnerComponent extends LoadableComponent {
   fieldsForUpdate: any;
   fieldForUpdate: string;
   user: User;
+  selectAllChecked: boolean;
 
   constructor( @Inject(DashboardService) protected dashboardService: DashboardService,
     public translationService: TranslationService,
@@ -100,12 +101,19 @@ export class TransferOwnerComponent extends LoadableComponent {
     return this.recordService.getTransferResponsibility(this.recordType);
   }
 
+  public selectAllLocations(checked){
+    _.each(this.filteredPlans, (plan:any) => {
+      plan.selected = checked;
+    });
+  }
+
   protected loadPlans(transferredRecords: any[] = null) {
     this.translationService.isReady(tService => {
       this.dashboardService.getAllRecordsCanEdit('rdmp,dataRecord','draft').then((draftPlans: PlanTable) => {
         this.dashboardService.setDashboardTitle(draftPlans);
         // skip transferred records...
         _.remove(draftPlans.items, (item: any) => {
+          console.log(item);
           return _.find(transferredRecords, (rec: any) => {
             return rec.oid == item.oid;
           });
@@ -146,6 +154,7 @@ export class TransferOwnerComponent extends LoadableComponent {
 
   onFilterChange() {
 
+    this.selectAllChecked = false;
 
     this.filteredPlans = _.filter(this.plans.items, (plan: any) => {
       plan.selected = false;
@@ -188,6 +197,7 @@ export class TransferOwnerComponent extends LoadableComponent {
   }
 
   toggleSelect(plan: any, event: any) {
+    this.selectAllChecked = false;
     if (event.target.type !== 'checkbox') {
       plan.selected = !plan.selected;
     }

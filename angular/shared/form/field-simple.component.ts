@@ -19,10 +19,10 @@
 
 import { Input, Component, ViewChild, ViewContainerRef, OnInit, Injector, AfterViewInit, AfterViewChecked, ChangeDetectorRef } from '@angular/core';
 import { FieldBase } from './field-base';
-import { Container, DateTime, AnchorOrButton, SaveButton, CancelButton, TabOrAccordionContainer,ParameterRetrieverField, TabNavButton, Spacer } from './field-simple';
+import { HtmlRaw, Container, DateTime, AnchorOrButton, SaveButton, CancelButton, TabOrAccordionContainer,ParameterRetrieverField, TabNavButton, Spacer, Toggle } from './field-simple';
 import { RecordMetadataRetrieverField } from './record-meta.component';
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
-import * as _ from "lodash-es";
+import * as _ from "lodash";
 import moment from 'moment-es6';
 declare var jQuery: any;
 declare var window: any;
@@ -180,7 +180,7 @@ export class DropdownFieldComponent extends SelectionComponent {
 @Component({
   selector: 'selectionfield',
   template: `
-  <div [formGroup]='form' *ngIf="field.editMode" class="form-group">
+  <div [formGroup]='form' *ngIf="field.editMode && field.visible" class="form-group">
      <label [attr.for]="field.name">
       {{field.label}} {{ getRequiredLabelStr()}}
       <button type="button" class="btn btn-default" *ngIf="field.help" (click)="toggleHelp()"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></button>
@@ -188,8 +188,8 @@ export class DropdownFieldComponent extends SelectionComponent {
      <span id="{{ 'helpBlock_' + field.name }}" class="help-block" *ngIf="this.helpShow" [innerHtml]="field.help"></span>
      <span *ngFor="let opt of field.options">
       <!-- radio type hard-coded otherwise accessor directive will not work! -->
-      <input *ngIf="isRadio()" type="radio" name="{{field.name}}" [id]="field.name + '_' + opt.value" [formControl]="getFormControl()" [value]="opt.value">
-      <input *ngIf="!isRadio()" type="{{field.controlType}}" name="{{field.name}}" [id]="field.name + '_' + opt.value" [value]="opt.value" (change)="onChange(opt, $event)" [attr.selected]="getControlFromOption(opt)" [attr.checked]="getControlFromOption(opt)">
+      <input *ngIf="isRadio()" type="radio" name="{{field.name}}" [id]="field.name + '_' + opt.value" [formControl]="getFormControl()" [value]="opt.value" [attr.disabled]="field.readOnly ? '' : null ">
+      <input *ngIf="!isRadio()" type="{{field.controlType}}" name="{{field.name}}" [id]="field.name + '_' + opt.value" [value]="opt.value" (change)="onChange(opt, $event)" [attr.selected]="getControlFromOption(opt)" [attr.checked]="getControlFromOption(opt)" [attr.disabled]="field.readOnly ? '' : null ">
       <label for="{{field.name + '_' + opt.value}}" class="radio-label">{{ opt.label }}</label>
       <br/>
      </span>
@@ -210,7 +210,7 @@ export class DropdownFieldComponent extends SelectionComponent {
         </div>
       </ng-container>
     </ng-container>
-    <div>&nbsp;</div>
+
   </div>
   `,
 })
@@ -233,7 +233,7 @@ export class SelectionFieldComponent extends SelectionComponent {
   }
 
   onChange(opt:any, event:any) {
-      let formcontrol:any = this.getFormControl();
+    let formcontrol:any = this.getFormControl();
     if (event.target.checked) {
       formcontrol.push(new FormControl(opt.value));
     } else {
@@ -279,10 +279,11 @@ Container components
   </div>
   <div *ngIf="!field.editMode" [ngClass]="field.accContainerClass">
     <div class="panel-group">
+      <a href="#" (click)="expandCollapseAll()">Expand/Collapse all</a>
       <div *ngFor="let tab of field.fields" [ngClass]="field.accClass">
         <div class="panel-heading">
           <h4 class="panel-title">
-            <a data-toggle="collapse" href="#{{tab.id}}">{{tab.label}}</a>
+            <a data-toggle="collapse" (click)="accordionHeaderClicked(tab.id)" href="#{{tab.id}}"><span *ngIf="!tab.expanded">+</span><span *ngIf="tab.expanded">-</span> {{tab.label}}</a>
           </h4>
         </div>
         <div id="{{tab.id}}" class="panel-collapse collapse">
@@ -308,6 +309,38 @@ export class TabOrAccordionContainerComponent extends SimpleComponent implements
     });
 
   }
+
+  accordionHeaderClicked(tabId) {
+    _.each(this.field.fields, tab => {
+      if(tabId == tab.id) {
+        if(tab["expanded"]) {
+           tab["expanded"] = false;
+        } else {
+          tab["expanded"] = true;
+        }
+        return false;
+      }
+    })
+  }
+
+  expandCollapseAll() {
+    if(this.field.allExpanded) {
+      _.each(this.field.fields, tab => {
+          if(tab["expanded"]) {
+            jQuery(`[href='#${tab.id}']`)[0].click();
+          }
+      });
+      this.field.allExpanded = false;
+    } else {
+      _.each(this.field.fields, tab => {
+          if(!tab["expanded"]) {
+            jQuery(`[href='#${tab.id}']`)[0].click();
+          }
+      });
+      this.field.allExpanded = true;
+    }
+    return false;
+  }
 }
 
 @Component({
@@ -327,17 +360,18 @@ export class ButtonBarContainerComponent extends SimpleComponent {
 @Component({
   selector: 'htmlraw',
   template: `
-  <ng-content></ng-content>
+  <span *ngIf="field.visible" [innerHtml]="field.value"></span>
   `,
 })
 export class HtmlRawComponent extends SimpleComponent {
+  field: HtmlRaw;
 
 }
 // For creating text blocks with help sections?
 @Component({
   selector: 'text-block',
   template: `
-  <div [ngSwitch]="field.type">
+  <div *ngIf="field.visible" [ngSwitch]="field.type">
     <h1 *ngSwitchCase="'h1'" [ngClass]="field.cssClasses">{{field.value}}</h1>
     <h2 *ngSwitchCase="'h2'" [ngClass]="field.cssClasses">{{field.value}}</h2>
     <h3 *ngSwitchCase="'h3'" [ngClass]="field.cssClasses">{{field.value}}</h3>
@@ -372,35 +406,73 @@ export class TextBlockComponent extends SimpleComponent {
 *        }
 * ```
 *
-*| Property Name    | Description                                                    | Required | Default |
-*|------------------|----------------------------------------------------------------|----------|---------|
-*| label            | The text to display on the button                              | Yes      |         |
-*| closeOnSave      | Flag to leave the page on successful save                      | No       | false   |
-*| redirectLocation | The location to redirect to if closeOnSave flag is set to true | No       |         |
+*| Property Name       | Description                                                    | Required | Default |
+*|---------------------|----------------------------------------------------------------|----------|---------|
+*| label               | The text to display on the button                              | Yes      |         |
+*| closeOnSave         | Flag to leave the page on successful save                      | No       | false   |
+*| redirectLocation    | The location to redirect to if closeOnSave flag is set to true | No       |         |
 */
 @Component({
   selector: 'save-button',
   template: `
     <button type="button" (click)="onClick($event)" class="btn" [ngClass]="field.cssClasses" [disabled]="!fieldMap._rootComp.needsSave || fieldMap._rootComp.isSaving()">{{field.label}}</button>
+    <div *ngIf="field.confirmationMessage" class="modal fade" id="{{ field.name }}_confirmation" tabindex="-1" role="dialog" >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="{{ field.name }}_confirmation_label" [innerHtml]="field.confirmationTitle"></h4>
+          </div>
+          <div class="modal-body" [innerHtml]="field.confirmationMessage"></div>
+          <div class="modal-footer">
+            <button (click)="hideConfirmDlg()" type="button" class="btn btn-default" data-dismiss="modal" [innerHtml]="field.cancelButtonMessage"></button>
+            <button (click)="doAction()" type="button" class="btn btn-primary" [innerHtml]="field.confirmButtonMessage"></button>
+          </div>
+        </div>
+      </div>
+    </div>
   `,
 })
 export class SaveButtonComponent extends SimpleComponent {
   public field: SaveButton;
 
   public onClick(event: any) {
-    if(this.field.closeOnSave == true) {
-      var successObs = this.fieldMap._rootComp.onSubmit();
-
-      successObs.subscribe( successful =>  {
-        if(successful) {
-           window.location.href= this.field.redirectLocation;
-        }
-      });
-    } else {
-      this.fieldMap._rootComp.onSubmit().subscribe();
+    if (this.field.confirmationMessage) {
+      this.showConfirmDlg();
+      return;
     }
+    this.doAction();
   }
 
+  showConfirmDlg() {
+    jQuery(`#${this.field.name}_confirmation`).modal('show');
+  }
+
+  hideConfirmDlg() {
+    jQuery(`#${this.field.name}_confirmation`).modal('hide');
+  }
+
+  public doAction() {
+    var successObs = null;
+    if (this.field.isDelete) {
+      successObs = this.fieldMap._rootComp.delete();
+    } else {
+      successObs = this.field.targetStep ?
+      this.fieldMap._rootComp.onSubmit(true, this.field.targetStep, false, this.field.additionalData)
+      : this.fieldMap._rootComp.onSubmit(false, null, false, this.field.additionalData);
+    }
+    successObs.subscribe( status =>  {
+      if (status) {
+        if (this.field.closeOnSave == true) {
+          window.location.href= this.field.redirectLocation;
+        }
+      }
+      if (this.field.confirmationMessage) {
+        this.hideConfirmDlg();
+      }
+    });
+
+  }
 }
 
 /**
@@ -468,12 +540,34 @@ export class TabNavButtonComponent extends SimpleComponent {
     })
   }
 
+  ngAfterViewInit() {
+    const focusTabId = this.getUrlParameter('focusTabId');
+    if (!_.isEmpty(focusTabId)) {
+      this.fieldMap._rootComp.gotoTab(focusTabId);
+    }
+  }
+
   public stepToTab(step: number) {
     const tabId = this.field.getTabId(step);
     if (tabId) {
       this.fieldMap._rootComp.gotoTab(tabId);
     } else {
       console.log(`Invalid tab: ${tabId}`);
+    }
+  }
+
+  getUrlParameter(param:string) {
+    var pageURL = decodeURIComponent(window.location.search.substring(1)),
+        urlVariables = pageURL.split('&'),
+        parameterName,
+        i;
+
+    for (i = 0; i < urlVariables.length; i++) {
+        parameterName = urlVariables[i].split('=');
+
+        if (parameterName[0] === param) {
+            return parameterName[1] === undefined ? null : parameterName[1];
+        }
     }
   }
 }
@@ -602,5 +696,19 @@ export class ParameterRetrieverComponent extends SimpleComponent implements Afte
 })
 export class SpacerComponent extends SimpleComponent {
   field: Spacer;
+
+}
+
+@Component({
+  selector: 'toggle',
+  template: `
+    <div *ngIf="field.type == 'checkbox'" [formGroup]='form'>
+      <input type="checkbox" name="{{field.name}}" [id]="field.name" [formControl]="getFormControl()" >
+      <label for="{{ field.name }}" class="radio-label">{{ field.label }}</label>
+    </div>
+  `
+})
+export class ToggleComponent extends SimpleComponent {
+  field: Toggle;
 
 }

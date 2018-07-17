@@ -24,7 +24,7 @@ import { Http } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import { FieldControlMetaService } from './field-control-meta.service';
 import { Observable } from 'rxjs/Observable';
-import * as _ from "lodash-es";
+import * as _ from "lodash";
 import { ConfigService } from '../config-service';
 declare var io: any;
 /**
@@ -111,8 +111,7 @@ export class RecordsService extends BaseService {
 
   stepTo(oid: string, record: any, targetStep: string) {
     return this.http.post(`${this.brandingAndPortalUrl}/record/workflow/step/${targetStep}/${oid}`, record, this.getOptionsClient())
-    .toPromise()
-    .then((res:any) => this.extractData(res) as RecordActionResult);
+    .map((res:any) => this.extractData(res) as RecordActionResult);
   }
 
   getDashboardUrl(recType:string='rdmp') {
@@ -210,6 +209,11 @@ export class RecordsService extends BaseService {
 
   subscribeToAsyncProgress(oid: string = null, connectCb) {
     io.socket.get(`${this.brandingAndPortalUrl}/asynch/subscribe/${oid}`, connectCb);
+  }
+
+  delete(oid: string) {
+    return this.http.delete(`${this.brandingAndPortalUrl}/record/delete/${oid}`, this.getOptionsClient())
+    .map((res:any) => this.extractData(res));
   }
 }
 

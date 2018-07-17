@@ -19,9 +19,26 @@
 import { Output, EventEmitter } from '@angular/core';
 import { FieldBase } from './field-base';
 import { FormControl, FormGroup, FormArray, Validators } from '@angular/forms';
-import * as _ from "lodash-es";
+import * as _ from "lodash";
 import moment from 'moment-es6';
 
+export class NotInFormField extends FieldBase<any> {
+  constructor(options: any, injector: any) {
+    super(options, injector);
+  }
+
+  public createFormModel(valueElem:any = null): any {
+  }
+
+  public getGroup(group: any, fieldMap: any) : any {
+    this.fieldMap = fieldMap;
+    _.set(fieldMap, `${this.getFullFieldName()}.field`, this);
+  }
+
+  public reactEvent(eventName: string, eventData: any, origData: any) {
+
+  }
+}
 
 export class SelectionField extends FieldBase<any>  {
   options: any[] = [];
@@ -59,6 +76,25 @@ export class SelectionField extends FieldBase<any>  {
       // return model;
       return super.createFormModel();
     }
+  }
+
+  nextOption() {
+    if (this.controlType == 'radio') {
+      let nextIdx = 0;
+      const opt = _.find(this.options, (opt, idx)=> {
+        const match = opt.value == this.value;
+        if (match) {
+          nextIdx = ++idx;
+        }
+        return match;
+      });
+      if (nextIdx >= this.options.length) {
+        nextIdx = 0;
+      }
+      const value = this.options[nextIdx].value;
+      this.setValue(value);
+    }
+    return this.value;
   }
 }
 
@@ -102,6 +138,17 @@ export class Container extends FieldBase<any> {
     return this.formModel;
   }
 
+  public setValue(value:any, emitEvent:boolean=true) {
+    this.value = value;
+    _.forOwn(value, (val, key) => {
+      const fld = _.find(this.fields, (fldItem) => {
+        return fldItem.name == key;
+      });
+      fld.setValue(val, emitEvent);
+    });
+    // this.formModel.setValue(value, { onlySelf: true, emitEvent: emitEvent });
+  }
+
 }
 
 export class TabOrAccordionContainer extends Container {
@@ -113,6 +160,7 @@ export class TabOrAccordionContainer extends Container {
   tabContentClass: any;
   accContainerClass: any;
   accClass: any;
+  allExpanded:boolean = false;
 
   constructor(options: any, injector: any) {
     super(options, injector);
@@ -181,19 +229,32 @@ export class DateTime extends FieldBase<any> {
 
 
 
-export class SaveButton extends FieldBase<string> {
+export class SaveButton extends NotInFormField {
   label: string;
   redirectLocation: string;
   closeOnSave: boolean;
   buttonClass: string;
-
+  targetStep: string;
+  additionalData: any;
+  confirmationMessage: string;
+  confirmationTitle: string;
+  cancelButtonMessage: string;
+  confirmButtonMessage: string;
+  isDelete: boolean;
 
   constructor(options: any, injector: any) {
     super(options, injector);
-    this.label = options['label'];
+    this.label = this.getTranslated(options['label'], 'Save');
     this.closeOnSave = options['closeOnSave'] || false;
     this.redirectLocation = options['redirectLocation'] || false;
     this.cssClasses = options['cssClasses'] || "btn-primary";
+    this.targetStep = options['targetStep'] || null;
+    this.additionalData = options['additionalData'] || null;
+    this.confirmationMessage = options['confirmationMessage'] ? this.getTranslated(options['confirmationMessage'], null) : null;
+    this.confirmationTitle = options['confirmationTitle'] ? this.getTranslated(options['confirmationTitle'], null) : null;
+    this.cancelButtonMessage = options['cancelButtonMessage'] ? this.getTranslated(options['cancelButtonMessage'], null ) : null;
+    this.confirmButtonMessage = options['confirmButtonMessage'] ? this.getTranslated(options['confirmButtonMessage'], null) : null;
+    this.isDelete = options['isDelete'];
   }
 }
 
@@ -201,7 +262,7 @@ export class CancelButton extends FieldBase<string> {
   label: string;
   constructor(options: any, injector: any) {
     super(options, injector);
-    this.label = options['label'];
+    this.label =  this.getTranslated(options['label'], 'Cancel');
   }
 }
 
@@ -308,7 +369,7 @@ export class ParameterRetrieverField extends FieldBase<string> {
 
 }
 
-export class Spacer extends FieldBase<string> {
+export class Spacer extends NotInFormField {
   width: string;
   height: string;
 
@@ -316,5 +377,23 @@ export class Spacer extends FieldBase<string> {
     super(options, injector);
     this.width = options.width;
     this.height = options.height;
+  }
+}
+
+export class Toggle extends FieldBase<boolean> {
+  type: string;
+
+  constructor(options: any, injector: any) {
+    super(options, injector);
+    this.type = options['type'] || 'checkbox';
+    this.value = options['value'] || false;
+  }
+}
+
+export class HtmlRaw extends NotInFormField {
+
+  public getGroup(group: any, fieldMap: any) : any {
+    super.getGroup(group, fieldMap);
+    this.value = this.replaceValWithConfig(this.value);
   }
 }

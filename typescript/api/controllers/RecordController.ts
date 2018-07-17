@@ -25,7 +25,7 @@ import moment from 'moment-es6';
 import * as tus from 'tus-node-server';
 import * as fs from 'fs';
 
-declare var FormsService, RecordsService, WorkflowStepsService, BrandingService, RecordTypesService, TranslationService, User, EmailService;
+declare var FormsService, RecordsService, WorkflowStepsService, BrandingService, RecordTypesService, TranslationService, User, EmailService, RolesService;
 /**
  * Package that contains all Controllers.
  */
@@ -57,8 +57,8 @@ export module Controllers {
       'doAttachment',
       'getAttachments',
       'getDataStream',
-      'getAllTypes'
-
+      'getAllTypes',
+      'delete'
     ];
 
     /**
@@ -95,7 +95,7 @@ export module Controllers {
       let appName = 'dmp';
       sails.log.debug('RECORD::APP: ' + appName)
       if (recordType != '') {
-        FormsService.getForm(brand.id, recordType, true).subscribe(form => {
+        FormsService.getForm(brand.id, recordType, true, true).subscribe(form => {
           if (form['customAngularApp'] != null) {
             appSelector = form['customAngularApp']['appSelector'];
             appName = form['customAngularApp']['appName'];
@@ -112,6 +112,8 @@ export module Controllers {
             appSelector = form['customAngularApp']['appSelector'];
             appName = form['customAngularApp']['appName'];
           }
+          return this.sendView(req, res, 'record/edit', { oid: oid, rdmp: rdmp, recordType: recordType, appSelector: appSelector, appName: appName });
+        }, error => {
           return this.sendView(req, res, 'record/edit', { oid: oid, rdmp: rdmp, recordType: recordType, appSelector: appSelector, appName: appName });
         });
 
@@ -198,7 +200,7 @@ export module Controllers {
                             }
 
                             let observable = this.triggerPreSaveTriggers(oid, record, recordType);
-                            observable.subscribe(record => {
+                            observable.then(record => {
 
                                     RecordsService.updateMeta(brand, oid, record).subscribe(response => {
                                       relationshipObjectCount++;
@@ -262,7 +264,7 @@ export module Controllers {
 
       let obs = null;
       if (_.isEmpty(oid)) {
-        obs = FormsService.getForm(brand.id, name, editMode).flatMap(form => {
+        obs = FormsService.getForm(brand.id, name, editMode, true).flatMap(form => {
           this.mergeFields(req, res, form.fields, {});
           return Observable.of(form);
         });
@@ -405,6 +407,45 @@ export module Controllers {
       }
     }
 
+    public delete(req, res) {
+      const brand = BrandingService.getBrand(req.session.branding);
+      const metadata = req.body;
+      const oid = req.param('oid');
+      const user = req.user;
+      let currentRec = null;
+      let message = null;
+      this.getRecord(oid).flatMap(cr => {
+        currentRec = cr;
+        return this.hasEditAccess(brand, user, currentRec);
+      })
+      .flatMap(hasEditAccess => {
+        if (hasEditAccess) {
+          return RecordsService.delete(oid);
+        }
+        message = TranslationService.t('edit-error-no-permissions');
+        return Observable.throw(new Error(TranslationService.t('edit-error-no-permissions')));
+      })
+      .subscribe(response => {
+        if (response && response.code == "200") {
+          const resp = {success:true, oid: oid};
+          sails.log.verbose(`Successfully deleted: ${oid}`);
+          this.ajaxOk(req, res, null, resp);
+        } else {
+          this.ajaxFail(req, res, TranslationService.t('failed-delete'), {success: false, oid: oid, message: response.message});
+        }
+      }, error => {
+        sails.log.error("Error deleting:");
+        sails.log.error(error);
+        if (message == null) {
+          message = error.message;
+        } else
+        if (error.error && error.error.code == 500) {
+          message = TranslationService.t('missing-record');
+        }
+        this.ajaxFail(req, res, message);
+      });
+    }
+
     public update(req, res) {
       const brand = BrandingService.getBrand(req.session.branding);
       const metadata = req.body;
@@ -421,22 +462,43 @@ export module Controllers {
         .map(hasEditAccess => {
           return RecordTypesService.get(brand, currentRec.metaMetadata.type)
         }).flatMap(recordType => {
-          return recordType
+          return recordType;
         }).flatMap(recordType => {
+          if (metadata.delete) {
+            return Observable.of(currentRec);
+          }
           recType = recordType;
           origRecord = _.cloneDeep(currentRec);
           currentRec.metadata = metadata;
           let observable = this.triggerPreSaveTriggers(oid, currentRec, recordType);
 
-          return observable.map(record => {
+          return observable.then(record => {
             return record
           });
 
         }).subscribe(record => {
+          if (metadata.delete) {
+            RecordsService.delete(oid).subscribe(response => {
+              if (response && response.code == "200") {
+                response.success = true;
+                sails.log.verbose(`Successfully deleted: ${oid}`);
+                this.ajaxOk(req, res, null, response);
+              } else {
+                this.ajaxFail(req, res, TranslationService.t('failed-delete'), response);
+              }
+            }, error => {
+              sails.log.error(`Error deleting: ${oid}`);
+              sails.log.error(error);
+              this.ajaxFail(req, res, error.message);
+            });
+            return;
+          }
+
           if (record.metadata) {
             record = Observable.of(record);
           }
           record.subscribe(currentRec => {
+
 
             return FormsService.getFormByName(currentRec.metaMetadata.form, true)
               .flatMap(form => {
@@ -457,33 +519,36 @@ export module Controllers {
               });
           });
         });
+
     }
 
 
-    private triggerPreSaveTriggers(oid: string, record: any, recordType: any, mode: string = 'onUpdate') {
+
+    private async triggerPreSaveTriggers(oid: string, record: any, recordType: any, mode: string = 'onUpdate') {
       sails.log.debug("Triggering pre save triggers ");
       sails.log.debug(`hooks.${mode}.pre`);
 
       let preSaveUpdateHooks = _.get(recordType, `hooks.${mode}.pre`, null);
       sails.log.debug(preSaveUpdateHooks);
-      let observable = Observable.of(record);
+
       if (_.isArray(preSaveUpdateHooks)) {
 
-        _.each(preSaveUpdateHooks, preSaveUpdateHook => {
+        for(var i=0; i <preSaveUpdateHooks.length; i++) {
+        let preSaveUpdateHook = preSaveUpdateHooks[i];
           let preSaveUpdateHookFunctionString = _.get(preSaveUpdateHook, "function", null);
           if (preSaveUpdateHookFunctionString != null) {
             let preSaveUpdateHookFunction = eval(preSaveUpdateHookFunctionString);
             let options = _.get(preSaveUpdateHook, "options", {});
 
-            observable = observable.flatMap(record => {
+
               sails.log.debug(`Triggering pre save triggers: ${preSaveUpdateHookFunctionString}`);
-              return preSaveUpdateHookFunction(record, options);
-            });
+              record = await preSaveUpdateHookFunction(record, options).toPromise();
+
 
           }
-        });
+        }
       }
-      return observable;
+      return record;
     }
     /**
      * Handles data stream updates, atm, this call is terminal.
@@ -600,7 +665,10 @@ export module Controllers {
             if (!hasEditAccess) {
               return Observable.throw(new Error(TranslationService.t('edit-error-no-permissions')));
             }
-            return WorkflowStepsService.get(brand, targetStep)
+            return RecordTypesService.get(brand, origRecord.metaMetadata.type);
+          })
+          .flatMap(recType => {
+            return WorkflowStepsService.get(recType, targetStep)
               .flatMap(nextStep => {
                 currentRec.metadata = metadata;
                 sails.log.verbose("Current rec:");
@@ -610,13 +678,12 @@ export module Controllers {
                 this.updateWorkflowStep(currentRec, nextStep);
                 return this.updateMetadata(brand, oid, currentRec, req.user.username);
               });
-          });
+          })
       })
         .subscribe(response => {
           if (response && response.code == "200") {
             response.success = true;
             this.ajaxOk(req, res, null, response);
-            return this.updateDataStream(oid, origRecord, metadata, response, req, res);
           } else {
             this.ajaxFail(req, res, null, response);
           }
@@ -628,12 +695,23 @@ export module Controllers {
     }
 
     protected mergeFields(req, res, fields, metadata) {
+      const fieldsToDelete = [];
       _.forEach(fields, field => {
         if (_.has(metadata, field.definition.name)) {
           field.definition.value = metadata[field.definition.name];
         }
         this.replaceCustomFields(req, res, field, metadata);
         const val = field.definition.value;
+        if (field.roles) {
+          let hasAccess = false;
+          _.each(field.roles, (r) => {
+            hasAccess = RolesService.getRoleWithName(req.user.roles, r);
+            if (hasAccess) return false;
+          });
+          if (!hasAccess) {
+            fieldsToDelete.push(field);
+          }
+        }
         if (field.definition.fields && _.isObject(val) && !_.isString(val) && !_.isUndefined(val) && !_.isNull(val) && !_.isEmpty(val)) {
           _.each(field.definition.fields, fld => {
             fld.definition.value = _.get(metadata, `${field.definition.name}.${fld.definition.name}`);
@@ -643,6 +721,7 @@ export module Controllers {
             this.mergeFields(req, res, field.definition.fields, metadata);
           }
       });
+      _.remove(fields, (f) => { return _.includes(fieldsToDelete, f); });
     }
 
     protected replaceCustomFields(req, res, field, metadata) {

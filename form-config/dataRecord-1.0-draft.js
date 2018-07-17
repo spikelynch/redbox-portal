@@ -13,9 +13,6 @@ module.exports = {
     "saveSuccess": ["@dmpt-form-save-success"],
     "saveError": ["@dmpt-form-save-error"]
   },
-  attachmentFields: [
-    "dataLocations"
-  ],
   fields: [{
       class: 'Container',
       compClass: 'TextBlockComponent',
@@ -26,16 +23,36 @@ module.exports = {
       }
     },
     {
-      class: "AnchorOrButton",
-      viewOnly: true,
+      class: 'Container',
+      compClass: 'GenericGroupComponent',
       definition: {
-        label: '@data-record-edit-record-link',
-        value: '/@branding/@portal/record/edit/@oid',
-        cssClasses: 'btn btn-large btn-info margin-15',
-        showPencil: true,
-        controlType: 'anchor'
-      },
-      variableSubstitutionFields: ['value']
+        cssClasses: "form-inline",
+        fields: [
+          {
+            class: "AnchorOrButton",
+            viewOnly: true,
+            definition: {
+              label: '@data-record-edit-record-link',
+              value: '/@branding/@portal/record/edit/@oid',
+              cssClasses: 'btn btn-large btn-info margin-15',
+              showPencil: true,
+              controlType: 'anchor'
+            },
+            variableSubstitutionFields: ['value']
+          },
+          {
+              class: "AnchorOrButton",
+              viewOnly: true,
+              definition: {
+                label: '@dmp-create-datapublication-link',
+                value: '/@branding/@portal/record/dataPublication/edit?dataRecordOid=@oid',
+                cssClasses: 'btn btn-large btn-info margin-15',
+                controlType: 'anchor'
+              },
+              variableSubstitutionFields: ['value']
+            }
+        ]
+      }
     },
     {
       class: 'TextArea',
@@ -102,8 +119,16 @@ module.exports = {
                   definition: {
                     label: 'RDMP related to this data record',
                     name: 'rdmp',
-                    recordType: 'rdmp'
+                    recordType: 'rdmp',
+                    subscribe: {
+                      'rdmpGetter': {
+                        onValueUpdate: [{
+                          action: 'recordSelected'
+                    }
+                  ]
                   }
+                }
+              }
                 },
                 {
                   class: 'TextField',
@@ -392,8 +417,20 @@ module.exports = {
                       'full_name_honorific': 'text_full_name_honorific'
                     }, {
                       'email': 'Email[0]'
+                    },
+                    {
+                      'given_name': 'Given_Name[0]'
+                    },
+                    {
+                      'family_name': 'Family_Name[0]'
+                    },
+                    {
+                      'honorific': 'Honorific[0]'
+                    },
+                    {
+                      'full_name_family_name_first': 'dc_title'
                     }],
-                    searchFields: 'text_given_name,text_family_name,text_full_name,text_full_name_honorific',
+                    searchFields: 'autocomplete_given_name,autocomplete_family_name,autocomplete_full_name,autocomplete_full_name_honorific',
                     titleFieldArr: ['text_full_name'],
                     titleFieldDelim: '',
                     nameColHdr: '@dmpt-people-tab-name-hdr',
@@ -439,8 +476,20 @@ module.exports = {
                       'full_name_honorific': 'text_full_name_honorific'
                     }, {
                       'email': 'Email[0]'
+                    },
+                    {
+                      'given_name': 'Given_Name[0]'
+                    },
+                    {
+                      'family_name': 'Family_Name[0]'
+                    },
+                    {
+                      'honorific': 'Honorific[0]'
+                    },
+                    {
+                      'full_name_family_name_first': 'dc_title'
                     }],
-                    searchFields: 'text_given_name,text_family_name,text_full_name,text_full_name_honorific',
+                    searchFields: 'autocomplete_given_name,autocomplete_family_name,autocomplete_full_name,autocomplete_full_name_honorific',
                     titleFieldArr: ['text_full_name'],
                     titleFieldDelim: '',
                     nameColHdr: '@dmpt-people-tab-name-hdr',
@@ -494,8 +543,20 @@ module.exports = {
                           'full_name_honorific': 'text_full_name_honorific'
                         }, {
                           'email': 'Email[0]'
+                        },
+                        {
+                          'given_name': 'Given_Name[0]'
+                        },
+                        {
+                          'family_name': 'Family_Name[0]'
+                        },
+                        {
+                          'honorific': 'Honorific[0]'
+                        },
+                        {
+                          'full_name_family_name_first': 'dc_title'
                         }],
-                        searchFields: 'text_given_name,text_family_name,text_full_name,text_full_name_honorific',
+                        searchFields: 'autocomplete_given_name,autocomplete_family_name,autocomplete_full_name,autocomplete_full_name_honorific',
                         titleFieldArr: ['text_full_name'],
                         titleFieldDelim: '',
                         nameColHdr: '@dmpt-people-tab-name-hdr',
@@ -542,8 +603,20 @@ module.exports = {
                       'full_name_honorific': 'text_full_name_honorific'
                     }, {
                       'email': 'Email[0]'
+                    },
+                    {
+                      'given_name': 'Given_Name[0]'
+                    },
+                    {
+                      'family_name': 'Family_Name[0]'
+                    },
+                    {
+                      'honorific': 'Honorific[0]'
+                    },
+                    {
+                      'full_name_family_name_first': 'dc_title'
                     }],
-                    searchFields: 'text_given_name,text_family_name,text_full_name,text_full_name_honorific',
+                    searchFields: 'autocomplete_given_name,autocomplete_family_name,autocomplete_full_name',
                     titleFieldArr: ['text_full_name'],
                     titleFieldDelim: '',
                     nameColHdr: '@dmpt-people-tab-name-hdr',
@@ -707,7 +780,7 @@ module.exports = {
                     name: "related_publications",
                     label: "@dmpt-related-publication",
                     help: "@dmpt-related-publication-help",
-                    forceClone: ['fields', 'fieldMap'],
+                    forceClone: ['fields'],
                     fields: [
                       {
                         class: 'Container',
@@ -780,7 +853,8 @@ module.exports = {
                   compClass: 'DataLocationComponent',
                   definition: {
                     name:"dataLocations",
-                    maxFileSize: 524288000
+                    maxFileSize: 1073741824,
+                    locationAddText: 'Enter'
                   }
                 },
                 {

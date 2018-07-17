@@ -119,6 +119,13 @@ module.exports.routes = {
       'view': 'availableServicesList'
     }
   },
+  '/:branding/:portal/workspaces/list': {
+    controller: 'RenderViewController',
+    action: 'render',
+    locals:{
+      'view': 'listWorkspaces'
+    }
+  },
   '/:branding/:portal/getAdvice': {
     controller: 'RenderViewController',
     action: 'render',
@@ -160,6 +167,7 @@ module.exports.routes = {
   'get /:branding/:portal/record/type/:recordType': 'RecordController.getType',
   'get /:branding/:portal/record/:recordType/edit': 'RecordController.edit',
   'get /:branding/:portal/record/edit/:oid': 'RecordController.edit',
+  'delete /:branding/:portal/record/delete/:oid': 'RecordController.delete',
   '/:branding/:portal/record/:oid/attach': 'RecordController.doAttachment',
   '/:branding/:portal/record/:oid/attach/:attachId': 'RecordController.doAttachment',
   //TODO: we're using an * here as sails slugs and req.param don't seem to like parameters with . in them without it.

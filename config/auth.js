@@ -23,6 +23,26 @@ module.exports.auth = {
   // default rules for the default brand...
   rules: [
     {
+      path: '/:branding/:portal/workspaces(/*)',
+      role: 'Admin',
+      can_update:true
+    },
+    {
+      path: '/:branding/:portal/workspaces(/*)',
+      role: 'Librarians',
+      can_update:true
+    },
+    {
+      path: '/:branding/:portal/workspaces(/*)',
+      role: 'Researcher',
+      can_update:true
+    },
+    {
+      path: '/:branding/:portal/record/delete(/*)',
+      role: 'Admin',
+      can_update:true
+    },
+    {
       path: '/:branding/:portal/admin',
       role: 'Librarians',
       can_update:true
@@ -68,6 +88,11 @@ module.exports.auth = {
       can_update:true
     },
     {
+      path: '/:branding/:portal/record(/*)',
+      role: 'Librarians',
+      can_update:true
+    },
+    {
       path: '/:branding/:portal/recordmeta(/*)',
       role: 'Researcher',
       can_update:true
@@ -108,6 +133,11 @@ module.exports.auth = {
       can_update:true
     },
     {
+      path: '/:branding/:portal/researcher/home',
+      role: 'Librarians',
+      can_update:true
+    },
+    {
       path: '/:branding/:portal/export(/*)',
       role: 'Librarians',
       can_update:true
@@ -118,11 +148,16 @@ module.exports.auth = {
       can_update:true
     },
     {
+      path: '/:branding/:portal/asynch(/*)',
+      role: 'Librarians',
+      can_update:true
+    },
+    {
       path: '/:branding/:portal/api(/*)',
       role: 'Admin',
       can_update:true
-    }
-    ,{
+    },
+    {
       path: '/:branding/:portal/home',
       role: 'Guest',
       can_read: true

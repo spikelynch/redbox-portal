@@ -33,12 +33,23 @@ module.exports = {
             definition: {
               label: '@dmp-edit-record-link',
               value: '/@branding/@portal/record/edit/@oid',
-              cssClasses: 'btn btn-large btn-info margin-15',
+              cssClasses: 'btn btn-large btn-info',
               showPencil: true,
               controlType: 'anchor'
             },
             variableSubstitutionFields: ['value']
           },
+          {
+              class: "AnchorOrButton",
+              viewOnly: true,
+              definition: {
+                label: '@dmp-create-datarecord-link',
+                value: '/@branding/@portal/record/dataRecord/edit?rdmpOid=@oid',
+                cssClasses: 'btn btn-large btn-info margin-15',
+                controlType: 'anchor'
+              },
+              variableSubstitutionFields: ['value']
+            },
           {
             class: 'PDFList',
             viewOnly: true,
@@ -147,7 +158,6 @@ module.exports = {
                 },
                 {
                   class: 'TextField',
-                  editOnly: true,
                   definition: {
                     name: 'dc:identifier',
                     label: '@dmpt-project-id',
@@ -404,8 +414,20 @@ module.exports = {
                       'full_name_honorific': 'text_full_name_honorific'
                     }, {
                       'email': 'Email[0]'
+                    },
+                    {
+                      'given_name': 'Given_Name[0]'
+                    },
+                    {
+                      'family_name': 'Family_Name[0]'
+                    },
+                    {
+                      'honorific': 'Honorific[0]'
+                    },
+                    {
+                      'full_name_family_name_first': 'dc_title'
                     }],
-                    searchFields: 'text_given_name,text_family_name,text_full_name,text_full_name_honorific',
+                    searchFields: 'autocomplete_given_name,autocomplete_family_name,autocomplete_full_name',
                     titleFieldArr: ['text_full_name'],
                     titleFieldDelim: '',
                     nameColHdr: '@dmpt-people-tab-name-hdr',
@@ -445,8 +467,20 @@ module.exports = {
                       'full_name_honorific': 'text_full_name_honorific'
                     }, {
                       'email': 'Email[0]'
+                    },
+                    {
+                      'given_name': 'Given_Name[0]'
+                    },
+                    {
+                      'family_name': 'Family_Name[0]'
+                    },
+                    {
+                      'honorific': 'Honorific[0]'
+                    },
+                    {
+                      'full_name_family_name_first': 'dc_title'
                     }],
-                    searchFields: 'text_given_name,text_family_name,text_full_name,text_full_name_honorific',
+                    searchFields: 'autocomplete_given_name,autocomplete_family_name,autocomplete_full_name',
                     titleFieldArr: ['text_full_name'],
                     titleFieldDelim: '',
                     nameColHdr: '@dmpt-people-tab-name-hdr',
@@ -499,8 +533,20 @@ module.exports = {
                           'full_name_honorific': 'text_full_name_honorific'
                         }, {
                           'email': 'Email[0]'
+                        },
+                        {
+                          'given_name': 'Given_Name[0]'
+                        },
+                        {
+                          'family_name': 'Family_Name[0]'
+                        },
+                        {
+                          'honorific': 'Honorific[0]'
+                        },
+                        {
+                          'full_name_family_name_first': 'dc_title'
                         }],
-                        searchFields: 'text_given_name,text_family_name,text_full_name,text_full_name_honorific',
+                        searchFields: 'autocomplete_given_name,autocomplete_family_name,autocomplete_full_name',
                         titleFieldArr: ['text_full_name'],
                         titleFieldDelim: '',
                         nameColHdr: '@dmpt-people-tab-name-hdr',
@@ -540,8 +586,20 @@ module.exports = {
                       'full_name_honorific': 'text_full_name_honorific'
                     }, {
                       'email': 'Email[0]'
+                    },
+                    {
+                      'given_name': 'Given_Name[0]'
+                    },
+                    {
+                      'family_name': 'Family_Name[0]'
+                    },
+                    {
+                      'honorific': 'Honorific[0]'
+                    },
+                    {
+                      'full_name_family_name_first': 'dc_title'
                     }],
-                    searchFields: 'text_given_name,text_family_name,text_full_name,text_full_name_honorific',
+                    searchFields: 'autocomplete_given_name,autocomplete_family_name,autocomplete_full_name',
                     titleFieldArr: ['text_full_name'],
                     titleFieldDelim: '',
                     nameColHdr: '@dmpt-people-tab-name-hdr',

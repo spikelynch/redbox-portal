@@ -24,7 +24,7 @@ import { RecordsService } from './shared/form/records.service';
 import { LoadableComponent } from './shared/loadable.component';
 import { FieldControlService } from './shared/form/field-control.service';
 import { Observable } from 'rxjs/Observable';
-import * as _ from "lodash-es";
+import * as _ from "lodash";
 import { TranslationService } from './shared/translation-service';
 
 // STEST-22
@@ -109,11 +109,13 @@ export class DmpFormComponent extends LoadableComponent {
   @Output() recordCreated: EventEmitter<any> = new EventEmitter<any>();
   @Output() recordSaved: EventEmitter<any> = new EventEmitter<any>();
   @Output() onBeforeSave: EventEmitter<any> = new EventEmitter<any>();
+  @Output() onFormLoaded: EventEmitter<any> = new EventEmitter<any>();
 
   subs = {
     recordCreated: {},
     recordSaved: {},
-    onBeforeSave: {}
+    onBeforeSave: {},
+    onFormLoaded: {}
   };
   /**
    * Expects a number of DI'ed elements.
@@ -175,13 +177,16 @@ export class DmpFormComponent extends LoadableComponent {
    * @param  {boolean=false} forceValidate
    * @return {[type]}
    */
-  onSubmit(nextStep:boolean = false, targetStep:string = null, forceValidate:boolean=false) {
+  onSubmit(nextStep:boolean = false, targetStep:string = null, forceValidate:boolean=false, additionalData: any = null) {
     this.onBeforeSave.emit({oid: this.oid});
     if (!this.isValid(forceValidate)) {
       return Observable.of(false);
     }
     this.setSaving(this.getMessage(this.formDef.messages.saving));
-    const values = this.formatValues(this.form.value);
+    let values = this.formatValues(this.form.value);
+    if (!_.isEmpty(additionalData) && !_.isNull(additionalData)) {
+      _.assign(values, additionalData);
+    }
     this.payLoad = JSON.stringify(values);
     console.log("Saving the following values:");
     console.log(this.payLoad);
@@ -197,7 +202,7 @@ export class DmpFormComponent extends LoadableComponent {
           this.LocationService.go(`record/edit/${this.oid}`);
           this.setSuccess(this.getMessage(this.formDef.messages.saveSuccess));
           if (nextStep) {
-            this.stepTo(targetStep);
+            return this.stepTo(targetStep);
           }
           return Observable.of(true);
         } else {
@@ -214,6 +219,10 @@ export class DmpFormComponent extends LoadableComponent {
         console.log("Update Response:");
         console.log(res);
         if (res.success) {
+          if (nextStep) {
+            console.log(`Stepping to: ${targetStep}`)
+            return this.stepTo(targetStep);
+          }
           this.recordSaved.emit({oid: this.oid, success:true});
           this.setSuccess(this.getMessage(this.formDef.messages.saveSuccess));
           return Observable.of(true);
@@ -228,6 +237,26 @@ export class DmpFormComponent extends LoadableComponent {
         return Observable.of(false);
       });
     }
+  }
+
+  delete() {
+    this.setSaving(this.getMessage(this.formDef.messages.saving));
+    return this.RecordsService.delete(this.oid)
+    .flatMap((res:any)=>{
+      this.clearSaving();
+      console.log("Delete Response:");
+      console.log(res);
+      if (res.success) {
+        this.setSuccess(this.getMessage(this.formDef.messages.saveSuccess));
+        return Observable.of(true);
+      } else {
+        this.setError(`${this.getMessage(this.formDef.messages.saveError)} ${res.message}`);
+        return Observable.of(false);
+      }
+    }).catch((err:any)=>{
+      this.setError(`${this.getMessage(this.formDef.messages.saveError)} ${err}`);
+      return Observable.of(false);
+    });
   }
 
   /**
@@ -330,6 +359,7 @@ export class DmpFormComponent extends LoadableComponent {
         this.needsSave = true;
       });
     }
+    this.onFormLoaded.emit({oid:this.oid});
   }
   /**
    * Trigger form validation
@@ -416,24 +446,26 @@ export class DmpFormComponent extends LoadableComponent {
     }
     this.needsSave = false;
     if (_.isEmpty(this.oid)) {
-      this.onSubmit(true, targetStep, true);
+      return this.onSubmit(true, targetStep, true);
     } else {
       this.setSaving(this.getMessage(this.formDef.messages.saving));
       const values = this.formatValues(this.form.value);
       this.payLoad = JSON.stringify(values);
       console.log(this.payLoad);
-      this.RecordsService.stepTo(this.oid, this.payLoad, targetStep).then((res:any) => {
+      return this.RecordsService.stepTo(this.oid, this.payLoad, targetStep).flatMap((res:any) => {
         this.clearSaving();
-        console.log("Update Response:");
+        console.log("Step to Response:");
         console.log(res);
         if (res.success) {
           this.setSuccess(this.getMessage(this.formDef.messages.saveSuccess));
-          this.gotoDashboard();
+          return Observable.of(true);
         } else {
           this.setError(`${this.getMessage(this.formDef.messages.saveError)} ${res.message}`);
+          return Observable.of(false);
         }
       }).catch((err:any)=>{
         this.setError(`${this.getMessage(this.formDef.messages.saveError)} ${err}`);
+        return Observable.of(false);
       });
     }
   }

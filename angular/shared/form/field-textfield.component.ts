@@ -18,7 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import { Input, Component, ViewChild, ViewContainerRef, OnInit } from '@angular/core';
-import * as _ from "lodash-es";
+import * as _ from "lodash";
 import { FieldBase } from './field-base';
 import { EmbeddableComponent, RepeatableComponent } from './field-repeatable.component';
 
@@ -89,7 +89,7 @@ export class TextArea extends FieldBase<string> {
 @Component({
   selector: 'textfield',
   template: `
-  <div *ngIf="field.editMode" [ngClass]="getGroupClass()">
+  <div *ngIf="field.editMode && field.visible" [ngClass]="getGroupClass()">
     <div *ngIf="!isEmbedded" >
       <label [attr.for]="field.name">
         {{field.label}} {{ getRequiredLabelStr() }}
@@ -207,7 +207,7 @@ export class RepeatableTextfieldComponent extends RepeatableComponent {
       {{line}}
       <br/>
     </span>
-    <br/>
+    
   </li>
   `
 })

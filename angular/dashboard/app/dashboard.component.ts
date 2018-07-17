@@ -4,7 +4,7 @@ import { FormArray, FormGroup, FormControl, Validators, FormBuilder } from '@ang
 import { UserSimpleService } from './shared/user.service-simple';
 import { DashboardService } from './shared/dashboard-service';
 import { PlanTable, Plan } from './shared/dashboard-models';
-import * as _ from "lodash-es";
+import * as _ from "lodash";
 import { LoadableComponent } from './shared/loadable.component';
 import { OnInit } from '@angular/core';
 import { PaginationModule, TooltipModule} from 'ngx-bootstrap';
@@ -25,6 +25,7 @@ export class DashboardComponent extends LoadableComponent  {
   branding: string;
   portal: string;
   recordType: string;
+  recordTitle: string;
   typeLabel:string;
   workflowSteps:any = [];
   draftPlans: PlanTable;
@@ -49,8 +50,10 @@ export class DashboardComponent extends LoadableComponent  {
       translationService.isReady(tService => {
         recordsService.getType(this.recordType).then(type => {
           this.typeLabel = this.getTranslated(`${this.recordType}-name-plural`, "Records");
+          this.recordTitle = this.getTranslated(`${this.recordType}-title`, "Title");
         });
         recordsService.getWorkflowSteps(this.recordType).then(steps =>{
+          steps = _.orderBy(steps,['config.displayIndex'],['asc'])
           this.workflowSteps = steps;
           _.each(steps,step => {
             dashboardService.getRecords(this.recordType,step.name,1).then((stagedRecords: PlanTable) => {
