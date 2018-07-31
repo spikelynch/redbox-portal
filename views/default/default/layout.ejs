@@ -125,18 +125,9 @@
                 </ul>
               </li>
               <li class="dropdown">
-<<<<<<< HEAD
                   <a class="dropdown-toggle" data-toggle="dropdown" href="#"><%= TranslationService.t('menu-publish-nav')%>
 <!--                    <span class="caret"></span> -->
                 </a>
-=======
-                  <a class="dropdown-toggle" data-toggle="dropdown" href="#"><%= TranslationService.t('menu-publish-nav')%><span class="caret"></span></a>
->>>>>>> master
-                  <ul class="dropdown-menu">
-                    <li><a href="<%= BrandingService.getBrandAndPortalPath(req) %>/record/dataPublication/edit"><%= TranslationService.t('create-data-publication')%></a></li>
-                    <li><a href="<%= BrandingService.getBrandAndPortalPath(req) %>/dashboard/dataPublication"><%= TranslationService.t('edit-dashboard-publication')%></a></li>
-                  </ul>
-                </li>
               <%
                 if ( hasRole(req,'Admin') || hasRole(req,'Librarians')) {%>
               <li class="dropdown">
