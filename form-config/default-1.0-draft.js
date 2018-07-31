@@ -1282,6 +1282,10 @@ module.exports = {
                         "label": "Location",
                         "property": "location",
                         "link": "absolute"
+                      },
+                      {
+                        "label": "Type",
+                        "property": "type"
                       }
                     ]
                   }

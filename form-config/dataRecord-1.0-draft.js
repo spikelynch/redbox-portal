@@ -117,7 +117,7 @@ module.exports = {
                   class: 'RelatedObjectSelector',
                   compClass: 'RelatedObjectSelectorComponent',
                   definition: {
-                    label: 'RDMP related to this data record',
+                    label: 'Choose RDMP related to this data record OR enter project details below',
                     name: 'rdmp',
                     recordType: 'rdmp',
                     subscribe: {
@@ -644,7 +644,7 @@ module.exports = {
             }
           },
           // -------------------------------------------------------------------
-          // Relationships Tab
+          // When Tab
           // -------------------------------------------------------------------
           {
             class: "Container",
