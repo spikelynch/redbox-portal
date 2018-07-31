@@ -117,6 +117,8 @@ export class DmpFormComponent extends LoadableComponent {
     onBeforeSave: {},
     onFormLoaded: {}
   };
+
+  private relatedRecordId: any = null;
   /**
    * Expects a number of DI'ed elements.
    */
@@ -421,6 +423,9 @@ export class DmpFormComponent extends LoadableComponent {
 
   gotoTab(tabId) {
     jQuery(`[href=#${tabId}]`).tab('show');
+    jQuery("html, body").animate({
+      scrollTop: 0
+    }, 500);
   }
 
   getMessage(messageKeyArr: any):string {

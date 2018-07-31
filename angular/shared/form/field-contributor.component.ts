@@ -136,7 +136,7 @@ export class ContributorField extends FieldBase<any> {
     }
 
     if (!this.freeText) {
-      this.vocabField.setEmptyValue();
+      // this.vocabField.setEmptyValue();
       this.formModel = this.vocabField.createFormModel(this.value, true);
       this.formModel.addControl('username', new FormControl(this.value.username));
       this.formModel.addControl('role', new FormControl(this.value.role));
@@ -158,6 +158,8 @@ export class ContributorField extends FieldBase<any> {
     }
     if (this.required) {
       this.enableValidators();
+    } else {
+      // TODO: cherry pick validators, like email, etc.
     }
     return this.formModel;
   }
@@ -283,10 +285,13 @@ export class ContributorField extends FieldBase<any> {
   }
 
   public reactEvent(eventName: string, eventData: any, origData: any) {
-    this.setValue(eventData, false);
-    _.each(this.componentReactors, (compReact) => {
-      compReact.reactEvent(eventName, eventData, origData);
-    });
+    if (_.isEmpty(this.componentReactors)) {
+      this.setValue(eventData, false, true);
+    } else {
+      _.each(this.componentReactors, (compReact) => {
+        compReact.reactEvent(eventName, eventData, origData, this);
+      });
+    }
   }
 }
 
@@ -297,11 +302,17 @@ export class ContributorField extends FieldBase<any> {
 export class ContributorComponent extends SimpleComponent {
   field: ContributorField;
   @Input() isEmbedded: boolean = false;
-  @ViewChild('ngCompleter') public ngCompleter: ElementRef;
+  @ViewChild('ngCompleter') public ngCompleter: any;
 
   public ngOnInit() {
     this.field.componentReactors.push(this);
     this.field.component = this;
+  }
+
+  public ngAfterViewInit() {
+    if (this.field.editMode && this.ngCompleter) {
+      this.ngCompleter.ctrInput.nativeElement.setAttribute('aria-label', 'Name');
+    }
   }
 
   public getGroupClass(fldName:any): string {
@@ -316,24 +327,34 @@ export class ContributorComponent extends SimpleComponent {
 
   onSelect(selected: any, emitEvent:boolean=true, updateTitle:boolean=false) {
     if (selected) {
-      if ((_.isUndefined(selected.title) && _.isUndefined(selected.text_full_name) && _.isEmpty(selected.title) && _.isEmpty(selected.text_full_name))
-          || (selected.title && selected.title == this.field.formModel.value.text_full_name)) {
+      if ( (_.isEmpty(selected.title) || _.isUndefined(selected.title)) && (_.isEmpty(selected.text_full_name) || _.isUndefined(selected.text_full_name))) {
         console.log(`Same or empty selection, returning...`);
         return;
+      } else {
+        if (selected.title && selected.title == this.field.formModel.value.text_full_name) {
+          console.log(`Same or empty selection, returning...`);
+          return;
+        }
       }
       let val:any;
       if (!this.field.freeText) {
-        if (selected.text_full_name) {
+        if (_.isEmpty(selected.text_full_name)) {
           val = this.field.vocabField.getValue(selected);
         } else if(selected[this.field.fullNameResponseField]) {
           val = this.field.vocabField.getValue(selected);
         } else {
           val = {text_full_name: selected.title};
         }
+        if (!_.isEmpty(selected.orcid) && !_.isUndefined(selected.orcid)) {
+          val['orcid'] = selected.orcid;
+        }
+        if (!_.isEmpty(selected.username) && !_.isUndefined(selected.username)) {
+          val['username'] = selected.username;
+        }
 
         val.role = this.field.role;
-        console.log(`Using val:`);
-        console.log(JSON.stringify(val));
+        // console.log(`Using val:`);
+        // console.log(JSON.stringify(val));
         this.field.setValue(val, emitEvent, updateTitle);
       } else {
         val = this.field.setMissingFields(selected);

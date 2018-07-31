@@ -253,15 +253,15 @@ export class RepeatableVocab extends RepeatableContainer {
   <div *ngIf="field.editMode">
     <div class="row">
       <div class="col-xs-12">
-      <label>{{field.label}}
-        <button type="button" class="btn btn-default" *ngIf="field.help" (click)="toggleHelp()"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></button>
+      <label [attr.for]="field.name">{{field.label}}
+        <button type="button" class="btn btn-default" *ngIf="field.help" (click)="toggleHelp()" [attr.aria-label]="'help' | translate "><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></button>
       </label>
       <span id="{{ 'helpBlock_' + field.name }}" class="help-block" *ngIf="this.helpShow" [innerHtml]="field.help"></span>
       </div>
     </div>
     <div *ngFor="let fieldElem of field.fields; let i = index;" class="row">
       <span class="col-xs-12">
-        <rb-vocab [field]="fieldElem" [form]="form" [fieldMap]="fieldMap" [isEmbedded]="true" [removeBtnText]="field.removeButtonText" [removeBtnClass]="field.removeButtonClass" [canRemove]="field.fields.length > 1" (onRemoveBtnClick)="removeElem($event[0], $event[1])" [index]="i"></rb-vocab>
+        <rb-vocab [name]="field.name" [field]="fieldElem" [form]="form" [fieldMap]="fieldMap" [isEmbedded]="true" [removeBtnText]="field.removeButtonText" [removeBtnClass]="field.removeButtonClass" [canRemove]="field.fields.length > 1" (onRemoveBtnClick)="removeElem($event[0], $event[1])" [index]="i"></rb-vocab>
       </span>
     </div>
     <div class="row">
@@ -269,7 +269,7 @@ export class RepeatableVocab extends RepeatableContainer {
       </span>
       <span class="col-xs-1">
         <button *ngIf="field.addButtonText" type='button' (click)="addElem($event)" [ngClass]="field.addButtonTextClass" >{{field.addButtonText}}</button>
-        <button *ngIf="!field.addButtonText" type='button' (click)="addElem($event)" [ngClass]="field.addButtonClass"></button>
+        <button *ngIf="!field.addButtonText" type='button' (click)="addElem($event)" [ngClass]="field.addButtonClass" [attr.aria-label]="'add-button-label' | translate"></button>
       </span>
     </div>
   </div>
@@ -304,7 +304,7 @@ export class RepeatableContributor extends RepeatableContainer {
 
   addElem(val:any = null) {
     this.fields[0].setMissingFields(val);
-    super.addElem(val);
+    return super.addElem(val);
   }
 }
 
@@ -317,31 +317,36 @@ export class RepeatableContributor extends RepeatableContainer {
         <rb-contributor [field]="fieldElem" [form]="form" [fieldMap]="fieldMap" [isEmbedded]="true"></rb-contributor>
       </span>
       <span class="col-xs-2">
-        <button type='button' *ngIf="field.fields.length > 1 && field.canSort"  (click)="moveUp($event, i)" [ngClass]="field.moveUpButtonClass" [ngStyle]="{'margin-top': fieldElem.marginTop}" ></button>
-        <button type='button' *ngIf="field.fields.length > 1 && field.canSort"  (click)="moveDown($event, i)" [ngClass]="field.moveDownButtonClass" [ngStyle]="{'margin-top': fieldElem.marginTop}" ></button>
+        <button type='button' *ngIf="field.fields.length > 1 && field.canSort"  (click)="moveUp($event, i)" [ngClass]="field.moveUpButtonClass" [ngStyle]="{'margin-top': fieldElem.marginTop}" [attr.aria-label]="'move-up-button' | translate"></button>
+        <button type='button' *ngIf="field.fields.length > 1 && field.canSort"  (click)="moveDown($event, i)" [ngClass]="field.moveDownButtonClass" [ngStyle]="{'margin-top': fieldElem.marginTop}" [attr.aria-label]="'move-down-button' | translate"></button>
         <button type='button' *ngIf="field.fields.length > 1 && field.removeButtonText" (click)="removeElem($event, i)"  [ngClass]="field.removeButtonTextClass" [ngStyle]="{'margin-top': fieldElem.marginTop}" >{{field.removeButtonText}}</button>
-        <button type='button' *ngIf="field.fields.length > 1 && !field.removeButtonText" (click)="removeElem($event, i)" [ngClass]="field.removeButtonClass" [ngStyle]="{'margin-top': fieldElem.marginTop}" ></button>
+        <button type='button' *ngIf="field.fields.length > 1 && !field.removeButtonText" (click)="removeElem($event, i)" [ngClass]="field.removeButtonClass" [ngStyle]="{'margin-top': fieldElem.marginTop}" [attr.aria-label]="'remove-button-label' | translate" ></button>
       </span>
     </div>
     <div class="row">
       <span class="col-xs-12">
         <button *ngIf="field.addButtonText" type='button' (click)="addElem($event)" [ngClass]="field.addButtonTextClass" >{{field.addButtonText}}</button>
-        <button *ngIf="!field.addButtonText" type='button' (click)="addElem($event)" [ngClass]="field.addButtonClass" ></button>
+        <button *ngIf="!field.addButtonText" type='button' (click)="addElem($event)" [ngClass]="field.addButtonClass" [attr.aria-label]="'add-button-label' | translate" ></button>
       </span>
     </div>
   </div>
   <ng-container  *ngIf="!field.editMode">
-    <div class="row">
-      <div class="col-xs-3"><label>{{field.fields[0].nameColHdr}}</label></div>
-      <div class="col-xs-3"><label>{{field.fields[0].emailColHdr}}</label></div>
-      <div class="col-xs-3"><label>{{field.fields[0].roleColHdr}}</label></div>
-      <div class="col-xs-3"><label>{{field.fields[0].orcidColHdr}}</label></div>
-    </div>
-    <div class="row" *ngFor="let fieldElem of field.fields; let i = index;">
-      <div class="col-xs-3">{{fieldElem.value.text_full_name}}</div>
-      <div class="col-xs-3">{{fieldElem.value.email}}</div>
-      <div class="col-xs-3">{{fieldElem.value.role}}</div>
-      <div class="col-xs-3">{{fieldElem.value.orcid}}</div>
+    <div class="view-contributor">
+      <div *ngIf="field.fields[0].label" class="row">
+        <div class="col-xs-12 key-value-pair"><span class="key">{{field.fields[0].label}}</span></div>
+      </div>
+      <div class="row view-contributor">
+        <div class="col-xs-3 label-font">{{field.fields[0].nameColHdr}}</div>
+        <div class="col-xs-3 label-font">{{field.fields[0].emailColHdr}}</div>
+        <div class="col-xs-3 label-font">{{field.fields[0].roleColHdr}}</div>
+        <div class="col-xs-3 label-font">{{field.fields[0].orcidColHdr}}</div>
+      </div>
+      <div class="row view-contributor" *ngFor="let fieldElem of field.fields; let i = index;">
+        <div class="col-xs-3">{{fieldElem.value.text_full_name}}</div>
+        <div class="col-xs-3">{{fieldElem.value.email}}</div>
+        <div class="col-xs-3">{{fieldElem.value.role}}</div>
+        <div class="col-xs-3">{{fieldElem.value.orcid}}</div>
+      </div>
     </div>
   </ng-container>
   `,

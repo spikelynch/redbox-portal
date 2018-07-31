@@ -61,6 +61,8 @@
   "header-plan": "Plan",
   "header-created": "Created",
   "header-modified": "Modified",
+  "header-ci": "Chief Investigator",
+  "header-data-manager": "Data manager",
   "no-draft-plans": "You currently don't have any draft plans.",
   "no-active-plans": "You currently don't have any active plans.",
   "no-records": "You currently don't have any {stage} {recordTypeName}.",
@@ -126,10 +128,17 @@
   "menu-plan": "Plan a Research Project",
   "menu-manage": "Manage data",
   "menu-publish": "Publish and share",
+<<<<<<< HEAD
   "menu-plan-nav":   "Plan >",
   "menu-organisation-nav": "Organise >",
   "menu-manage-nav": "Manage >",
   "menu-publish-nav": "Publish and share >",
+=======
+  "menu-plan-nav": "Plan",
+  "menu-manage-nav": "Manage",
+  "menu-publish-nav": "Publish and share",
+  "menu-organisation-nav": "Workspaces",
+>>>>>>> master
   "menu-search": "Search",
   "menu-organise-worspace": "Organise Workspaces",
   "aaf-title": "AAF Credentials",
@@ -343,6 +352,7 @@
   "@dmpt-workspace-select-help": "The next list allows the Redbox-Portal to link your RDMP to your workspaces. This helps us keep your data safe: the RDMP tells us how long to preserve the workspace and to whom it belongs.",
   "@dmpt-workspace-open": "OPEN",
   "@dmpt-workspace-saveFirst": "Save your plan to access workspaces",
+  "@dmp-create-datarecord-link": "Create a data record from this plan",
   "@dataRecord-about-tab": "What?",
   "@dataRecord-about-heading": "What is the data about?",
   "@dataRecord-title": "Data record Title",
@@ -415,8 +425,13 @@
   "@dataRecord-embargoUntil-help": "Embargo your data if, for example, you don't want it to be published until after a journal article is published. Embargo date expiry will NOT trigger publication, but will be the date you are next contacted to determine if you would like to lift or extend the embargo. Note that an embargoed record cannot be published until you deselect the embargo checkbox.",
   "@dataRecord-embargoNote": "Embargo note",
   "@dataRecord-geospatial": "Geospatial location",
+<<<<<<< HEAD
   "@dataRecord-geospatial-help": "Enter the geospatial coverage of the data as KML or GeoJSON or....",
   "@dataRecord-redbox:dataLocations-help": "Data location types can be Physical (e.g. 'Filing cabinet 2 in FNCI office'), a URL from which the data can be obtained, a filesystem location entered as network-filepath/filename, or you can upload attachments (up to a maximum size of 500MB per file). NB. If you have more than 10 files to attach, we suggest you zip the files into an archive. If in need of help, please contact the eResearch team at eresearch-it@uts.edu.au.",
+=======
+  "@dataRecord-geospatial-help": "",
+  "@dmp-create-datapublication-link": "Create a data publication from this record",
+>>>>>>> master
   "report-results-returned": "{count} result returned",
   "report-results-returned_plural": "{count} results returned",
   "report-csv-download": "Download as CSV",
@@ -528,6 +543,7 @@
   "workspace-services-list": "List of available services",
   "workspace-export-data": "Export data between Workspaces",
   "get-help-subject": "ReDBox - Please help!",
+<<<<<<< HEAD
   "edit-dashboard-rdmp": "View/Update RDMPs",
   "edit-dashboard-datarecord": "View/Update archival Data Records",
   "edit-dashboard-publication": "View/Update Data Publications",
@@ -543,6 +559,19 @@
   "@dataPublication-startDate-help": "Enter start date of the data or study content",
   "@dataPublication-endDate-help": "Enter end date of the data or study content",
   "@dataPublication-timePeriod-help": "Enter a name of a time period relating to the coverage of the research data, if applicable, eg. 21st Century, WWII, The Depression, etc.",
+=======
+  "edit-dashboard-rdmp": "View & Update RDMP",
+  "edit-dashboard-datarecord": "View & Update archival Data Record",
+  "edit-dashboard-publication": "View & Update Data Publication",
+  "@dmpt-people-tab-ci-help": "Chief Investigator help text",
+  "@dmpt-people-tab-data-manager-help": "Data manager help text",
+  "@dmpt-people-tab-contributors-help": "Contributors help text",
+  "@dmpt-people-tab-supervisor-help": "Supervisor help text",
+  "@dataPublication-title-help": "Data publication title help text",
+  "@dataPublication-description-help": "Data publication description help text",
+  "@dataPublication-datatype-help": "Data publication data type help text",
+  "@dataPublication-keywords-help": "Data publication keywords help text",
+>>>>>>> master
   "@asynch-label": "Background Tasks",
   "@asynch-name": "Name",
   "@asynch-status": "Status",
@@ -630,6 +659,25 @@
   "workspaces": "Workspaces",
   "create-workspace": "Create Workspace",
   "workspaces-dashboard": "View workspaces",
+<<<<<<< HEAD
   "@dmp-create-datapublication-link": "Create data publication from this record",
   "@dmp-create-datarecord-link": "Create data record from this RDMP"
+=======
+  "@dataLocations-help": "Data locations help placeholder text",
+  "@dataLocations-label": "Data Locations",
+  "logo-alt-text": "ReDBox Logo",
+  "aaf-logo-alt-text": "AAF Logo",
+  "loading-alt-text": "Loading...",
+  "local-creds-input-username-label": "Username",
+  "local-creds-input-password-label": "Password",
+  "edit-link-label": "Edit",
+  "pdf-history-modal-label": "PDF History Modal",
+  "help": "Help",
+  "add-button-label": "Add Item",
+  "remove-button-label": "Remove Item",
+  "select-all-items": "Select All Items",
+  "select-item": "Select",
+  "move-up-button": "Move entry up",
+  "move-down-button": "Move entry down"
+>>>>>>> master
 }

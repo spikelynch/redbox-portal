@@ -65,7 +65,9 @@
       <div class="row" style="position:relative">
         <div class="col-sm-10">
           <div class="logo" style="display:inline;">
-            <h1><img src="<%= BrandingService.getBrandAndPortalPath(req) %>/images/logo.png"/></h1>
+            <h1>
+              <img src="<%= BrandingService.getBrandAndPortalPath(req) %>/images/logo.png" alt="<%= TranslationService.t('logo-alt-text') %>"/>
+            </h1>
           </div>
         </div>
 
@@ -123,9 +125,13 @@
                 </ul>
               </li>
               <li class="dropdown">
+<<<<<<< HEAD
                   <a class="dropdown-toggle" data-toggle="dropdown" href="#"><%= TranslationService.t('menu-publish-nav')%>
 <!--                    <span class="caret"></span> -->
                 </a>
+=======
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#"><%= TranslationService.t('menu-publish-nav')%><span class="caret"></span></a>
+>>>>>>> master
                   <ul class="dropdown-menu">
                     <li><a href="<%= BrandingService.getBrandAndPortalPath(req) %>/record/dataPublication/edit"><%= TranslationService.t('create-data-publication')%></a></li>
                     <li><a href="<%= BrandingService.getBrandAndPortalPath(req) %>/dashboard/dataPublication"><%= TranslationService.t('edit-dashboard-publication')%></a></li>
@@ -140,7 +146,7 @@
             <li class="dropdown">
               <form class="nav-search-bar form-inline" method="get" action="<%= BrandingService.getBrandAndPortalPath(req) %>/record/search" name="form">
                 <div class="input-group">
-                  <input name="q" type="text" class="form-control" placeholder="<%= TranslationService.t('record-search-basic-search-placeholder') %>">
+                  <input name="q" type="text" class="form-control" placeholder="<%= TranslationService.t('record-search-basic-search-placeholder') %>" aria-label="<%= TranslationService.t('record-search-basic-search-placeholder') %>">
                   <span class="input-group-btn">
                     <button class="btn btn-primary" type="button" onClick="form.submit()"><%= TranslationService.t("record-search-basic-search") %></button>
                   </span>

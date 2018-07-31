@@ -158,7 +158,7 @@ export class SelectionComponent extends SimpleComponent {
   <div [formGroup]='form' *ngIf="field.editMode" [ngClass]="getGroupClass()">
      <label [attr.for]="field.name">
       {{field.label}} {{ getRequiredLabelStr()}}
-      <button type="button" class="btn btn-default" *ngIf="field.help" (click)="toggleHelp()"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></button>
+      <button type="button" class="btn btn-default" *ngIf="field.help" (click)="toggleHelp()" [attr.aria-label]="'help' | translate "><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></button>
      </label><br/>
      <span id="{{ 'helpBlock_' + field.name }}" class="help-block" *ngIf="this.helpShow" [innerHtml]="field.help"></span>
      <select [formControl]="getFormControl()"  [id]="field.name" [ngClass]="field.cssClasses">
@@ -181,18 +181,21 @@ export class DropdownFieldComponent extends SelectionComponent {
   selector: 'selectionfield',
   template: `
   <div [formGroup]='form' *ngIf="field.editMode && field.visible" class="form-group">
-     <label [attr.for]="field.name">
+     <span class="label-font">
       {{field.label}} {{ getRequiredLabelStr()}}
-      <button type="button" class="btn btn-default" *ngIf="field.help" (click)="toggleHelp()"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></button>
-     </label><br/>
+      <button type="button" class="btn btn-default" *ngIf="field.help" (click)="toggleHelp()" [attr.aria-label]="'help' | translate "><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></button>
+     </span><br/>
      <span id="{{ 'helpBlock_' + field.name }}" class="help-block" *ngIf="this.helpShow" [innerHtml]="field.help"></span>
-     <span *ngFor="let opt of field.options">
-      <!-- radio type hard-coded otherwise accessor directive will not work! -->
-      <input *ngIf="isRadio()" type="radio" name="{{field.name}}" [id]="field.name + '_' + opt.value" [formControl]="getFormControl()" [value]="opt.value" [attr.disabled]="field.readOnly ? '' : null ">
-      <input *ngIf="!isRadio()" type="{{field.controlType}}" name="{{field.name}}" [id]="field.name + '_' + opt.value" [value]="opt.value" (change)="onChange(opt, $event)" [attr.selected]="getControlFromOption(opt)" [attr.checked]="getControlFromOption(opt)" [attr.disabled]="field.readOnly ? '' : null ">
-      <label for="{{field.name + '_' + opt.value}}" class="radio-label">{{ opt.label }}</label>
-      <br/>
-     </span>
+     <fieldset>
+      <legend [hidden]="true"><span></span></legend>
+        <span *ngFor="let opt of field.options">
+          <!-- radio type hard-coded otherwise accessor directive will not work! -->
+          <input *ngIf="isRadio()" type="radio" name="{{field.name}}" [id]="field.name + '_' + opt.value" [formControl]="getFormControl()" [value]="opt.value" [attr.disabled]="field.readOnly ? '' : null ">
+          <input *ngIf="!isRadio()" type="{{field.controlType}}" name="{{field.name}}" [id]="field.name + '_' + opt.value" [value]="opt.value" (change)="onChange(opt, $event)" [attr.selected]="getControlFromOption(opt)" [attr.checked]="getControlFromOption(opt)" [attr.disabled]="field.readOnly ? '' : null ">
+          <label for="{{field.name + '_' + opt.value}}" class="radio-label">{{ opt.label }}</label>
+          <br/>
+        </span>
+     </fieldset>
      <div class="text-danger" *ngIf="getFormControl().hasError('required') && getFormControl().touched && !field.validationMessages?.required">{{field.label}} is required</div>
      <div class="text-danger" *ngIf="getFormControl().hasError('required') && getFormControl().touched && field.validationMessages?.required">{{field.validationMessages.required}}</div>
   </div>
@@ -279,12 +282,14 @@ Container components
   </div>
   <div *ngIf="!field.editMode" [ngClass]="field.accContainerClass">
     <div class="panel-group">
-      <a href="#" (click)="expandCollapseAll()">Expand/Collapse all</a>
+      <a href="#" (click)="expandCollapseAll(); false">Expand/Collapse all</a>
       <div *ngFor="let tab of field.fields" [ngClass]="field.accClass">
         <div class="panel-heading">
-          <h4 class="panel-title">
-            <a data-toggle="collapse" (click)="accordionHeaderClicked(tab.id)" href="#{{tab.id}}"><span *ngIf="!tab.expanded">+</span><span *ngIf="tab.expanded">-</span> {{tab.label}}</a>
-          </h4>
+          <span class="panel-title tab-header-font">
+            <a data-toggle="collapse" href="#{{tab.id}}">
+              {{ tab.expandedChar }} {{ tab.label }}
+            </a>
+          </span>
         </div>
         <div id="{{tab.id}}" class="panel-collapse collapse">
           <div class="panel-body">
@@ -298,44 +303,42 @@ Container components
   </div>
   `
 })
-export class TabOrAccordionContainerComponent extends SimpleComponent implements AfterViewChecked{
+export class TabOrAccordionContainerComponent extends SimpleComponent {
   field: TabOrAccordionContainer;
 
-  ngAfterViewChecked() {
-    let that = this;
-    jQuery("[role='tab']").on('shown.bs.tab', function () {
-      that.field.onTabChange.emit(this.getAttribute("href").substring(1,this.getAttribute("href").length));
-
-    });
-
+  constructor(private changeRef: ChangeDetectorRef) {
+    super();
   }
 
-  accordionHeaderClicked(tabId) {
+  ngAfterViewInit() {
+    let that = this;
     _.each(this.field.fields, tab => {
-      if(tabId == tab.id) {
-        if(tab["expanded"]) {
-           tab["expanded"] = false;
-        } else {
-          tab["expanded"] = true;
-        }
-        return false;
-      }
-    })
+        tab['expandedChar'] = '+';
+        jQuery(`#${tab.id}`).on('shown.bs.collapse', ()=> {
+          tab["expandedChar"] = '-';
+          that.changeRef.detectChanges();
+        });
+        jQuery(`#${tab.id}`).on('hidden.bs.collapse', ()=> {
+          tab["expandedChar"] = '+';
+          that.changeRef.detectChanges();
+        });
+    });
+
+    if(!this.field.editMode && this.field.expandAccordionsOnOpen) {
+      this.field.allExpanded = false;
+      this.expandCollapseAll();
+    }
   }
 
   expandCollapseAll() {
     if(this.field.allExpanded) {
       _.each(this.field.fields, tab => {
-          if(tab["expanded"]) {
-            jQuery(`[href='#${tab.id}']`)[0].click();
-          }
+          jQuery(`#${tab.id}`).collapse('hide');
       });
       this.field.allExpanded = false;
     } else {
       _.each(this.field.fields, tab => {
-          if(!tab["expanded"]) {
-            jQuery(`[href='#${tab.id}']`)[0].click();
-          }
+          jQuery(`#${tab.id}`).collapse('show');
       });
       this.field.allExpanded = true;
     }
@@ -372,11 +375,12 @@ export class HtmlRawComponent extends SimpleComponent {
   selector: 'text-block',
   template: `
   <div *ngIf="field.visible" [ngSwitch]="field.type">
-    <h1 *ngSwitchCase="'h1'" [ngClass]="field.cssClasses">{{field.value}}</h1>
-    <h2 *ngSwitchCase="'h2'" [ngClass]="field.cssClasses">{{field.value}}</h2>
-    <h3 *ngSwitchCase="'h3'" [ngClass]="field.cssClasses">{{field.value}}</h3>
-    <h4 *ngSwitchCase="'h4'" [ngClass]="field.cssClasses">{{field.value}}</h4>
-    <h5 *ngSwitchCase="'h5'" [ngClass]="field.cssClasses">{{field.value}}</h5>
+    <span *ngSwitchCase="'h1'" [ngClass]="field.cssClasses">{{field.value}}</span>
+    <span *ngSwitchCase="'h2'" [ngClass]="field.cssClasses">{{field.value}}</span>
+    <span *ngSwitchCase="'h3'" [ngClass]="field.cssClasses">{{field.value}}</span>
+    <span *ngSwitchCase="'h4'" [ngClass]="field.cssClasses">{{field.value}}</span>
+    <span *ngSwitchCase="'h5'" [ngClass]="field.cssClasses">{{field.value}}</span>
+    <span *ngSwitchCase="'h6'" [ngClass]="field.cssClasses">{{field.value}}</span>
     <hr *ngSwitchCase="'hr'" [ngClass]="field.cssClasses">
     <span *ngSwitchCase="'span'" [ngClass]="field.cssClasses">{{field.value}}</span>
     <p *ngSwitchDefault [ngClass]="field.cssClasses">{{field.value}}</p>
@@ -627,10 +631,10 @@ Based on: https://bootstrap-datepicker.readthedocs.io/en/stable/
   selector: 'date-time',
   template: `
   <div *ngIf="field.editMode" [formGroup]='form' class="form-group">
-    <label [attr.for]="field.name">
+    <span class="label-font">
       {{field.label}} {{ getRequiredLabelStr()}}
-      <button type="button" class="btn btn-default" *ngIf="field.help" (click)="toggleHelp()"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></button>
-    </label><br/>
+      <button type="button" class="btn btn-default" *ngIf="field.help" (click)="toggleHelp()" [attr.aria-label]="'help' | translate "><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></button>
+    </span><br/>
     <span id="{{ 'helpBlock_' + field.name }}" class="help-block" *ngIf="this.helpShow" [innerHtml]="field.help"></span>
     <datetime #dateTime [formControl]="getFormControl()" [timepicker]="field.timePickerOpts" [datepicker]="field.datePickerOpts" [hasClearButton]="field.hasClearButton"></datetime>
   </div>
@@ -645,6 +649,14 @@ export class DateTimeComponent extends SimpleComponent {
    * The field model
    */
   public field: DateTime;
+
+  @ViewChild('dateTime') public dateTime: any;
+
+  ngAfterViewInit() {
+    if (this.field.editMode) {
+      jQuery(`#${this.dateTime.idDatePicker}`).attr('aria-label', this.field.label);
+    }
+  }
   /**
    * Component method that formats the value, delegates to field.
    */
@@ -703,7 +715,7 @@ export class SpacerComponent extends SimpleComponent {
   selector: 'toggle',
   template: `
     <div *ngIf="field.type == 'checkbox'" [formGroup]='form'>
-      <input type="checkbox" name="{{field.name}}" [id]="field.name" [formControl]="getFormControl()" >
+      <input type="checkbox" name="{{field.name}}" [id]="field.name" [formControl]="getFormControl()" [attr.disabled]="field.editMode ? null : ''" >
       <label for="{{ field.name }}" class="radio-label">{{ field.label }}</label>
     </div>
   `

@@ -57,6 +57,7 @@ module.exports = {
       compClass: "TabOrAccordionContainerComponent",
       definition: {
         id: "mainTab",
+        accContainerClass: "view-accordion",
         fields: [
           // -------------------------------------------------------------------
           // About Tab
@@ -439,7 +440,6 @@ module.exports = {
                 {
                   class: 'Toggle',
                   compClass: 'ToggleComponent',
-                  editOnly: true,
                   definition: {
                     name: 'accessRightsToggle',
                     defaultValue: false,
@@ -1135,11 +1135,6 @@ module.exports = {
                           onValueUpdate: {
                             modelEventSource: 'valueChanges'
                           }
-                        },
-                        subscribe: {
-                          'this': {
-                            onValueUpdate: []
-                          }
                         }
                       }
                     }],
@@ -1190,6 +1185,36 @@ module.exports = {
                     valueFormat: 'YYYY-MM-DD',
                     displayFormat: 'L'
                   }
+                },
+                {
+                  class: 'HiddenValue',
+                  compClass: 'HiddenValueComponent',
+                  definition: {
+                    name: 'dataowner_name',
+                    subscribe: {
+                      'dataRecordGetter': {
+                        onValueUpdate: [{
+                          action: 'utilityService.getPropertyFromObject',
+                          field: 'dataowner_name'
+                        }]
+                      }
+                    }
+                  }
+                },
+                {
+                  class: 'HiddenValue',
+                  compClass: 'HiddenValueComponent',
+                  definition: {
+                    name: 'dataowner_email',
+                    subscribe: {
+                      'dataRecordGetter': {
+                        onValueUpdate: [{
+                          action: 'utilityService.getPropertyFromObject',
+                          field: 'dataowner_email'
+                        }]
+                      }
+                    }
+                  }
                 }
               ]
             }
@@ -1214,7 +1239,6 @@ module.exports = {
                 {
                   class: 'Toggle',
                   compClass: 'ToggleComponent',
-                  editOnly: true,
                   definition: {
                     name: 'embargoByDate',
                     defaultValue: false,
@@ -1386,16 +1410,6 @@ module.exports = {
               closeOnSave: true,
               redirectLocation: '/@branding/@portal/dashboard/dataPublication',
               additionalData: { withdraw: true }
-            },
-            variableSubstitutionFields: ['redirectLocation']
-          },
-          {
-            class: "SaveButton",
-            definition: {
-              label: 'Submit for Publication',
-              closeOnSave: true,
-              redirectLocation: '/@branding/@portal/dashboard/dataPublication',
-              targetStep: 'queued'
             },
             variableSubstitutionFields: ['redirectLocation']
           },

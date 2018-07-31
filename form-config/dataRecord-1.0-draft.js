@@ -13,6 +13,9 @@ module.exports = {
     "saveSuccess": ["@dmpt-form-save-success"],
     "saveError": ["@dmpt-form-save-error"]
   },
+  attachmentFields: [
+   "dataLocations"
+  ],
   fields: [{
       class: 'Container',
       compClass: 'TextBlockComponent',
@@ -67,6 +70,8 @@ module.exports = {
       compClass: "TabOrAccordionContainerComponent",
       definition: {
         id: "mainTab",
+        accContainerClass: "view-accordion",
+        expandAccordionsOnOpen: true,
         fields: [
           // -------------------------------------------------------------------
           // Why Tab
@@ -410,7 +415,7 @@ module.exports = {
                     forceLookupOnly: true,
                     vocabId: 'Parties AND repository_name:People',
                     sourceType: 'mint',
-                    disabledExpression: '<%= !_.isEmpty(oid) %>',
+                    disabledExpression: '<%= !_.isEmpty(oid) || !_.isEmpty(relatedRecordId) %>',
                     fieldNames: [{
                       'text_full_name': 'text_full_name'
                     }, {
@@ -445,9 +450,6 @@ module.exports = {
                       }
                     },
                     subscribe: {
-                      'this': {
-                        onValueUpdate: []
-                      },
                       'rdmpGetter': {
                         onValueUpdate: [{
                           action: 'utilityService.getPropertyFromObject',
@@ -501,9 +503,6 @@ module.exports = {
                       }
                     },
                     subscribe: {
-                      'this': {
-                        onValueUpdate: []
-                      },
                       'rdmpGetter': {
                         onValueUpdate: [{
                           action: 'utilityService.getPropertyFromObject',
@@ -566,11 +565,6 @@ module.exports = {
                           onValueUpdate: {
                             modelEventSource: 'valueChanges'
                           }
-                        },
-                        subscribe: {
-                          'this': {
-                            onValueUpdate: []
-                          }
                         }
                       }
                     }],
@@ -628,13 +622,54 @@ module.exports = {
                       }
                     },
                     subscribe: {
-                      'this': {
-                        onValueUpdate: []
-                      },
                       'rdmpGetter': {
                         onValueUpdate: [{
                           action: 'utilityService.getPropertyFromObject',
                           field: 'contributor_supervisor'
+                        }]
+                      }
+                    }
+                  }
+                },
+                {
+                  class: 'HiddenValue',
+                  compClass: 'HiddenValueComponent',
+                  definition: {
+                    name: 'dataowner_name',
+                    subscribe: {
+                      'contributor_ci': {
+                        onValueUpdate: [{
+                          action: 'utilityService.concatenate',
+                          fields: ['text_full_name'],
+                          delim: ''
+                        }]
+                      },
+                      'rdmpGetter': {
+                        onValueUpdate: [{
+                          action: 'utilityService.getPropertyFromObject',
+                          field: 'dataowner_name'
+                        }]
+                      }
+                    }
+                  }
+                },
+                {
+                  class: 'HiddenValue',
+                  compClass: 'HiddenValueComponent',
+                  definition: {
+                    name: 'dataowner_email',
+                    subscribe: {
+                      'contributor_ci': {
+                        onValueUpdate: [{
+                          action: 'utilityService.concatenate',
+                          fields: ['email'],
+                          delim: ''
+                        }]
+                      },
+                      'rdmpGetter': {
+                        onValueUpdate: [{
+                          action: 'utilityService.getPropertyFromObject',
+                          field: 'dataowner_email'
                         }]
                       }
                     }
@@ -853,8 +888,10 @@ module.exports = {
                   compClass: 'DataLocationComponent',
                   definition: {
                     name:"dataLocations",
+                    label: "@dataLocations-label",
                     maxFileSize: 1073741824,
-                    locationAddText: 'Enter'
+                    locationAddText: 'Enter',
+                    help: '@dataLocations-help'
                   }
                 },
                 {

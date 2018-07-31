@@ -112,6 +112,10 @@ export class Container extends FieldBase<any> {
     this.type = options['type'] || '';
     this.isGroup = true;
     this.hasControl = _.isUndefined(this.groupName);
+    if (_.isEmpty(this.cssClasses) && _.startsWith(this.type, 'h')) {
+      this.cssClasses = [`${this.type}-header`];
+    }
+
   }
 
   public getGroup(group: any, fieldMap: any) : any {
@@ -160,6 +164,7 @@ export class TabOrAccordionContainer extends Container {
   tabContentClass: any;
   accContainerClass: any;
   accClass: any;
+  expandAccordionsOnOpen:boolean = false;
   allExpanded:boolean = false;
 
   constructor(options: any, injector: any) {
@@ -171,6 +176,7 @@ export class TabOrAccordionContainer extends Container {
     this.tabContentClass = options['tabContentClass'] || 'tab-content';
     this.accContainerClass = options['accContainerClass'] || 'col-md-12';
     this.accClass = options['accClass'] || 'panel panel-default';
+    this.expandAccordionsOnOpen = options['expandAccordionsOnOpen'] || false;
   }
 }
 

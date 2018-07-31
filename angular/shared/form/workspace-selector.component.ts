@@ -21,7 +21,7 @@ export class WorkspaceSelectorComponent extends SimpleComponent {
       return '';
     }
   }
-  
+
 }
 
 @Component({
@@ -30,26 +30,18 @@ export class WorkspaceSelectorComponent extends SimpleComponent {
   <div [formGroup]='form' *ngIf="field.editMode" [ngClass]="getGroupClass()">
   <label [attr.for]="field.name">
     {{field.label}} {{ getRequiredLabelStr()}}
-    <button type="button" class="btn btn-default" *ngIf="field.help" (click)="toggleHelp()"><span
+    <button type="button" class="btn btn-default" *ngIf="field.help" (click)="toggleHelp()" [attr.aria-label]="'help' | translate "><span
       class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></button>
   </label>
   <br/>
   <span id="{{ 'helpBlock_' + field.name }}" class="help-block" *ngIf="this.helpShow" [innerHtml]="field.help"></span>
-  <select [formControl]="getFormControl()" [ngClass]="field.cssClasses"
+  <select [id]="field.name" [ngClass]="field.cssClasses"
           (change)="field.loadWorkspaceDetails($event.target.value)">
     <option *ngFor="let opt of field.workspaceApps; let i = index"
      [ngValue]="opt" [selected]="i == 0"
      [value]="opt.name">{{opt.label}}
     </option>
   </select>
-  <div class="text-danger"
-       *ngIf="getFormControl().hasError('required') && getFormControl().touched && !field.validationMessages?.required">
-    {{field.label}} is required
-  </div>
-  <div class="text-danger"
-       *ngIf="getFormControl().hasError('required') && getFormControl().touched && field.validationMessages?.required">
-    {{field.validationMessages.required}}
-  </div>
   <br/><br/><br/>
   <div class="row">
     <div *ngIf="field.workspaceApp" class="panel panel-default">

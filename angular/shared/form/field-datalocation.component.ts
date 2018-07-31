@@ -78,6 +78,9 @@ export class DataLocationField extends FieldBase<any> {
   cancelEditNotesButtonText: string;
   applyEditNotesButtonText: string;
   editNotesCssClasses: any;
+  typeHeader: string;
+  locationHeader: string;
+  notesHeader: string;
 
   constructor(options: any, injector: any) {
     super(options, injector);
@@ -88,6 +91,9 @@ export class DataLocationField extends FieldBase<any> {
     this.cancelEditNotesButtonText = this.getTranslated(options['cancelEditNotesButtonText'], 'Cancel');
     this.applyEditNotesButtonText = this.getTranslated(options['applyEditNotesButtonText'], 'Apply');
     this.editNotesCssClasses = options['editNotesCssClasses'] || 'form-control';
+    this.typeHeader =  this.getTranslated(options['typeHeader'], 'Type');
+    this.locationHeader =  this.getTranslated(options['locationHeader'], 'Location');
+    this.notesHeader =  this.getTranslated(options['notesHeader'], 'Notes');
 
     this.columns = options['columns'] || [];
 
@@ -158,15 +164,23 @@ export class DataLocationComponent extends SimpleComponent {
 
   public ngOnInit() {
     let oid = this.field.fieldMap._rootComp.oid;
-    if (_.isNull(oid) || _.isUndefined(oid) || _.isEmpty(oid)) {
-      // wait for the OID to be set when record is created
-      if (!this.field.fieldMap._rootComp.getSubscription('recordCreated')) {
-        console.log(`Subscribing to record creation..... ${this.field.name}`);
-        this.field.fieldMap._rootComp.subscribe('recordCreated', this.field.name, this.eventRecordCreate.bind(this));
-        this.initUppy(oid);
+    if (this.field.editMode) {
+      if (_.isNull(oid) || _.isUndefined(oid) || _.isEmpty(oid)) {
+        // wait for the OID to be set when record is created
+        if (!this.field.fieldMap._rootComp.getSubscription('recordCreated')) {
+          console.log(`Subscribing to record creation..... ${this.field.name}`);
+          this.field.fieldMap._rootComp.subscribe('recordCreated', this.field.name, this.eventRecordCreate.bind(this));
+          this.initUppy(oid);
+        }
       }
+      this.initUppy(oid);
     }
-    this.initUppy(oid);
+  }
+
+  public ngAfterViewInit() {
+    if (this.field.editMode) {
+      jQuery(`.uppy-Dashboard-input`).attr('aria-label', this.field.label);
+    }
   }
 
   public getDatalocations() {
