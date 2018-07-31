@@ -128,17 +128,10 @@
   "menu-plan": "Plan a Research Project",
   "menu-manage": "Manage data",
   "menu-publish": "Publish and share",
-<<<<<<< HEAD
   "menu-plan-nav":   "Plan >",
-  "menu-organisation-nav": "Organise >",
+  "menu-organisation-nav": "Work >",
   "menu-manage-nav": "Manage >",
   "menu-publish-nav": "Publish and share >",
-=======
-  "menu-plan-nav": "Plan",
-  "menu-manage-nav": "Manage",
-  "menu-publish-nav": "Publish and share",
-  "menu-organisation-nav": "Workspaces",
->>>>>>> master
   "menu-search": "Search",
   "menu-organise-worspace": "Organise Workspaces",
   "aaf-title": "AAF Credentials",
@@ -153,9 +146,9 @@
   "@dmpt-welcome-tab": "Welcome",
   "@dmpt-welcome-heading": "Data management plan",
   "@dmpt-welcome-par1": "Thank you for registering a research data management plan. If you've submitted a research project proposal in Research Master, we should have pre-filled parts of this form for you, where possible. However, research evolves, so it is a good idea to make sure that the pre-fills are correct.",
-  "@dmpt-welcome-par2": "Providing this information will help put you in touch with services that can help you store or analyse your research data and allow you to collaborate online with colleagues. Your data management plan, if kept up to date, will satisfy the requirements of ReDBox policy and most research funder requirements. If your funder has specific requirements beyond the scope of this plan, please contact the eResearch Data Librarian on support@redboxresearchdata.com.au for help.",
-  "@dmpt-welcome-par3": "Your plan will also lay the foundation for a catalogue of your research data, ensuring that you (and ReDBox) can meet the data governance responsibilities as required by the Code for the Responsible Conduct of Research, by being able to locate and access the data as required.",
-  "@dmpt-welcome-par4": "If you require any assistance completing your plan, please contact us via support@redboxresearchdata.com.au.",
+  "@dmpt-welcome-par2": "Providing this information will help put you in touch with services that can help you store or analyse your research data and allow you to collaborate online with colleagues. Your data management plan, if kept up to date, will satisfy the requirements of policy and most research funder requirements. If your funder has specific requirements beyond the scope of this plan, please contact the eResearch Data Librarian on data-librarian@uts.edu.au for help.",
+  "@dmpt-welcome-par3": "Your plan will also lay the foundation for a catalogue of your research data, ensuring that you (and UTS) can meet the data governance responsibilities as required by the Code for the Responsible Conduct of Research, by being able to locate and access the data as required.",
+  "@dmpt-welcome-par4": "If you require any assistance completing your plan, please contact us via data-librarian@uts.edu.au.",
   "@dmpt-project-tab": "Project",
   "@dmpt-project-heading": "Project overview",
   "@dmpt-project-title": "Project name",
@@ -349,7 +342,7 @@
   "@dmpt-workspaces-associated-heading": "Associated workspaces",
   "@dmpt-workspaces-create-title": "Create or link a workspace",
   "@dmpt-workspace-select-type": "Select the desired workspace (or storage service) from the list. If it isn't there, select from the Data Storage locations below.",
-  "@dmpt-workspace-select-help": "The next list allows the Redbox-Portal to link your RDMP to your workspaces. This helps us keep your data safe: the RDMP tells us how long to preserve the workspace and to whom it belongs.",
+  "@dmpt-workspace-select-help": "The next list allows Stash to link your RDMP to your workspaces. This helps us keep your data safe: the RDMP tells us how long to preserve the workspace and to whom it belongs.",
   "@dmpt-workspace-open": "OPEN",
   "@dmpt-workspace-saveFirst": "Save your plan to access workspaces",
   "@dmp-create-datarecord-link": "Create a data record from this plan",
@@ -425,13 +418,9 @@
   "@dataRecord-embargoUntil-help": "Embargo your data if, for example, you don't want it to be published until after a journal article is published. Embargo date expiry will NOT trigger publication, but will be the date you are next contacted to determine if you would like to lift or extend the embargo. Note that an embargoed record cannot be published until you deselect the embargo checkbox.",
   "@dataRecord-embargoNote": "Embargo note",
   "@dataRecord-geospatial": "Geospatial location",
-<<<<<<< HEAD
   "@dataRecord-geospatial-help": "Enter the geospatial coverage of the data as KML or GeoJSON or....",
-  "@dataRecord-redbox:dataLocations-help": "Data location types can be Physical (e.g. 'Filing cabinet 2 in FNCI office'), a URL from which the data can be obtained, a filesystem location entered as network-filepath/filename, or you can upload attachments (up to a maximum size of 500MB per file). NB. If you have more than 10 files to attach, we suggest you zip the files into an archive. If in need of help, please contact the eResearch team at eresearch-it@uts.edu.au.",
-=======
-  "@dataRecord-geospatial-help": "",
   "@dmp-create-datapublication-link": "Create a data publication from this record",
->>>>>>> master
+  "@dataRecord-redbox:dataLocations-help": "Data location types can be Physical (e.g. 'Filing cabinet 2 in FNCI office'), a URL from which the data can be obtained, a filesystem location entered as network-filepath/filename, or you can upload attachments (up to a maximum size of 500MB per file). NB. If you have more than 10 files to attach, we suggest you zip the files into an archive. If in need of help, please contact the eResearch team at eresearch-it@uts.edu.au.",
   "report-results-returned": "{count} result returned",
   "report-results-returned_plural": "{count} results returned",
   "report-csv-download": "Download as CSV",
@@ -543,7 +532,6 @@
   "workspace-services-list": "List of available services",
   "workspace-export-data": "Export data between Workspaces",
   "get-help-subject": "ReDBox - Please help!",
-<<<<<<< HEAD
   "edit-dashboard-rdmp": "View/Update RDMPs",
   "edit-dashboard-datarecord": "View/Update archival Data Records",
   "edit-dashboard-publication": "View/Update Data Publications",
@@ -559,19 +547,6 @@
   "@dataPublication-startDate-help": "Enter start date of the data or study content",
   "@dataPublication-endDate-help": "Enter end date of the data or study content",
   "@dataPublication-timePeriod-help": "Enter a name of a time period relating to the coverage of the research data, if applicable, eg. 21st Century, WWII, The Depression, etc.",
-=======
-  "edit-dashboard-rdmp": "View & Update RDMP",
-  "edit-dashboard-datarecord": "View & Update archival Data Record",
-  "edit-dashboard-publication": "View & Update Data Publication",
-  "@dmpt-people-tab-ci-help": "Chief Investigator help text",
-  "@dmpt-people-tab-data-manager-help": "Data manager help text",
-  "@dmpt-people-tab-contributors-help": "Contributors help text",
-  "@dmpt-people-tab-supervisor-help": "Supervisor help text",
-  "@dataPublication-title-help": "Data publication title help text",
-  "@dataPublication-description-help": "Data publication description help text",
-  "@dataPublication-datatype-help": "Data publication data type help text",
-  "@dataPublication-keywords-help": "Data publication keywords help text",
->>>>>>> master
   "@asynch-label": "Background Tasks",
   "@asynch-name": "Name",
   "@asynch-status": "Status",
@@ -659,13 +634,10 @@
   "workspaces": "Workspaces",
   "create-workspace": "Create Workspace",
   "workspaces-dashboard": "View workspaces",
-<<<<<<< HEAD
-  "@dmp-create-datapublication-link": "Create data publication from this record",
-  "@dmp-create-datarecord-link": "Create data record from this RDMP"
-=======
-  "@dataLocations-help": "Data locations help placeholder text",
+  "@dmp-create-datarecord-link": "Create data record from this RDMP",
+  "@dataLocations-help": "Data location types can be Physical (e.g. 'Filing cabinet 2 in FNCI office'), a URL from which the data can be obtained, a filesystem location entered as network-filepath/filename, or you can upload attachments (up to a maximum size of 500MB per file). NB. If you have more than 10 files to attach, we suggest you zip the files into an archive. If in need of help, please contact the eResearch team at eresearch-it@uts.edu.au.",
   "@dataLocations-label": "Data Locations",
-  "logo-alt-text": "ReDBox Logo",
+  "logo-alt-text": "UTS Logo",
   "aaf-logo-alt-text": "AAF Logo",
   "loading-alt-text": "Loading...",
   "local-creds-input-username-label": "Username",
@@ -679,5 +651,4 @@
   "select-item": "Select",
   "move-up-button": "Move entry up",
   "move-down-button": "Move entry down"
->>>>>>> master
 }
