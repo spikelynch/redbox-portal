@@ -374,6 +374,14 @@ module.exports = {
                       onValueUpdate: {
                         modelEventSource: 'valueChanges'
                       }
+                    },
+                    requiredIfHasValue: ['startDate', 'endDate'],
+                    subscribe: {
+                      'form': {
+                        onValueChange: [
+                          { action: 'setRequiredIfDependenciesHaveValue' }
+                        ]
+                      }
                     }
                   }
                 },
@@ -392,9 +400,18 @@ module.exports = {
                     hasClearButton: false,
                     valueFormat: 'YYYY-MM-DD',
                     displayFormat: 'L',
-                    publish: {
-                      onValueUpdate: {
-                        modelEventSource: 'valueChanges'
+                    adjustStartRange: true,
+                    requiredIfHasValue: ['startDate', 'endDate'],
+                    subscribe: {
+                      'startDate': {
+                        onValueUpdate: [
+                          {}
+                        ]
+                      },
+                      'form': {
+                        onValueChange: [
+                          { action: 'setRequiredIfDependenciesHaveValue' }
+                        ]
                       }
                     }
                   }
@@ -415,7 +432,8 @@ module.exports = {
                     name: 'geospatial',
                     label: '@dataPublication-geospatial',
                     help: '@dataPublication-geospatial-help',
-                    tabId: 'coverage'
+                    tabId: 'coverage',
+                    mainTabId: 'mainTab'
                   }
                 }
               ]
@@ -930,6 +948,10 @@ module.exports = {
                     label: '@dataPublication-dc:license.dc:identifier',
                     help: '@dataPublication-dc:license.dc:identifier-help',
                     options: [
+                      {
+                          value: "",
+                          label: "@dmpt-select:Empty"
+                      },
                       {
                           "value": "http://creativecommons.org/licenses/by/3.0/au",
                           "label": "CC BY: Attribution 3.0 AU"

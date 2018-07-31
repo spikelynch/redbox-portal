@@ -309,15 +309,7 @@ module.exports = {
                     label: '@dataRecord-description',
                     help: '@dataRecord-description-help',
                     type: 'text',
-                    required: true,
-                    subscribe: {
-                      'rdmpGetter': {
-                        onValueUpdate: [{
-                          action: 'utilityService.getPropertyFromObject',
-                          field: 'description'
-                        }]
-                      }
-                    }
+                    required: true
                   }
                 },
                 {
@@ -888,7 +880,6 @@ module.exports = {
                   compClass: 'DataLocationComponent',
                   definition: {
                     name:"dataLocations",
-                    label: "@dataLocations-label",
                     maxFileSize: 1073741824,
                     locationAddText: 'Enter',
                     help: '@dataLocations-help'
