@@ -650,5 +650,11 @@
   "select-all-items": "Select All Items",
   "select-item": "Select",
   "move-up-button": "Move entry up",
-  "move-down-button": "Move entry down"
+  "move-down-button": "Move entry down",
+  "workspaces-type-column": "Type",
+  "workspaces-title-column": "Title",
+  "workspaces-link-column": "Link",
+  "workspaces-rdmp-column": "RDMP",
+  "create-workspace-next": "Next",
+  "create-workspace-back": "Back"
 }
