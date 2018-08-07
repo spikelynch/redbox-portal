@@ -188,6 +188,10 @@ module.exports = {
                       {
                         value: "repository",
                         label: "@dataPublication-dataype-select:repository"
+                      },
+                      {
+                        value: "software",
+                        label: "@dataPublication-dataype-select:software"
                       }
                     ],
                     subscribe: {
@@ -626,7 +630,7 @@ module.exports = {
             }
           },
           // -------------------------------------------------------------------
-          // Relationships Tab
+          // Supplementary Tab
           // -------------------------------------------------------------------
           {
             class: "Container",
@@ -1077,54 +1081,8 @@ module.exports = {
                     type: 'h3'
                   }
                 },
-                {
-                  class: 'TextField',
-                  definition: {
-                    name: 'citation_doi',
-                    label: '@dataPublication-citation-identifier',
-                    type: 'text',
-                    readOnly:true,
-                    subscribe: {
-                      'form': {
-                        onFormLoaded: [
-                          { action: 'publishValueLoaded' }
-                        ]
-                      },
-                      'this': {
-                        onValueLoaded: [
-                          { action: 'setVisibility' }
-                        ]
-                      }
-                    },
-                    visibilityCriteria: {
-                      type: 'function',
-                      action: 'utilityService.hasValue'
-                    }
-                  }
-                },
-                {
-                  class: 'SelectionField',
-                  compClass: 'SelectionFieldComponent',
-                  editOnly: true,
-                  definition: {
-                    name: 'requestIdentifier',
-                    controlType: 'checkbox',
-                    options: [
-                      {
-                        value: "request",
-                        label: "@dataPublication-citation-request-identifier"
-                      }
-                    ],
-                    visibilityCriteria: undefined, // when doi is undefined, this is visible
-                    subscribe: {
-                      'citation_doi': {
-                        onValueLoaded: [
-                          { action: 'setVisibility' }
-                        ]
-                      }
-                    }
-                  }
-                },
+// Moving DOI to form bottom to enhance readability
+
                 {
                   class: 'TextField',
                   definition: {
@@ -1196,7 +1154,7 @@ module.exports = {
                     label: '@dataPublication-citation-url',
                     help: '@dataPublication-citation-url-help',
                     type: 'text',
-                    required: true
+//                    required: true
                   }
                 },
                 {
@@ -1216,6 +1174,56 @@ module.exports = {
                     displayFormat: 'L'
                   }
                 },
+// this is the moved DOI code
+{
+  class: 'TextField',
+  definition: {
+    name: 'citation_doi',
+    label: '@dataPublication-citation-identifier',
+    type: 'text',
+    readOnly:true,
+    subscribe: {
+      'form': {
+        onFormLoaded: [
+          { action: 'publishValueLoaded' }
+        ]
+      },
+      'this': {
+        onValueLoaded: [
+          { action: 'setVisibility' }
+        ]
+      }
+    },
+    visibilityCriteria: {
+      type: 'function',
+      action: 'utilityService.hasValue'
+    }
+  }
+},
+{
+  class: 'SelectionField',
+  compClass: 'SelectionFieldComponent',
+  editOnly: true,
+  definition: {
+    name: 'requestIdentifier',
+    controlType: 'checkbox',
+    options: [
+      {
+        value: "request",
+        label: "@dataPublication-citation-request-identifier"
+      }
+    ],
+    visibilityCriteria: undefined, // when doi is undefined, this is visible
+    subscribe: {
+      'citation_doi': {
+        onValueLoaded: [
+          { action: 'setVisibility' }
+        ]
+      }
+    }
+  }
+},
+// this is the end of the moved DOI code
                 {
                   class: 'HiddenValue',
                   compClass: 'HiddenValueComponent',
@@ -1321,14 +1329,15 @@ module.exports = {
                     }
                   }
                 },
-                {
-                  class: 'TextArea',
-                  definition: {
-                    name: 'embargoNote',
-                    label: '@dataPublication-embargoNote',
-                    help: '@dataPublication-embargoNote-help'
-                  }
-                },
+// removing embargo note as it is confusing next to note to reviewers
+//                {
+//                  class: 'TextArea',
+//                  definition: {
+//                    name: 'embargoNote',
+//                    label: '@dataPublication-embargoNote',
+//                    help: '@dataPublication-embargoNote-help'
+//                  }
+//                },
                 {
                   class: 'TextArea',
                   definition: {
@@ -1336,16 +1345,16 @@ module.exports = {
                     label: '@dataPublication-reviewerNote',
                     help: '@dataPublication-reviewerNote-help'
                   }
-                },
-                {
-                  class: 'ActionButton',
-                  definition: {
-                    label: "Publish Record to CKAN",
-                    name: "ckanLocation",
-                    cssClasses: "btn btn-primary",
-                    targetAction: "publishToCKAN"
-                  }
                 }
+//                {
+//                  class: 'ActionButton',
+//                  definition: {
+//                    label: "Publish Record to CKAN",
+//                    name: "ckanLocation",
+//                    cssClasses: "btn btn-primary",
+//                    targetAction: "publishToCKAN"
+//                  }
+//                }
               ]
             }
           }

@@ -148,7 +148,7 @@ z-index: 999;}
 .mainmenu-area ul.navbar-nav li:hover a,
 .mainmenu-area ul.navbar-nav li.active a {}
 .mainmenu-area .nav > li > a:focus {color: #000}
-.mainmenu-area .nav > li > a:hover {background-color: #222222}
+.mainmenu-area .nav > li > a:hover {background-color: #0f4beb}
 /* over ride left nav */
 
 .nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus {
@@ -859,7 +859,7 @@ div.logo img {
 }
 
 .radio-label {
-  font-weight: 400;
+  font-weight: 700;
 }
 
 .panel-search-refine {
