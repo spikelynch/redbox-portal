@@ -128,6 +128,7 @@ module.exports = {
                     help: '@dataPublication-title-help',
                     type: 'text',
                     required: true,
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>',
                     subscribe: {
                       'dataRecordGetter': {
                         onValueUpdate: [{
@@ -147,6 +148,7 @@ module.exports = {
                     help: '@dataPublication-description-help',
                     type: 'text',
                     required: true,
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>',
                     subscribe: {
                       'dataRecordGetter': {
                         onValueUpdate: [{
@@ -165,6 +167,7 @@ module.exports = {
                     label: '@dataPublication-datatype',
                     help: '@dataPublication-datatype-help',
                     required: true,
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>',
                     options: [{
                         value: "",
                         label: "@dataPublication-dataype-select:Empty"
@@ -213,6 +216,7 @@ module.exports = {
                     name: "finalKeywords",
                     editOnly: true,
                     required: true,
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>',
                     fields: [{
                       class: 'TextField',
                       definition: {
@@ -237,6 +241,7 @@ module.exports = {
                     label: "@dmpt-foaf:fundedBy_foaf:Agent",
                     help: "@dmpt-foaf:fundedBy_foaf:Agent-help",
                     forceClone: ['lookupService', 'completerService'],
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>',
                     fields: [{
                       class: 'VocabField',
                       definition: {
@@ -267,6 +272,7 @@ module.exports = {
                     label: "@dmpt-foaf:fundedBy_vivo:Grant",
                     help: "@dmpt-foaf:fundedBy_vivo:Grant-help",
                     forceClone: ['lookupService', 'completerService'],
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>',
                     fields: [{
                       class: 'VocabField',
                       definition: {
@@ -310,6 +316,7 @@ module.exports = {
                     help: "@dmpt-project-anzsrcFor-help",
                     name: "dc:subject_anzsrc:for",
                     vocabId: 'anzsrc-for',
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>',
                     subscribe: {
                       'dataRecordGetter': {
                         onValueUpdate: [{
@@ -328,6 +335,7 @@ module.exports = {
                     help: "@dmpt-project-anzsrcSeo-help",
                     name: "dc:subject_anzsrc:seo",
                     vocabId: 'anzsrc-seo',
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>',
                     subscribe: {
                       'dataRecordGetter': {
                         onValueUpdate: [{
@@ -380,6 +388,7 @@ module.exports = {
                     hasClearButton: false,
                     valueFormat: 'YYYY-MM-DD',
                     displayFormat: 'L',
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>',
                     publish: {
                       onValueUpdate: {
                         modelEventSource: 'valueChanges'
@@ -412,6 +421,7 @@ module.exports = {
                     displayFormat: 'L',
                     adjustStartRange: true,
                     requiredIfHasValue: ['startDate', 'endDate'],
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>',
                     subscribe: {
                       'startDate': {
                         onValueUpdate: [
@@ -432,7 +442,8 @@ module.exports = {
                     name: 'timePeriod',
                     label: '@dataPublication-timePeriod',
                     help: '@dataPublication-timePeriod-help',
-                    type: 'text'
+                    type: 'text',
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>'
                   }
                 },
                 {
@@ -443,7 +454,8 @@ module.exports = {
                     label: '@dataPublication-geospatial',
                     help: '@dataPublication-geospatial-help',
                     tabId: 'coverage',
-                    mainTabId: 'mainTab'
+                    mainTabId: 'mainTab',
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>'
                   }
                 }
               ]
@@ -474,6 +486,7 @@ module.exports = {
                     label: '@dataPublication-publish-metadata-only',
                     help: '@dataPublication-publish-metadata-only-help',
                     controlType: 'checkbox',
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>',
                     publish: {
                       onValueUpdate: {
                         modelEventSource: 'valueChanges'
@@ -494,6 +507,7 @@ module.exports = {
                   definition: {
                     name: "dataLocations", // this will create another entry on form group that will contain the list of those selected
                     visibilityCriteria: false, // hidden when access rights is unchecked
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>',
                     subscribe: {
                       'dataRecordGetter': {
                         onValueUpdate: [{
@@ -623,7 +637,8 @@ module.exports = {
                     name: 'accessRights_url',
                     label: '@dataPublication-accessRights_url',
                     help: '@dataPublication-accessRights_url-help',
-                    type: 'text'
+                    type: 'text',
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>'
                   }
                 }
               ]
@@ -653,6 +668,7 @@ module.exports = {
                     label: "@dmpt-related-publication",
                     help: "@dmpt-related-publication-help",
                     forceClone: ['fields'],
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>',
                     fields: [
                       {
                         class: 'Container',
@@ -717,6 +733,7 @@ module.exports = {
                     label: "@dmpt-related-website",
                     help: "@dmpt-related-website-help",
                     forceClone: ['fields', 'fieldMap'],
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>',
                     fields: [{
                       class: 'Container',
                       compClass: 'GenericGroupComponent',
@@ -771,6 +788,7 @@ module.exports = {
                     label: "@dataPublication-related-metadata",
                     help: "@dataPublication-related-metadata-help",
                     forceClone: ['fields', 'fieldMap'],
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>',
                     fields: [{
                       class: 'Container',
                       compClass: 'GenericGroupComponent',
@@ -825,6 +843,7 @@ module.exports = {
                     label: "@dmpt-related-data",
                     help: "@dmpt-related-data-help",
                     forceClone: ['fields', 'fieldMap'],
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>',
                     fields: [{
                       class: 'Container',
                       compClass: 'GenericGroupComponent',
@@ -881,6 +900,7 @@ module.exports = {
                     label: "@dataPublication-related-services",
                     help: "@dataPublication-related-services-help",
                     forceClone: ['fields', 'fieldMap'],
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>',
                     fields: [{
                       class: 'Container',
                       compClass: 'GenericGroupComponent',
@@ -957,6 +977,7 @@ module.exports = {
                     name: 'license_identifier',
                     label: '@dataPublication-dc:license.dc:identifier',
                     help: '@dataPublication-dc:license.dc:identifier-help',
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>',
                     options: [
                       {
                           value: "",
@@ -1029,7 +1050,8 @@ module.exports = {
                   class: 'MarkdownTextArea',
                   definition: {
                     name: 'license_notes',
-                    label: '@dataPublication-dc:license.rdf:Alt.skos:prefLabel'
+                    label: '@dataPublication-dc:license.rdf:Alt.skos:prefLabel',
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>'
                   }
                 },
                 {
@@ -1038,7 +1060,8 @@ module.exports = {
                     name: 'license_other_url',
                     label: '@dataPublication-dc:license.rdf:Alt.dc:identifier',
                     help: '@dataPublication-dc:license.rdf:Alt.dc:identifier-help',
-                    type: 'text'
+                    type: 'text',
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>'
                   }
                 },
                 {
@@ -1049,7 +1072,8 @@ module.exports = {
                     help: '@dataPublication-dc:accessRights.dc:RightsStatement.skos:prefLabel-help',
                     type: 'text',
                     required: true,
-                    defaultValue: '@dataPublication-dc:accessRights.dc:RightsStatement.skos:prefLabel-default'
+                    defaultValue: '@dataPublication-dc:accessRights.dc:RightsStatement.skos:prefLabel-default',
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>'
                   }
                 },
                 {
@@ -1058,7 +1082,8 @@ module.exports = {
                     name: 'license_statement_url',
                     label: '@dataPublication-dc:accessRights.dc:RightsStatement.dc:identifier',
                     help: '@dataPublication-dc:accessRights.dc:RightsStatement.dc:identifier-help',
-                    type: 'text'
+                    type: 'text',
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>'
                   }
                 }
               ]
@@ -1090,7 +1115,8 @@ module.exports = {
                     label: '@dataPublication-citation-title',
                     help: '@dataPublication-citation-title-help',
                     type: 'text',
-                    required: true
+                    required: true,
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>'
                   }
                 },
                 {
@@ -1100,6 +1126,7 @@ module.exports = {
                     name: "creators",
                     canSort: true,
                     skipClone: ['showHeader', 'initialValue'],
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>',
                     forceClone: [{
                         field: 'vocabField',
                         skipClone: ['injector']
@@ -1144,7 +1171,8 @@ module.exports = {
                     help: '@dataPublication-citation-publisher-help',
                     defaultValue: '@dataPublication-citation-publisher-default',
                     type: 'text',
-                    required: true
+                    required: true,
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>'
                   }
                 },
                 {
@@ -1154,7 +1182,8 @@ module.exports = {
                     label: '@dataPublication-citation-url',
                     help: '@dataPublication-citation-url-help',
                     type: 'text',
-//                    required: true
+                    required: true,
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>'
                   }
                 },
                 {
@@ -1171,7 +1200,8 @@ module.exports = {
                     timePickerOpts: false,
                     hasClearButton: false,
                     valueFormat: 'YYYY-MM-DD',
-                    displayFormat: 'L'
+                    displayFormat: 'L',
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>'
                   }
                 },
 // this is the moved DOI code
@@ -1253,6 +1283,36 @@ module.exports = {
                       }
                     }
                   }
+                },
+                {
+                  class: 'HiddenValue',
+                  compClass: 'HiddenValueComponent',
+                  definition: {
+                    name: 'contributor_ci',
+                    subscribe: {
+                      'dataRecordGetter': {
+                        onValueUpdate: [{
+                          action: 'utilityService.getPropertyFromObject',
+                          field: 'contributor_ci'
+                        }]
+                      }
+                    }
+                  }
+                },
+                {
+                  class: 'HiddenValue',
+                  compClass: 'HiddenValueComponent',
+                  definition: {
+                    name: 'contributor_data_manager',
+                    subscribe: {
+                      'dataRecordGetter': {
+                        onValueUpdate: [{
+                          action: 'utilityService.getPropertyFromObject',
+                          field: 'contributor_data_manager'
+                        }]
+                      }
+                    }
+                  }
                 }
               ]
             }
@@ -1283,6 +1343,7 @@ module.exports = {
                     label: '@dataPublication-embargoEnabled',
                     help: '@dataPublication-embargoEnabled-help',
                     controlType: 'checkbox',
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>',
                     publish: {
                       onValueUpdate: {
                         modelEventSource: 'valueChanges'
@@ -1303,6 +1364,7 @@ module.exports = {
                     name: "embargoUntil",
                     label: "@dataPublication-embargoUntil",
                     help: '@dataPublication-embargoUntil-help',
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>',
                     datePickerOpts: {
                       format: 'dd/mm/yyyy',
                       icon: 'fa fa-calendar',
@@ -1343,7 +1405,8 @@ module.exports = {
                   definition: {
                     name: 'reviewerNote',
                     label: '@dataPublication-reviewerNote',
-                    help: '@dataPublication-reviewerNote-help'
+                    help: '@dataPublication-reviewerNote-help',
+                    disabledExpression: '<%= _.isEmpty(relatedRecordId) %>'
                   }
                 }
 //                {
@@ -1386,7 +1449,8 @@ module.exports = {
             class: "SaveButton",
             definition: {
               label: 'Save',
-              cssClasses: 'btn-success'
+              cssClasses: 'btn-success',
+              disabledExpression: '<%= _.isEmpty(relatedRecordId) %>'
             }
           },
           {
@@ -1394,7 +1458,8 @@ module.exports = {
             definition: {
               label: 'Save & Close',
               closeOnSave: true,
-              redirectLocation: '/@branding/@portal/dashboard/dataPublication'
+              redirectLocation: '/@branding/@portal/dashboard/dataPublication',
+              disabledExpression: '<%= _.isEmpty(relatedRecordId) %>'
             },
             variableSubstitutionFields: ['redirectLocation']
           },
@@ -1404,7 +1469,8 @@ module.exports = {
               label: 'Withdraw',
               closeOnSave: true,
               redirectLocation: '/@branding/@portal/dashboard/dataPublication',
-              additionalData: { withdraw: true }
+              additionalData: { withdraw: true },
+              disabledExpression: '<%= _.isEmpty(relatedRecordId) %>'
             },
             variableSubstitutionFields: ['redirectLocation']
           },
@@ -1414,7 +1480,8 @@ module.exports = {
               label: 'Submit for Publication',
               closeOnSave: true,
               redirectLocation: '/@branding/@portal/dashboard/dataPublication',
-              targetStep: 'queued'
+              targetStep: 'queued',
+              disabledExpression: '<%= _.isEmpty(relatedRecordId) %>'
             },
             variableSubstitutionFields: ['redirectLocation']
           },

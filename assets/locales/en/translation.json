@@ -659,5 +659,10 @@
   "workspaces-link-column": "Link",
   "workspaces-rdmp-column": "RDMP",
   "create-workspace-next": "Next",
-  "create-workspace-back": "Back"
+  "create-workspace-back": "Back",
+  "export-csv-rdmp": "Download Plans CSV",
+  "export-csv-dataRecord": "Download Data Records CSV",
+  "export-csv-dataPublication": "Download Data Publications CSV",
+  "dataRecord-title": "Data Record",
+  "dataPublication-title": "Data Publication"
 }
