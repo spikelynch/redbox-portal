@@ -1182,7 +1182,7 @@ module.exports = {
                     label: '@dataPublication-citation-url',
                     help: '@dataPublication-citation-url-help',
                     type: 'text',
-                    required: true,
+//                    required: true,
                     disabledExpression: '<%= _.isEmpty(relatedRecordId) %>'
                   }
                 },
