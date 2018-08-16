@@ -1494,7 +1494,7 @@ module.exports = {
               label: 'Submit for Publication',
               closeOnSave: true,
               redirectLocation: '/@branding/@portal/dashboard/dataPublication',
-              targetStep: 'queued',
+              targetStep: 'reviewing',
               disabledExpression: '<%= _.isEmpty(relatedRecordId) %>'
             },
             variableSubstitutionFields: ['redirectLocation']
