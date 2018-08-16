@@ -4,13 +4,55 @@
 
 <div class="default-page">
   <div class="header">
-    <h1 id="main-title" class="container">List of available services</h1>
-    <div class="container">Placeholder</div>
+    <h1 id="main-title" class="container">List of eResearch platform services</h1>
+    <div class="container"></div>
     <br/>
   </div>
 
   <div class="main container clearfix">
-    <a href="<%= BrandingService.getBrandAndPortalPath(req) %>/researcher/home">A placeholder link to the homepage</a>
+    <div class="info-area">
+    UTS offers a suite of different platforms to assist with managing your research data. These platforms meet standards for best practice Research Data Management (RDM) as required in the <a href="http://www.gsu.uts.edu.au/policies/research-management-policy.html" target="_blank"> UTS Research Management Policy (2018)</a> and further outlined in the <a href="https://staff.uts.edu.au/topichub/RIO%20Library/RIO%20documents/Research%20environment/New%20research%20directives/Research%20Management%20Guidelines/Guidelines%20for%20the%20Management%20of%20Research%20Data%20v0%2084%2020171120.pdf?Web=1" target="_blank">Guidelines for Research Data Management (opens in StaffConnect)</a>.
+The platforms recommended here are hosted in Australia, mostly by UTS. Where they are hosted by other service providers, the service providers waive any rights over IP in the data stored. It is expected that researchers will use the supported University platforms as others may not comply with research data governance requirements. <br /> <br />
+    <div class="row">
+      <div class="col-sm-12"> <h4> Currently available as Stash workspaces </h4></div>
+    </div><br />
+    <div class="row">
+      <div class="col-sm-2"><img src="<%= BrandingService.getBrandAndPortalPath(req) %>/images/omero.png" alt="Omero logo"></div>
+      <div class="col-sm-8"><strong> Microscopy data: </strong> OMERO handles all your microscopy images in a secure central repository, from the microscope to publication. You can view, organize, analyze and share your data from anywhere you have internet access. Work with your images from a desktop app, from the web or from 3rd party software.  </div>
+    </div> <br /><br />
+    <div class="row">
+      <div class="col-sm-2"><img src="<%= BrandingService.getBrandAndPortalPath(req) %>/images/gitlab.png" alt="<%= TranslationService.t('help-alt-text') %>"/></div>
+      <div class="col-sm-8"> <strong>Code:</strong> Gitlab is a web-based code repository system with features to help with code management, version control, code review, and collaboration. Access can be limited to project members. GitLab helps coders to ensure that their research is reproducible by tracking changes.  <br /><br /> NB. First time Gitlab user? Before requesting your GitLab workspace <a href="https://git.research.uts.edu.au" target="_blank"> go to GitLab and authenticate </a>(log in). This only applies the first time you use GitLab.</div>
+    </div> <br />
+
+    <div class="row">
+      <div class="col-sm-12"> <h4>Coming soon to Stash (access instructions included below) </h4></div>
+    </div><br />
+    <div class="row">
+      <div class="col-sm-2"><img src="<%= BrandingService.getBrandAndPortalPath(req) %>/images/isilon.jpg" alt="Isilon logo"></div>
+      <div class="col-sm-8"><strong>eResearch Store: </strong> The eResearch Store (aka Isilon) is a central networked drive specifically for research data. The eResearch Store is where <strong> research data should be archived at the end of a research project</strong>, as research data stored there will be managed to meet the minimum retention requirements for your research data as per your data management plan. To archive your data, <a href="<%= BrandingService.getBrandAndPortalPath(req) %>/record/dataRecord/edit">Create a Data Record in Stash</a>. <br /> <br />The <strong> eResearch Store </strong> is also recommended for large data volumes and for highly confidential or sensitive data because of its security and access control. Access from off campus requires that you use the UTS VPN (<a href="https://uts.service-now.com/serviceconnect?id=sc_cat_item&sys_id=96819431db996a000efff1fabf9619f1" target="_blank">more information here via ServiceConnect</a>).  <br />ACCESS: create a ServiceConnect request with the title "Request eResearch storage". <a href="https://staff.uts.edu.au/howdoi/Pages/Researching/The%20UTS%20research%20environment/Technology%20for%20research/Tools%20for%20research%20collaboration/get-started-with-enotebooks.aspx" target='_blank'> here on StaffConnect. </a> </div>
+    </div><br />
+    <div class="row">
+      <div class="col-sm-2"><img src="<%= BrandingService.getBrandAndPortalPath(req) %>/images/cloudstor.png" alt="Cloudstor logo"></div>
+      <div class="col-sm-8"><strong> Cloud storage:</strong> Cloudstor is a secure storage and file transfer (FileSender) solution to support collaboration. You can control access by research collaborators, and can extend access to external research partners. It has desktop syncing functionality similar to Dropbox and is based on OwnCloud. File storage defaults to 100GB for individual researchers, but if you expect to need larger collaborative storage, contact  <a href="mailto: eresearch-it@uts.edu.au">eResearch</a>. <br /><br /> CloudStor’s FileSender function is great for fast transfer of files up to 2TB, with the additional option to encrypt files for secure sending of confidential and highly confidential data. Not for storage of data after the end of a project - this should be downloaded to the eResearch Store. <br />ACCESS:<a href="https://cloudstor.aarnet.edu.au" target='_blank'> Sign up for Cloudstor here. </a> </div>
+    </div><br />
+    <div class="row">
+      <div class="col-sm-2"><img src="<%= BrandingService.getBrandAndPortalPath(req) %>/images/la.png" alt="Lab Archives logo"></div>
+      <div class="col-sm-8"><strong>eNotebooks: </strong> Web-based electronic notebooks (provided by LabArchives) are useful for managing research documentation, observations and data. With granular user-managed access control and intellectual property controls, eNotebooks are ideal for overseeing research students and for research collaboration (including external partners). <br />ACCESS: sign-up instructions are  <a href="https://staff.uts.edu.au/howdoi/Pages/Researching/The%20UTS%20research%20environment/Technology%20for%20research/Tools%20for%20research%20collaboration/get-started-with-enotebooks.aspx" target='_blank'> here on StaffConnect. </a> </div>
+    </div><br />
+    <div class="row">
+      <div class="col-sm-12"> <h4>Survey Platforms (access instructions included below) </h4></div>
+    </div><br />
+    <div class="row">
+      <div class="col-sm-2"><img src="<%= BrandingService.getBrandAndPortalPath(req) %>/images/redcap.png" alt="RedCap logo"></div>
+      <div class="col-sm-8"><strong>Surveys and Data Collection (health and sensitive): </strong> Research Electronic Data Capture (REDCap) is a secure web-based database application located safely in our Data Centre. It is ideal for collecting and managing participant data and administering online surveys, with features supporting longitudinal data collection, complex team workflows and exports to a range of statistical analysis programs. <br />ACCESS: <a href="mailto: eresearch-it@uts.edu.au"> email eResearch to arrange access. </a> </div>
+     </div><br />
+     <div class="row">
+        <div class="col-sm-2"><img src="<%= BrandingService.getBrandAndPortalPath(req) %>/images/limesurvey.png" alt="LimeSurvey logo"></div>
+        <div class="col-sm-8"><strong>Surveys (low or negligible risk): </strong> LimeSurvey is a secure Survey platform hosted at UTS. It allows you to develop, publish and collect responses to surveys using a wide range of question types. Your surveys can include branching, your own preferred layout and design (using a templating system), and can provide basic statistical analysis of survey results. <br />ACCESS: <a href="mailto: eresearch-it@uts.edu.au"> email eResearch to arrange access. </a> </div>
+     </div><br />
+    <br/>
+  </div>
   </div>
 
 

@@ -103,6 +103,36 @@ body {
     text-align: center;
 }
 
+.info-area a {
+    color: #0d41d1;
+}
+.info-area ul {
+    list-style-type: circle;
+}
+.info-area li {
+    margin-left: 10px;
+    padding: 5px;
+}
+.info-table-wrap {
+overflow-x:auto;
+}
+
+.info-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.info-table td, th {
+  border: 1px solid #ddd;
+  padding: 8px;
+  vertical-align: top;
+}
+.info-table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  color: white;
+  background-color: #0d41d1;
+}
 .mainmenu-area {background: none repeat scroll 0 0 #000000;
 /* font-family: 'NB Akademie Std',Arial,sans-serif; */
 /* text-transform: uppercase; */
@@ -578,6 +608,7 @@ padding: 35px 0 180px;}
 }
 a {color: #000;
   font-family: inherit}
+
 
 .footer-bottom-area {
   background: none repeat scroll 0 0 #000;

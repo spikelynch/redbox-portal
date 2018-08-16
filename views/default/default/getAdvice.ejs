@@ -5,12 +5,125 @@
 <div class="default-page">
   <div class="header">
     <h1 id="main-title" class="container">Get advice</h1>
-    <div class="container">Placeholder</div>
+    <div class="container"></div>
     <br/>
   </div>
 
   <div class="main container clearfix">
-    <a href="<%= BrandingService.getBrandAndPortalPath(req) %>/researcher/home">A placeholder link to the homepage</a>
+      <div class="info-area">
+<!--
+        <div class="row">
+        <div class="col-sm-3"><a href="<%= BrandingService.getBrandAndPortalPath(req) %>#quickstart"> Stash Quickstart Guide </a></div>
+        <div class="col-sm-3"><a href="http://www.lib.uts.edu.au/research/data-management/" target="_blank">Stash Help</a></div>
+        <div class="col-sm-3"><a href="<%= BrandingService.getBrandAndPortalPath(req) %>#contacts"> RDM and eResearch help </a></div>
+        <div class="col-sm-3"><a href="<%= BrandingService.getBrandAndPortalPath(req) %>/getAdvice"#grantsethics"> RDM info for grants and ethics  </a></div>
+        </div> <br />    <br />
+-->
+
+<div class="row">
+  <div class="col-sm-12"> <h4>Stash Orientation Guide </h4></div>
+</div>
+<div class="row">
+   <div class="col-sm-12"><em> More "how-to" help is available at the <a href="http://www.lib.uts.edu.au/research/data-management/" target="_blank"> Stash Help Pages</a></em></div>
+</div>
+<br /> <br />
+    <div class="row">
+        <div class="col-sm-12">
+          <div class="info-table-wrap">
+          <table class="info-table">
+            <tr>
+              <th width="30%"> What is a... &nbsp;?</th>
+              <th width="40%"> Why should I? </th>
+              <th width="30%"> When should I?</th>
+            </tr>
+            <tr>
+              <td width="30%"> <strong>RDMP</strong> or Research Data Management Plan establishes a link between the project you are working on (even if informal) and your project data. 
+                This helps us help you to meet research and data governance requirements and makes it easier for you to keep track of the data over time.
+              <br /></td>
+              <td width="40%"> <ul>
+                <li>It helps UTS to provide you with the data services you will need to complete your project. </li>
+                <li>You need one to set up workspaces, and we need it to keep track of who those workspaces belong to</li>
+                <li> Top funders usually require it</li>
+                <li> It is required under <a href="http://www.gsu.uts.edu.au/policies/research-management-policy.html" target="_blank"> UTS Research Management Policy </a></li></ul></td>
+              <td width="30%"> <strong>Proposal stage:</strong> if you are planning a project that will create or compute data in very large volumes or will need specific data infrastructure (e.g. databases), <a href="mailto:eresearch-it@uts.edu.au">contact us</a>.
+                <br /> <br />NB.<em> "RDM info for grants and ethics" </em> (scroll down) supplies suggestions for the data management section of your grant applications.
+                <br /> <br /><strong>Post-award stage:</strong> all other projects</td>
+            </tr>
+            <tr>
+              <td width="30%"> <strong>Workspace</strong> - a platform or service provided by UTS for you to store and manipulate data</td>
+              <td width="40%"> <ul>
+                 <li> See the <a href="<%= BrandingService.getBrandAndPortalPath(req) %>/availableServicesList"> Workspace services list </a></li>
+                 <li> If your platform of choice is available, you can request it directly through Stash and can expect quicker turnaround. You must have an RDMP to do this, so we know who owns the workspace and how long to keep it. Other platforms and features will be coming soon. </li>
+                 </ul></td>
+              <td width="30%"> <strong>Anytime</strong> you need one for research.</td>
+            </tr>
+            <tr>
+              <td width="30%"> <strong>Data Record</strong> - a record of the research data, whether primary or processed, used to reach your research findings. Should include any documentation necessary to understand or reproduce your research, including code and any type of digital artifact.</td>
+              <td width="40%"> <ul>
+                 <li> Research integrity demands it </li>
+                 <li> It will be easier to find your (or your student's) data after long periods of time have elapsed</li>
+                 <li> We will manage it, according to your instructions, for the minimum retention period </li>
+                 <li> It is required under <a href="http://www.gsu.uts.edu.au/policies/research-management-policy.html" target="_blank"> UTS Research Management Policy </a></li>
+                 </ul></td>
+               <td width="30%"> Best-practice varies by discipline, but consider creating a data record: <ul><li><strong>After collection</strong> of primary or raw data, before further processing</li>
+                  <li><strong>After a publication</strong> is disseminated</li>
+                  <li><strong>After a project</strong> is complete</li></td>
+            </tr>
+            <tr>
+              <td width="30%"> <strong>Data Publication</strong> - publication (usually on the UTS Research Data Hub and the <a href="http://researchdata.ands.org.au" target="_blank">Australian Research Data Commons </a>) of information about a set of research data that is available for re-use by other researchers (conditions may apply). A Data Publication may be Open Access (the data is available for download) or Mediated Access (the data is available but not by download as there are access criteria). </td>
+              <td width="40%"> <ul>
+                 <li> Your journal or funder may require that you publish it</li>
+                 <li> It is a way to show your data to your fellow researchers under license, to ensure that you get the attribution you deserve </li>
+                 <li> Your data publication can be cited as readily as your traditional publications, because we can publish it with the required citation, including a DOI </li>
+                 <li> Your data may be important to the future of knowledge in unpredictable ways </li>
+                 <li> Open data is a crucial element of scientific enquiry</li>
+                 <li> It is required that you <em> consider </em> data publication under <a href="http://www.gsu.uts.edu.au/policies/research-management-policy.html" target="_blank"> UTS Research Management Policy </a> but understood that there may be legal, ethical or commercial impediments to doing so.</li>
+                 </ul></td>
+               <td width="30%"> <strong>Anytime </strong>- your data publication can be embargoed to allow for your traditional outputs to be published first.</td>
+            </tr>
+          </table></div>
+        </div>
+      </div>
+</div>
+<br /> <br />
+<div class="row">
+  <div class="col-sm-12"> <h4> <a link="#contacts"> RDM and eResearch help</a> </h4></div>
+</div><br />
+<div class="row">
+  <div class="col-sm-12"> Research data management (RDM) services at UTS are provided jointly by UTS ITD's eResearch team and UTS Library's Research Data Team.
+      <br /><br /><ul><li>
+      <strong>UTS library's</strong> <a href="http://www.lib.uts.edu.au/about-us/staff-profiles/information-services/research-data-team" target="_blank"> Research Data Team </a>is responsible for providing <a href="http://www.lib.uts.edu.au/research/data-management/" target="_blank">training and consultation on RDM</a> across the research project lifecycle.
+      </li><li><strong>UTS eResearch</strong> are dedicated to helping researchers with research-specific tools, technology and training; a little like IML for researchers.
+      eResearch provides researchers with a number of <a href="<%= BrandingService.getBrandAndPortalPath(req) %>/availableServicesList"> research platform services </a>
+      which meet the requirements of the <a href="http://www.gsu.uts.edu.au/policies/research-management-policy.html" target="_blank"> UTS Research Management Policy (2018)</a> and accompanying <a href="https://staff.uts.edu.au/topichub/RIO%20Library/RIO%20documents/Research%20environment/New%20research%20directives/Research%20Management%20Guidelines/Guidelines%20for%20the%20Management%20of%20Research%20Data%20v0%2084%2020171120.pdf?Web=1" target="_blank">Guidelines for Research Data Management (opens in StaffConnect)</a>.
+      </li></ul>
+  </div>
+</div> <br />
+<div class="row">
+  <div class="col-sm-2"><strong> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Contacts:</strong></div>
+  <div class="col-sm-4">RDM enquiries:</div>
+  <div class="col-sm-4"><img src="<%= BrandingService.getBrandAndPortalPath(req) %>/images/email.png" alt="email icon"><a href="mailto:data-librarian@uts.edu.au"> data-librarian@uts.edu.au </a></div>
+  <div class="col-sm-2"></div>
+</div> <br />
+<div class="row">
+  <div class="col-sm-2"></div>
+  <div class="col-sm-4">Research IT enquiries:</div>
+  <div class="col-sm-4"><img src="<%= BrandingService.getBrandAndPortalPath(req) %>/images/email.png" alt="email icon"><a href="mailto:eresearch-it@uts.edu.au"> eresearch-it@uts.edu.au </a></div>
+  <div class="col-sm-2"></div>
+</div> <br />
+<div class="row">
+  <div class="col-sm-2"></div>
+  <div class="col-sm-4">Hacky Hour (Researcher Help Desk)</div>
+  <div class="col-sm-4"><img src="<%= BrandingService.getBrandAndPortalPath(req) %>/images/helpdesk.png" alt="helpdesk icon"><a href="https://eresearch.uts.edu.au/2015/08/03/hacky_hour_1.htm" target="_blank"> Penny Lane Cafe, B11. Thursdays 3-4pm</a></div>
+  <div class="col-sm-2"></div>
+</div> <br /><br />
+
+  <div class="row">
+      <div class="col-sm-12"> <h4> <a link="#grantsethics">RDM info for grants and ethics</a> </h4></div>
+  </div><br />
+  <div class="row">
+      <div class="col-sm-12"> coming soon</div>
+  </div><br />
   </div>
 
 
