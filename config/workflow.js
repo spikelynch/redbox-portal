@@ -4,7 +4,7 @@ module.exports.workflow = {
       config: {
         workflow: {
           stage: 'draft',
-          stageLabel: 'Draft',
+          stageLabel: '',
         },
         authorization: {
           viewRoles: ['Admin', 'Librarians'],
@@ -20,7 +20,7 @@ module.exports.workflow = {
       config: {
         workflow: {
           stage: 'draft',
-          stageLabel: 'Draft',
+          stageLabel: '',
         },
         authorization: {
           viewRoles: ['Admin', 'Librarians'],
