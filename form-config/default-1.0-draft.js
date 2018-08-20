@@ -148,39 +148,76 @@ module.exports = {
                   }
                 },
                 {
-                  class: 'TextField',
-                  editOnly: true,
-                  definition: {
-                    name: 'title',
-                    label: '@dmpt-project-title',
-                    help: '@dmpt-project-title-help',
-                    type: 'text',
-                    required: true
-                  }
-                },
-                {
-                  class: 'TextField',
-                  definition: {
-                    name: 'dc:identifier',
-                    label: '@dmpt-project-id',
-                    help: '@dmpt-project-id-help',
-                    type: 'text',
-                    required: true
-                  }
-                },
-                {
-                  class: 'TextArea',
-                  compClass: 'TextAreaComponent',
-                  editOnly: true,
-                  definition: {
-                    name: 'description',
-                    label: '@dmpt-project-desc',
-                    help: '@dmpt-project-desc-help',
-                    rows: 10,
-                    cols: 10,
-                    required: true
-                  }
-                },
+  class: 'VocabField',
+  compClass: 'VocabFieldComponent',
+  definition: {
+    name: 'title',
+    label: "@dmpt-project-title",
+    help: "@dmpt-project-title-help",
+    forceClone: ['lookupService', 'completerService'],
+    disableEditAfterSelect: false,
+    vocabId: 'Research Activities AND%20(status:(%22Completed%22%20OR%20%22Approved%22%20OR%20%22Closed%20off%22%20OR%20%22Combined%22%20OR%20%22Transferred%22))',
+    sourceType: 'mint',
+    fieldNames: ['dc_title', 'folio', 'description', 'summary', 'refId', 'keyword', 'startDate', 'endDate', 'organization', 'fundingSource'],
+    searchFields: 'autocomplete_title',
+    titleFieldArr: ['dc_title'],
+    stringLabelToField: 'dc_title',
+    storeLabelOnly : true,
+    publish: {},
+    required: true
+  }
+}
+,
+{
+class: 'TextField',
+editOnly: true,
+definition: {
+name: 'dc:identifier',
+label: '@dmpt-project-id',
+help: '@dmpt-project-id-help',
+type: 'text',
+required: true,
+subscribe: {
+title: {
+onItemSelect: [
+{
+action: 'utilityService.getFirstofArray',
+field: 'folio'
+}
+]
+}
+}
+}
+}
+,
+{
+class: 'TextArea',
+compClass: 'TextAreaComponent',
+editOnly: true,
+definition: {
+name: 'description',
+label: '@dmpt-project-desc',
+help: '@dmpt-project-desc-help',
+rows: 10,
+cols: 10,
+required: true,
+subscribe: {
+title: {
+onItemSelect: [
+{
+action: 'utilityService.concatenate',
+fields: [
+'description',
+'summary'
+],
+delim: ' '
+}
+]
+}
+}
+}
+}
+,
                 {
                   class: 'Container',
                   compClass: 'TextBlockComponent',
@@ -189,21 +226,36 @@ module.exports = {
                   }
                 },
                 {
-                  class: 'RepeatableContainer',
-                  compClass: 'RepeatableTextfieldComponent',
-                  definition: {
-                    label: "@dmpt-finalKeywords",
-                    help: "@dmpt-finalKeywords-help",
-                    name: "finalKeywords",
-                    editOnly: true,
-                    fields: [{
-                      class: 'TextField',
-                      definition: {
-                        type: 'text'
-                      }
-                    }]
-                  }
-                },
+  class: 'RepeatableContainer',
+    compClass: 'RepeatableTextfieldComponent',
+    definition: {
+    label: '@dmpt-finalKeywords',
+      help: '@dmpt-finalKeywords-help',
+      name: 'finalKeywords',
+      editOnly: true,
+      fields: [
+      {
+        class: 'TextField',
+        definition: {
+          type: 'text'
+        }
+      }
+    ],
+      subscribe: {
+      title: {
+        onItemSelect: [
+          {
+            action: 'utilityService.splitArrayStringsToArray',
+            field: 'keyword',
+            regex: ',|;',
+            flags: 'i'
+          }
+        ]
+      }
+    }
+  }
+}
+,
                 {
                   class: 'Container',
                   compClass: 'TextBlockComponent',

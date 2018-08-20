@@ -883,8 +883,8 @@ module.exports = {
                     maxFileSize: 1073741824,
                     locationAddText: 'Enter',
                     help: '@dataLocations-help',
-                    label: '@dataLocations-label',
-                    required: true
+                    label: '@dataLocations-label'
+//                    required: true
                   }
                 },
                 {
