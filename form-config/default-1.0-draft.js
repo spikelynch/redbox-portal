@@ -40,16 +40,16 @@ module.exports = {
             variableSubstitutionFields: ['value']
           },
           {
-              class: "AnchorOrButton",
-              viewOnly: true,
-              definition: {
-                label: '@dmp-create-datarecord-link',
-                value: '/@branding/@portal/record/dataRecord/edit?rdmpOid=@oid',
-                cssClasses: 'btn btn-large btn-info margin-15',
-                controlType: 'anchor'
-              },
-              variableSubstitutionFields: ['value']
+            class: "AnchorOrButton",
+            viewOnly: true,
+            definition: {
+              label: '@dmp-create-datarecord-link',
+              value: '/@branding/@portal/record/dataRecord/edit?rdmpOid=@oid',
+              cssClasses: 'btn btn-large btn-info margin-15',
+              controlType: 'anchor'
             },
+            variableSubstitutionFields: ['value']
+          },
           {
             class: 'PDFList',
             viewOnly: true,
@@ -150,6 +150,7 @@ module.exports = {
                 {
   class: 'VocabField',
   compClass: 'VocabFieldComponent',
+  editOnly: true,
   definition: {
     name: 'title',
     label: "@dmpt-project-title",
@@ -170,7 +171,7 @@ module.exports = {
 ,
 {
 class: 'TextField',
-editOnly: true,
+editOnly: false,
 definition: {
 name: 'dc:identifier',
 label: '@dmpt-project-id',
@@ -256,13 +257,6 @@ delim: ' '
   }
 }
 ,
-                {
-                  class: 'Container',
-                  compClass: 'TextBlockComponent',
-                  definition: {
-                    type: 'hr'
-                  }
-                },
                 {
                   class: 'TextField',
                   definition: {
@@ -463,24 +457,25 @@ delim: ' '
                     sourceType: 'mint',
                     disabledExpression: '<%= !_.isEmpty(oid) %>',
                     fieldNames: [{
-                      'text_full_name': 'text_full_name'
-                    }, {
-                      'full_name_honorific': 'text_full_name_honorific'
-                    }, {
-                      'email': 'Email[0]'
-                    },
-                    {
-                      'given_name': 'Given_Name[0]'
-                    },
-                    {
-                      'family_name': 'Family_Name[0]'
-                    },
-                    {
-                      'honorific': 'Honorific[0]'
-                    },
-                    {
-                      'full_name_family_name_first': 'dc_title'
-                    }],
+                        'text_full_name': 'text_full_name'
+                      }, {
+                        'full_name_honorific': 'text_full_name_honorific'
+                      }, {
+                        'email': 'Email[0]'
+                      },
+                      {
+                        'given_name': 'Given_Name[0]'
+                      },
+                      {
+                        'family_name': 'Family_Name[0]'
+                      },
+                      {
+                        'honorific': 'Honorific[0]'
+                      },
+                      {
+                        'full_name_family_name_first': 'dc_title'
+                      }
+                    ],
                     searchFields: 'autocomplete_given_name,autocomplete_family_name,autocomplete_full_name',
                     titleFieldArr: ['text_full_name'],
                     titleFieldDelim: '',
@@ -511,24 +506,25 @@ delim: ' '
                     sourceType: 'mint',
                     disabledExpression: '<%= !_.isEmpty(oid) %>',
                     fieldNames: [{
-                      'text_full_name': 'text_full_name'
-                    }, {
-                      'full_name_honorific': 'text_full_name_honorific'
-                    }, {
-                      'email': 'Email[0]'
-                    },
-                    {
-                      'given_name': 'Given_Name[0]'
-                    },
-                    {
-                      'family_name': 'Family_Name[0]'
-                    },
-                    {
-                      'honorific': 'Honorific[0]'
-                    },
-                    {
-                      'full_name_family_name_first': 'dc_title'
-                    }],
+                        'text_full_name': 'text_full_name'
+                      }, {
+                        'full_name_honorific': 'text_full_name_honorific'
+                      }, {
+                        'email': 'Email[0]'
+                      },
+                      {
+                        'given_name': 'Given_Name[0]'
+                      },
+                      {
+                        'family_name': 'Family_Name[0]'
+                      },
+                      {
+                        'honorific': 'Honorific[0]'
+                      },
+                      {
+                        'full_name_family_name_first': 'dc_title'
+                      }
+                    ],
                     searchFields: 'autocomplete_given_name,autocomplete_family_name,autocomplete_full_name',
                     titleFieldArr: ['text_full_name'],
                     titleFieldDelim: '',
@@ -572,24 +568,25 @@ delim: ' '
                         vocabId: 'Parties AND repository_name:People',
                         sourceType: 'mint',
                         fieldNames: [{
-                          'text_full_name': 'text_full_name'
-                        }, {
-                          'full_name_honorific': 'text_full_name_honorific'
-                        }, {
-                          'email': 'Email[0]'
-                        },
-                        {
-                          'given_name': 'Given_Name[0]'
-                        },
-                        {
-                          'family_name': 'Family_Name[0]'
-                        },
-                        {
-                          'honorific': 'Honorific[0]'
-                        },
-                        {
-                          'full_name_family_name_first': 'dc_title'
-                        }],
+                            'text_full_name': 'text_full_name'
+                          }, {
+                            'full_name_honorific': 'text_full_name_honorific'
+                          }, {
+                            'email': 'Email[0]'
+                          },
+                          {
+                            'given_name': 'Given_Name[0]'
+                          },
+                          {
+                            'family_name': 'Family_Name[0]'
+                          },
+                          {
+                            'honorific': 'Honorific[0]'
+                          },
+                          {
+                            'full_name_family_name_first': 'dc_title'
+                          }
+                        ],
                         searchFields: 'autocomplete_given_name,autocomplete_family_name,autocomplete_full_name',
                         titleFieldArr: ['text_full_name'],
                         titleFieldDelim: '',
@@ -615,24 +612,25 @@ delim: ' '
                     vocabId: 'Parties AND repository_name:People',
                     sourceType: 'mint',
                     fieldNames: [{
-                      'text_full_name': 'text_full_name'
-                    }, {
-                      'full_name_honorific': 'text_full_name_honorific'
-                    }, {
-                      'email': 'Email[0]'
-                    },
-                    {
-                      'given_name': 'Given_Name[0]'
-                    },
-                    {
-                      'family_name': 'Family_Name[0]'
-                    },
-                    {
-                      'honorific': 'Honorific[0]'
-                    },
-                    {
-                      'full_name_family_name_first': 'dc_title'
-                    }],
+                        'text_full_name': 'text_full_name'
+                      }, {
+                        'full_name_honorific': 'text_full_name_honorific'
+                      }, {
+                        'email': 'Email[0]'
+                      },
+                      {
+                        'given_name': 'Given_Name[0]'
+                      },
+                      {
+                        'family_name': 'Family_Name[0]'
+                      },
+                      {
+                        'honorific': 'Honorific[0]'
+                      },
+                      {
+                        'full_name_family_name_first': 'dc_title'
+                      }
+                    ],
                     searchFields: 'autocomplete_given_name,autocomplete_family_name,autocomplete_full_name',
                     titleFieldArr: ['text_full_name'],
                     titleFieldDelim: '',
