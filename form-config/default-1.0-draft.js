@@ -1300,7 +1300,7 @@ delim: ' '
                   definition: {
                     name: 'workspaces',
                     columns: [{
-                        "label": "Title",
+                        "label": "Name",
                         "property": "title"
                       },
                       {

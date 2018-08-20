@@ -343,6 +343,10 @@ module.exports = {
                       {
                         value: "repository",
                         label: "@dataRecord-dataype-select:repository"
+                      },
+                      {
+                        value: "software",
+                        label: "@dataRecord-dataype-select:software"
                       }
                     ]
                   }

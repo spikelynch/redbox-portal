@@ -655,7 +655,7 @@
   "move-up-button": "Move entry up",
   "move-down-button": "Move entry down",
   "workspaces-type-column": "Type",
-  "workspaces-title-column": "Title",
+  "workspaces-title-column": "Name",
   "workspaces-link-column": "Link",
   "workspaces-rdmp-column": "RDMP",
   "create-workspace-next": "Next",
