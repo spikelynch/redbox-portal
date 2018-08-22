@@ -885,6 +885,8 @@ module.exports = {
                   definition: {
                     name:"dataLocations",
                     maxFileSize: 1073741824,
+                    maxNumberOfFiles: 50,
+                    notesHeader: 'Maximum 50 files, up to 1 GB per file',
                     locationAddText: 'Enter',
                     help: '@dataLocations-help',
                     label: '@dataLocations-label'
