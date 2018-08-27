@@ -607,7 +607,7 @@
   "@dataPublication-citation-tab-heading":"Specify how the data should be cited",
   "@dataPublication-citation-request-identifier": "Request a DOI for your publication (a Digital Object Identifier - recommended)",
   "@dataPublication-citation-identifier": "Identifier",
-  "@dataPublication-citation-title": "Title",
+  "@dataPublication-citation-title": "Data Publication Title",
   "@dataPublication-citation-title-help": "The title of this data publication",
   "@dataPublication-citation-publisher": "Publisher",
   "@dataPublication-citation-publisher-help": "Publisher should only be modified if necessary",

@@ -76,31 +76,12 @@ module.exports = [
         {
           class: 'TextArea',
           definition: {
-            name: 'embargoNote',
-            label: '@dataPublication-embargoNote',
-            help: '@dataPublication-embargoNote-help',
-            disabledExpression: '<%= _.isEmpty(relatedRecordId) %>'
-          }
-        },
-        {
-          class: 'TextArea',
-          definition: {
             name: 'reviewerNote',
             label: '@dataPublication-reviewerNote',
             help: '@dataPublication-reviewerNote-help',
             disabledExpression: '<%= _.isEmpty(relatedRecordId) %>'
           }
         },
-        {
-          class: 'ActionButton',
-          definition: {
-            label: "Publish Record to CKAN",
-            name: "ckanLocation",
-            cssClasses: "btn btn-primary",
-            targetAction: "publishToCKAN",
-            disabledExpression: '<%= _.isEmpty(relatedRecordId) %>'
-          }
-        }
       ]
     }
   }

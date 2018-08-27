@@ -133,6 +133,10 @@ module.exports = [
               {
                 value: "repository",
                 label: "@dataPublication-dataype-select:repository"
+              },
+              {
+                value: "software",
+                label: "@dataPublication-dataype-select:software"
               }
             ],
             subscribe: {
