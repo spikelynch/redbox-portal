@@ -21,6 +21,7 @@ import { Output, EventEmitter, Injector } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { TranslationService } from '../translation-service';
 import { UtilityService } from '../util-service';
+import { Observable } from 'rxjs/Observable';
 
 import * as _ from "lodash";
 /**
@@ -215,8 +216,19 @@ export class FieldBase<T> {
 
       if (!_.isEmpty(publishConfig)) {
         _.forOwn(publishConfig, (eventConfig, eventName) => {
-          const eventSource = eventConfig.modelEventSource;
-          this.formModel[eventSource].subscribe((value:any) => {
+          const eventSourceName = eventConfig.modelEventSource;
+          let eventSource = eventSourceName ? this.formModel[eventSourceName] : null;
+          if (!eventSource) {
+            eventSource = this.getEventEmitter(eventSourceName, 'this');
+            if (!eventSource) {
+              // you only need a 'publish' config block doesn't have an eventEmitter...if you do, as in the case
+              // of the TabOrAccordionContainer, a simple 'subscribe' block will do
+              // create the event emitter so components and other things can hook and publish stuff
+              // Note: you will need publishers and subcribers to be named, otherwise they'd get lost in the map
+              this[eventSource] = new EventEmitter<any>();
+            }
+          }
+          eventSource.subscribe((value:any) => {
             if (this.valueNotNull(value)) {
               let emitData = value;
               if (!_.isEmpty(eventConfig.fields)) {
@@ -439,5 +451,10 @@ export class FieldBase<T> {
       retVal = retVal || hasVal;
     });
     this.setRequired(retVal);
+  }
+
+  //Default asyncLoadData function. No async load required so return empty Observable.
+  asyncLoadData() {
+    return Observable.of(null);
   }
 }
