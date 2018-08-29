@@ -63,13 +63,14 @@ module.exports = [
         }
       },
         {
-          class: 'TextField',
+          class: 'HiddenValue',
+          compClass: 'HiddenValueComponent',
           definition: {
             name: 'title',
             label: '@dataPublication-title',
             help: '@dataPublication-title-help',
             type: 'text',
-            required: true,
+//            required: true,
             disabledExpression: '<%= _.isEmpty(relatedRecordId) %>',
             subscribe: {
               'dataRecordGetter': {

@@ -79,57 +79,6 @@ module.exports = {
         expandAccordionsOnOpen: true,
         fields: [
           // -------------------------------------------------------------------
-          // Welcome Tab - removed before launch be agreement
-          // -------------------------------------------------------------------
-          /*
-                    {
-                      class: "Container",
-                      editOnly: true,
-                      definition: {
-                        id: "welcome",
-                        label: "@dmpt-welcome-tab",
-                        active: true,
-                        fields: [{
-                            class: 'Container',
-                            compClass: 'TextBlockComponent',
-                            definition: {
-                              value: '@dmpt-welcome-heading',
-                              type: 'h3'
-                            }
-                          },
-                          {
-                            class: 'Container',
-                            compClass: 'TextBlockComponent',
-                            definition: {
-                              value: '@dmpt-welcome-par1'
-                            }
-                          },
-                          {
-                            class: 'Container',
-                            compClass: 'TextBlockComponent',
-                            definition: {
-                              value: '@dmpt-welcome-par2'
-                            }
-                          },
-                          {
-                            class: 'Container',
-                            compClass: 'TextBlockComponent',
-                            definition: {
-                              value: '@dmpt-welcome-par3'
-                            }
-                          },
-                          {
-                            class: 'Container',
-                            compClass: 'TextBlockComponent',
-                            definition: {
-                              value: '@dmpt-welcome-par4'
-                            }
-                          }
-                        ]
-                      }
-                    },
-          */
-          // -------------------------------------------------------------------
           // Project Tab
           // -------------------------------------------------------------------
           {
@@ -156,7 +105,7 @@ module.exports = {
                     help: "@dmpt-project-title-help",
                     forceClone: ['lookupService', 'completerService'],
                     disableEditAfterSelect: false,
-                    vocabId: 'Research Activities AND%20(status:(%22Completed%22%20OR%20%22Approved%22%20OR%20%22Closed%20off%22%20OR%20%22Combined%22%20OR%20%22Transferred%22))',
+                    vocabId: '\"Research Activities\"%20AND%20(text_status:(%22Completed%22%20OR%20%22Approved%22%20OR%20%22Closed%20Off%22%20OR%20%22Combined%22%20OR%20%22Transferred%22))',
                     sourceType: 'mint',
                     fieldNames: ['dc_title', 'folio', 'description', 'summary', 'refId', 'keyword', 'startDate', 'endDate', 'organization', 'fundingSource'],
                     searchFields: 'autocomplete_title',
@@ -169,7 +118,7 @@ module.exports = {
                 },
                 {
                   class: 'TextField',
-                  editOnly: false,
+                  editOnly: true,
                   definition: {
                     name: 'dc:identifier',
                     label: '@dmpt-project-id',
@@ -221,11 +170,11 @@ module.exports = {
                 {
                   class: 'RepeatableContainer',
                   compClass: 'RepeatableTextfieldComponent',
+                  editOnly: true,
                   definition: {
                     label: '@dmpt-finalKeywords',
                     help: '@dmpt-finalKeywords-help',
                     name: 'finalKeywords',
-                    editOnly: true,
                     fields: [{
                       class: 'TextField',
                       definition: {
@@ -235,11 +184,15 @@ module.exports = {
                     subscribe: {
                       title: {
                         onItemSelect: [{
-                          action: 'utilityService.splitArrayStringsToArray',
-                          field: 'keyword',
-                          regex: ',|;',
-                          flags: 'i'
-                        }]
+                            action: 'removeAllElems'
+                          },
+                          {
+                            action: 'utilityService.splitArrayStringsToArray',
+                            field: 'keyword',
+                            regex: ',|;',
+                            flags: 'i'
+                          }
+                        ]
                       }
                     }
                   }
@@ -309,7 +262,7 @@ module.exports = {
                       class: 'VocabField',
                       definition: {
                         disableEditAfterSelect: false,
-                        vocabId: 'Funding Bodies',
+                        vocabId: '\"Funding Bodies\"',
                         sourceType: 'mint',
                         fieldNames: ['dc_title', 'dc_identifier', 'ID', 'repository_name'],
                         searchFields: 'dc_title',
@@ -725,172 +678,6 @@ module.exports = {
               ]
             }
           },
-          // -------------------------------------------------------------------
-          // Storage Tab
-          // -------------------------------------------------------------------
-          /* data storage tab removed by agreement at UAT meeting as it is not used
-                    {
-                      class: "Container",
-                      definition: {
-                        id: "storage",
-                        label: "@dmpt-storage-tab",
-                        fields: [{
-                            class: 'Container',
-                            compClass: 'TextBlockComponent',
-                            definition: {
-                              value: '@dmpt-storage-heading',
-                              type: 'h3'
-                            }
-                          },
-
-                          {
-                            class: 'SelectionField',
-                            compClass: 'DropdownFieldComponent',
-                            definition: {
-                              name: 'vivo:Dataset_dc:extent',
-                              label: '@dmpt-vivo:Dataset_dc:extent',
-                              help: '@dmpt-vivo:Dataset_dc:extent-help',
-                              options: [{
-                                  value: "",
-                                  label: "@dmpt-select:Empty"
-                                },
-                                {
-                                  value: "@dmpt-vivo:Dataset_dc:extent-less-than-100GB",
-                                  label: "@dmpt-vivo:Dataset_dc:extent-less-than-100GB"
-                                },
-                                {
-                                  value: "@dmpt-vivo:Dataset_dc:extent-100GB-to-2TB",
-                                  label: "@dmpt-vivo:Dataset_dc:extent-100GB-to-2TB"
-                                },
-                                {
-                                  value: "@dmpt-vivo:Dataset_dc:extent-more-than-2TB",
-                                  label: "@dmpt-vivo:Dataset_dc:extent-more-than-2TB"
-                                }
-                              ],
-                              required: true,
-                              validationMessages: {
-                                required: "@dmpt-vivo:Dataset_dc:extent-required"
-                              }
-                            }
-                          },
-          /* following is moved to workspace tab
-                          {
-                            class: 'SelectionField',
-                            compClass: 'DropdownFieldComponent',
-                            definition: {
-                              name: 'vivo:Dataset_dc:location_rdf:PlainLiteral',
-                              label: '@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral',
-                              help: '@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-help',
-                              options: [{
-                                  value: "",
-                                  label: "@dmpt-select:Empty"
-                                },
-                                {
-                                  label: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-personal-equipment",
-                                  value: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-personal-equipment"
-                                },
-                                {
-                                  label: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-eresearch-platforms",
-                                  value: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-eresearch-platforms"
-                                },
-                                {
-                                  label: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-eresearch-store",
-                                  value: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-eresearch-store"
-                                },
-                                {
-                                  label: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-share-drive",
-                                  value: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-share-drive"
-                                },
-                                {
-                                  label: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-survey-platform",
-                                  value: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-survey-platform"
-                                },
-                                {
-                                  label: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-collab-space",
-                                  value: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-collab-space"
-                                },
-                                {
-                                  label: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-other",
-                                  value: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-other"
-                                }
-                              ],
-                              required: true,
-                              validationMessages: {
-                                required: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-required"
-                              }
-                            }
-                          },
-                          {
-                            class: 'TextArea',
-                            compClass: 'TextAreaComponent',
-                            definition: {
-                              name: 'vivo:Dataset_dc:location_skos:note',
-                              label: '@dmpt-vivo:Dataset_dc:location_skos:note',
-                              rows: 5,
-                              columns: 10
-                            }
-                          },
-                          {
-                            class: 'SelectionField',
-                            compClass: 'DropdownFieldComponent',
-                            definition: {
-                              name: 'vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral',
-                              label: '@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral',
-                              help: '@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-help',
-                              options: [{
-                                  value: "",
-                                  label: "@dmpt-select:Empty"
-                                },
-                                {
-                                  label: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-personal-equipment",
-                                  value: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-personal-equipment"
-                                },
-                                {
-                                  label: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-eresearch-platforms",
-                                  value: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-eresearch-platforms"
-                                },
-                                {
-                                  label: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-eresearch-store",
-                                  value: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-eresearch-store"
-                                },
-                                {
-                                  label: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-share-drive",
-                                  value: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-share-drive"
-                                },
-                                {
-                                  label: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-survey-platform",
-                                  value: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-survey-platform"
-                                },
-                                {
-                                  label: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-collab-space",
-                                  value: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-collab-space"
-                                },
-                                {
-                                  label: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-other",
-                                  value: "@dmpt-vivo:Dataset_dc:location_rdf:PlainLiteral-other"
-                                }
-                              ],
-                              required: true,
-                              validationMessages: {
-                                required: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-required"
-                              }
-                            }
-                          },
-                          {
-                            class: 'TextArea',
-                            compClass: 'TextAreaComponent',
-                            definition: {
-                              name: 'vivo:Dataset_dc:source_dc:location_skos:note',
-                              label: '@dmpt-vivo:Dataset_dc:source_dc:location_skos:note',
-                              rows: 5,
-                              columns: 10
-                            }
-                          }
-
-                        ]
-                      }
-                    },
-          */
           // -------------------------------------------------------------------
           // Retention Tab
           // -------------------------------------------------------------------
@@ -1384,64 +1171,6 @@ module.exports = {
                     columns: 10
                   }
                 },
-                /* this may not be required
-                                {
-                                  class: 'SelectionField',
-                                  compClass: 'DropdownFieldComponent',
-                                  definition: {
-                                    name: 'vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral',
-                                    label: '@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral',
-                                    help: '@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-help',
-                                    options: [{
-                                        value: "",
-                                        label: "@dmpt-select:Empty"
-                                      },
-                                      {
-                                        label: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-personal",
-                                        value: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-personal"
-                                      },
-                                      {
-                                        label: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-eresearch-plat",
-                                        value: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-eresearch-plat"
-                                      },
-                                      {
-                                        label: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-eresearch-store",
-                                        value: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-eresearch-store"
-                                      },
-                                      {
-                                        label: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-shared",
-                                        value: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-shared"
-                                      },
-                                      {
-                                        label: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-survey-plat",
-                                        value: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-survey-plat"
-                                      },
-                                      {
-                                        label: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-collab",
-                                        value: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-collab"
-                                      },
-                                      {
-                                        label: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-other",
-                                        value: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-other"
-                                      }
-                                    ],
-                                    required: false,
-                                    validationMessages: {
-                                      required: "@dmpt-vivo:Dataset_dc:source_dc:location_rdf:PlainLiteral-required"
-                                    }
-                                  }
-                                },
-                                {
-                                  class: 'TextArea',
-                                  compClass: 'TextAreaComponent',
-                                  definition: {
-                                    name: 'vivo:Dataset_dc:source_dc:location_skos:note',
-                                    label: '@dmpt-vivo:Dataset_dc:source_dc:location_skos:note',
-                                    rows: 5,
-                                    columns: 10
-                                  }
-                                }
-                */
               ]
             }
           }
