@@ -31,7 +31,7 @@ module.exports = {
   record:{
     baseUrl: {
       redbox: "http://redbox:9000/redbox",
-      mint: "https://dev-redbox.research.uts.edu.au/mint"
+      mint: "https://test-stash.research.uts.edu.au/mint"
     }
   },
   redbox: {

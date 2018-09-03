@@ -19,7 +19,7 @@ module.exports = [
         {
           class: 'TextField',
           definition: {
-            name: 'citation_title',
+            name: 'title',
             label: '@dataPublication-citation-title',
             help: '@dataPublication-citation-title-help',
             type: 'text',
@@ -35,6 +35,7 @@ module.exports = [
             }
           }
         },
+// remember that we disposed of citation-title         
         {
           class: 'RepeatableContributor',
           compClass: 'RepeatableContributorComponent',

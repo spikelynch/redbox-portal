@@ -62,7 +62,7 @@ module.exports = [
           }
         }
       },
-        {
+/*        {
           class: 'HiddenValue',
           compClass: 'HiddenValueComponent',
           definition: {
@@ -82,6 +82,7 @@ module.exports = [
             }
           }
         },
+*/
         {
           class: 'MarkdownTextArea',
           compClass: 'MarkdownTextAreaComponent',
