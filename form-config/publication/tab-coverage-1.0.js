@@ -31,6 +31,7 @@ module.exports = [
             help: '@dataPublication-startDate-help',
             datePickerOpts: {
               format: 'dd/mm/yyyy',
+              startView: 2,
               icon: 'fa fa-calendar',
               autoclose: true
             },
@@ -62,6 +63,7 @@ module.exports = [
             help: '@dataPublication-endDate-help',
             datePickerOpts: {
               format: 'dd/mm/yyyy',
+              startView: 2,
               icon: 'fa fa-calendar',
               autoclose: true
             },

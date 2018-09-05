@@ -98,14 +98,13 @@ module.exports = {
                 {
                   class: 'VocabField',
                   compClass: 'VocabFieldComponent',
-                  editOnly: true,
                   definition: {
                     name: 'title',
                     label: "@dmpt-project-title",
                     help: "@dmpt-project-title-help",
                     forceClone: ['lookupService', 'completerService'],
                     disableEditAfterSelect: false,
-                    disabledExpression: '<%= !_.isEmpty(oid) %>',
+                    disabledExpression: '<%= !_.isEmpty(oid) && (_.indexOf(user.roles, \'Admin\') == -1) %>',
                     vocabId: '\"Research Activities\"%20AND%20(text_status:(%22Completed%22%20OR%20%22Approved%22%20OR%20%22Closed%20Off%22%20OR%20%22Combined%22%20OR%20%22Transferred%22))',
                     sourceType: 'mint',
                     fieldNames: ['dc_title', 'folio', 'description', 'summary', 'refId', 'keyword', 'startDate', 'endDate', 'organization', 'fundingSource', 'rmId'],
@@ -119,7 +118,6 @@ module.exports = {
                 },
                 {
                   class: 'TextField',
-                  editOnly: true,
                   definition: {
                     name: 'dc:identifier',
                     label: '@dmpt-project-id',
@@ -143,7 +141,6 @@ module.exports = {
                 {
                   class: 'TextArea',
                   compClass: 'TextAreaComponent',
-                  editOnly: true,
                   definition: {
                     name: 'description',
                     label: '@dmpt-project-desc',
@@ -179,7 +176,6 @@ module.exports = {
                 {
                   class: 'RepeatableContainer',
                   compClass: 'RepeatableTextfieldComponent',
-                  editOnly: true,
                   definition: {
                     label: '@dmpt-finalKeywords',
                     help: '@dmpt-finalKeywords-help',
@@ -227,6 +223,7 @@ module.exports = {
                     help: '@dmpt-project-startdate-help',
                     datePickerOpts: {
                       format: 'dd/mm/yyyy',
+                      startView: 2,
                       icon: 'fa fa-calendar',
                       autoclose: true
                     },
@@ -249,6 +246,7 @@ module.exports = {
                     help: '@dmpt-project-enddate-help',
                     datePickerOpts: {
                       format: 'dd/mm/yyyy',
+                      startView: 2,
                       icon: 'fa fa-calendar',
                       autoclose: true
                     },
@@ -292,20 +290,16 @@ module.exports = {
                     name: 'foaf:fundedBy_vivo:Grant',
                     label: '@dmpt-foaf:fundedBy_vivo:Grant',
                     help: '@dmpt-foaf:fundedBy_vivo:Grant-help',
-                    editOnly: true,
-                    fields: [
-                      {
-                        class: 'TextField',
-                        definition: {
-                          type: 'text'
-                        }
+                    fields: [{
+                      class: 'TextField',
+                      definition: {
+                        type: 'text'
                       }
-                    ],
+                    }],
                     publish: {
                       onValueUpdate: {
                         modelEventSource: 'valueChanges',
-                        fields: [
-                          {
+                        fields: [{
                             'grant_number': 'grant_number[0]'
                           },
                           {
@@ -316,8 +310,7 @@ module.exports = {
                     },
                     subscribe: {
                       title: {
-                        onItemSelect: [
-                          {
+                        onItemSelect: [{
                             action: 'reset'
                           },
                           {
@@ -720,11 +713,6 @@ module.exports = {
                         value: "25years",
                         label: "@dmpt-redbox:retentionPeriod_dc:date-25years"
                       },
-                      /*                      {
-                                              value: "20years",
-                                              label: "@dmpt-redbox:retentionPeriod_dc:date-20years"
-                                            },
-                      */
                       {
                         value: "permanent",
                         label: "@dmpt-redbox:retentionPeriod_dc:date-permanent"
@@ -806,7 +794,6 @@ module.exports = {
                     }
                   }
                 }
-
               ]
             }
           },
@@ -1008,7 +995,6 @@ module.exports = {
                     label: "@dmpt-dc:coverage_dc:identifier",
                     help: "@dmpt-dc:coverage_dc:identifier-help",
                     name: "dc:coverage_dc:identifier",
-                    editOnly: true,
                     fields: [{
                       class: 'TextField',
                       definition: {

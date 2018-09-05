@@ -14,7 +14,7 @@ module.exports = {
     "saveError": ["@dmpt-form-save-error"]
   },
   attachmentFields: [
-   "dataLocations"
+    "dataLocations"
   ],
   fields: [{
       class: 'Container',
@@ -30,8 +30,7 @@ module.exports = {
       compClass: 'GenericGroupComponent',
       definition: {
         cssClasses: "form-inline",
-        fields: [
-          {
+        fields: [{
             class: "AnchorOrButton",
             viewOnly: true,
             definition: {
@@ -44,16 +43,16 @@ module.exports = {
             variableSubstitutionFields: ['value']
           },
           {
-              class: "AnchorOrButton",
-              viewOnly: true,
-              definition: {
-                label: '@dmp-create-datapublication-link',
-                value: '/@branding/@portal/record/dataPublication/edit?dataRecordOid=@oid',
-                cssClasses: 'btn btn-large btn-info margin-15',
-                controlType: 'anchor'
-              },
-              variableSubstitutionFields: ['value']
-            }
+            class: "AnchorOrButton",
+            viewOnly: true,
+            definition: {
+              label: '@dmp-create-datapublication-link',
+              value: '/@branding/@portal/record/dataPublication/edit?dataRecordOid=@oid',
+              cssClasses: 'btn btn-large btn-info margin-15',
+              controlType: 'anchor'
+            },
+            variableSubstitutionFields: ['value']
+          }
         ]
       }
     },
@@ -82,13 +81,12 @@ module.exports = {
               id: "aim",
               label: "@dataRecord-aim-tab",
               active: true,
-              fields: [
-                {
+              fields: [{
                   class: "ParameterRetriever",
                   compClass: 'ParameterRetrieverComponent',
                   definition: {
                     name: 'parameterRetriever',
-                    parameterName:'rdmpOid'
+                    parameterName: 'rdmpOid'
                   }
                 },
                 {
@@ -103,10 +101,10 @@ module.exports = {
                         }]
                       },
                       'rdmp': {
-                          relatedObjectSelected: [{
-                            action: 'publishMetadata'
-                          }]
-                        }
+                        relatedObjectSelected: [{
+                          action: 'publishMetadata'
+                        }]
+                      }
                     }
                   }
                 },
@@ -122,18 +120,18 @@ module.exports = {
                   class: 'RelatedObjectSelector',
                   compClass: 'RelatedObjectSelectorComponent',
                   definition: {
-                    label: 'Choose RDMP related to this data record OR enter project details below',
+                    label: 'TIP: If there is a Research Data Management Plan (RDMP) for the data, choose it here to pre-fill form.  Else, complete Project details below this box.',
                     name: 'rdmp',
+                    help: '@dataRecord-chooseRDMP-help',
                     recordType: 'rdmp',
                     subscribe: {
                       'rdmpGetter': {
                         onValueUpdate: [{
                           action: 'recordSelected'
+                        }]
+                      }
                     }
-                  ]
                   }
-                }
-              }
                 },
                 {
                   class: 'TextField',
@@ -141,6 +139,7 @@ module.exports = {
                     name: 'aim_project_name',
                     label: '@dataRecord-aim-project-name',
                     type: 'text',
+                    disabledExpression: '<%= !_.isEmpty(oid) && (_.indexOf(user.roles, \'Admin\') == -1) %>',
                     subscribe: {
                       'rdmpGetter': {
                         onValueUpdate: [{
@@ -254,8 +253,11 @@ module.exports = {
                   }
                 },
                 {
+                  /* hide the SEO field
                   class: 'ANDSVocab',
-                  compClass: 'ANDSVocabComponent',
+                  compClass: 'ANDSVocabComponent',*/
+                  class: 'HiddenValue',
+                  compClass: 'HiddenValueComponent',
                   definition: {
                     label: "@dmpt-project-anzsrcSeo",
                     help: "@dmpt-project-anzsrcSeo-help",
@@ -282,8 +284,7 @@ module.exports = {
             definition: {
               id: "about",
               label: "@dataRecord-about-tab",
-              fields: [
-                {
+              fields: [{
                   class: 'Container',
                   compClass: 'TextBlockComponent',
                   definition: {
@@ -292,12 +293,13 @@ module.exports = {
                   }
                 },
                 {
-                  class: 'TextField',
+                  class: "TextField",
                   definition: {
-                    name: 'title',
-                    label: '@dataRecord-title',
-                    help: '@dataRecord-title-help',
-                    type: 'text',
+                    name: "title",
+                    label: "@dataRecord-title",
+                    help: "@dataRecord-title-help",
+                    type: "text",
+                    disabledExpression: '<%= !_.isEmpty(oid) && (_.indexOf(user.roles, \'Admin\') == -1) %>',
                     required: true
                   }
                 },
@@ -313,13 +315,16 @@ module.exports = {
                   }
                 },
                 {
+                  /* hide the data type field
                   class: 'SelectionField',
-                  compClass: 'DropdownFieldComponent',
+                  compClass: 'DropdownFieldComponent', */
+                  class: 'HiddenValue',
+                  compClass: 'HiddenValueComponent',
                   definition: {
                     name: 'datatype',
                     label: '@dataRecord-datatype',
                     help: '@dataRecord-datatype-help',
-                    required: true,
+                    //                  required: true,
                     options: [{
                         value: "",
                         label: "@dataRecord-dataype-select:Empty"
@@ -358,7 +363,6 @@ module.exports = {
                     label: "@dataRecord-keywords",
                     help: "@dataRecord-keywords-help",
                     name: "finalKeywords",
-                    required: true,
                     fields: [{
                       class: 'TextField',
                       definition: {
@@ -413,24 +417,25 @@ module.exports = {
                     sourceType: 'mint',
                     disabledExpression: '<%= !_.isEmpty(oid) || !_.isEmpty(relatedRecordId) %>',
                     fieldNames: [{
-                      'text_full_name': 'text_full_name'
-                    }, {
-                      'full_name_honorific': 'text_full_name_honorific'
-                    }, {
-                      'email': 'Email[0]'
-                    },
-                    {
-                      'given_name': 'Given_Name[0]'
-                    },
-                    {
-                      'family_name': 'Family_Name[0]'
-                    },
-                    {
-                      'honorific': 'Honorific[0]'
-                    },
-                    {
-                      'full_name_family_name_first': 'dc_title'
-                    }],
+                        'text_full_name': 'text_full_name'
+                      }, {
+                        'full_name_honorific': 'text_full_name_honorific'
+                      }, {
+                        'email': 'Email[0]'
+                      },
+                      {
+                        'given_name': 'Given_Name[0]'
+                      },
+                      {
+                        'family_name': 'Family_Name[0]'
+                      },
+                      {
+                        'honorific': 'Honorific[0]'
+                      },
+                      {
+                        'full_name_family_name_first': 'dc_title'
+                      }
+                    ],
                     searchFields: 'autocomplete_given_name,autocomplete_family_name,autocomplete_full_name,autocomplete_full_name_honorific',
                     titleFieldArr: ['text_full_name'],
                     titleFieldDelim: '',
@@ -469,24 +474,25 @@ module.exports = {
                     sourceType: 'mint',
                     disabledExpression: '<%= !_.isEmpty(oid) %>',
                     fieldNames: [{
-                      'text_full_name': 'text_full_name'
-                    }, {
-                      'full_name_honorific': 'text_full_name_honorific'
-                    }, {
-                      'email': 'Email[0]'
-                    },
-                    {
-                      'given_name': 'Given_Name[0]'
-                    },
-                    {
-                      'family_name': 'Family_Name[0]'
-                    },
-                    {
-                      'honorific': 'Honorific[0]'
-                    },
-                    {
-                      'full_name_family_name_first': 'dc_title'
-                    }],
+                        'text_full_name': 'text_full_name'
+                      }, {
+                        'full_name_honorific': 'text_full_name_honorific'
+                      }, {
+                        'email': 'Email[0]'
+                      },
+                      {
+                        'given_name': 'Given_Name[0]'
+                      },
+                      {
+                        'family_name': 'Family_Name[0]'
+                      },
+                      {
+                        'honorific': 'Honorific[0]'
+                      },
+                      {
+                        'full_name_family_name_first': 'dc_title'
+                      }
+                    ],
                     searchFields: 'autocomplete_given_name,autocomplete_family_name,autocomplete_full_name,autocomplete_full_name_honorific',
                     titleFieldArr: ['text_full_name'],
                     titleFieldDelim: '',
@@ -506,7 +512,12 @@ module.exports = {
                         }]
                       }
                     },
-                    value: {name: '@user_name', email: '@user_email', username: '@user_username', text_full_name: '@user_name'}
+                    value: {
+                      name: '@user_name',
+                      email: '@user_email',
+                      username: '@user_username',
+                      text_full_name: '@user_name'
+                    }
                   },
                   variableSubstitutionFields: ['value.name', 'value.email', 'value.username', 'value.text_full_name']
                 },
@@ -517,10 +528,9 @@ module.exports = {
                     name: "contributors",
                     skipClone: ['showHeader', 'initialValue'],
                     forceClone: [{
-                        field: 'vocabField',
-                        skipClone: ['injector']
-                      }
-                    ],
+                      field: 'vocabField',
+                      skipClone: ['injector']
+                    }],
                     fields: [{
                       class: 'ContributorField',
                       showHeader: true,
@@ -533,24 +543,25 @@ module.exports = {
                         vocabId: 'Parties AND repository_name:People',
                         sourceType: 'mint',
                         fieldNames: [{
-                          'text_full_name': 'text_full_name'
-                        }, {
-                          'full_name_honorific': 'text_full_name_honorific'
-                        }, {
-                          'email': 'Email[0]'
-                        },
-                        {
-                          'given_name': 'Given_Name[0]'
-                        },
-                        {
-                          'family_name': 'Family_Name[0]'
-                        },
-                        {
-                          'honorific': 'Honorific[0]'
-                        },
-                        {
-                          'full_name_family_name_first': 'dc_title'
-                        }],
+                            'text_full_name': 'text_full_name'
+                          }, {
+                            'full_name_honorific': 'text_full_name_honorific'
+                          }, {
+                            'email': 'Email[0]'
+                          },
+                          {
+                            'given_name': 'Given_Name[0]'
+                          },
+                          {
+                            'family_name': 'Family_Name[0]'
+                          },
+                          {
+                            'honorific': 'Honorific[0]'
+                          },
+                          {
+                            'full_name_family_name_first': 'dc_title'
+                          }
+                        ],
                         searchFields: 'autocomplete_given_name,autocomplete_family_name,autocomplete_full_name,autocomplete_full_name_honorific',
                         titleFieldArr: ['text_full_name'],
                         titleFieldDelim: '',
@@ -588,24 +599,25 @@ module.exports = {
                     vocabId: 'Parties AND repository_name:People',
                     sourceType: 'mint',
                     fieldNames: [{
-                      'text_full_name': 'text_full_name'
-                    }, {
-                      'full_name_honorific': 'text_full_name_honorific'
-                    }, {
-                      'email': 'Email[0]'
-                    },
-                    {
-                      'given_name': 'Given_Name[0]'
-                    },
-                    {
-                      'family_name': 'Family_Name[0]'
-                    },
-                    {
-                      'honorific': 'Honorific[0]'
-                    },
-                    {
-                      'full_name_family_name_first': 'dc_title'
-                    }],
+                        'text_full_name': 'text_full_name'
+                      }, {
+                        'full_name_honorific': 'text_full_name_honorific'
+                      }, {
+                        'email': 'Email[0]'
+                      },
+                      {
+                        'given_name': 'Given_Name[0]'
+                      },
+                      {
+                        'family_name': 'Family_Name[0]'
+                      },
+                      {
+                        'honorific': 'Honorific[0]'
+                      },
+                      {
+                        'full_name_family_name_first': 'dc_title'
+                      }
+                    ],
                     searchFields: 'autocomplete_given_name,autocomplete_family_name,autocomplete_full_name',
                     titleFieldArr: ['text_full_name'],
                     titleFieldDelim: '',
@@ -717,11 +729,6 @@ module.exports = {
                         value: "25years",
                         label: "@dmpt-redbox:retentionPeriod_dc:date-25years"
                       },
-  /*                    {
-                        value: "20years",
-                        label: "@dmpt-redbox:retentionPeriod_dc:date-20years"
-                      },
-*/
                       {
                         value: "permanent",
                         label: "@dmpt-redbox:retentionPeriod_dc:date-permanent"
@@ -746,6 +753,7 @@ module.exports = {
                   compClass: 'DropdownFieldComponent',
                   definition: {
                     name: 'redbox:retentionPeriod_dc:date_skos:note',
+                    help: '@dataRecord:retentionPeriod_dc:date_skosnote-help',
                     label: '@dataRecord:retentionPeriod_dc:date_skos:note',
                     options: [{
                         value: "",
@@ -766,6 +774,10 @@ module.exports = {
                       {
                         value: "costly_impossible",
                         label: "@dmpt-redbox:retentionPeriod_dc:date_skos:note-costly_impossible"
+                      },
+                      {
+                        value: "still-used",
+                        label: "@dmpt-redbox:retentionPeriod_dc:date_skos:note-inuse"
                       },
                       {
                         value: "commercial",
@@ -790,6 +802,7 @@ module.exports = {
                     help: '@dataRecord-disposalDate-help',
                     datePickerOpts: {
                       format: 'dd/mm/yyyy',
+                      startView: 2,
                       icon: 'fa fa-calendar',
                       autoclose: true
                     },
@@ -812,52 +825,49 @@ module.exports = {
                     label: "@dmpt-related-publication",
                     help: "@dmpt-related-publication-help",
                     forceClone: ['fields'],
-                    fields: [
-                      {
-                        class: 'Container',
-                        compClass: 'GenericGroupComponent',
-                        definition: {
-                          name: "related_publication",
-                          cssClasses: "form-inline",
-                          fields: [
-                            {
-                              class: 'TextField',
-                              definition: {
-                                name: 'related_url',
-                                label: '@dmpt-related-publication-url',
-                                type: 'text',
-                                groupName: 'related_publication',
-                                groupClasses: 'width-30',
-                                cssClasses : "width-80 form-control"
-                              }
-                            },
-                            {
-                              class: 'TextField',
-                              definition: {
-                                name: 'related_title',
-                                label: '@dmpt-related-publication-title',
-                                type: 'text',
-                                groupName: 'related_publication',
-                                groupClasses: 'width-30',
-                                cssClasses : "width-80 form-control"
-                              }
-                            },
-                            {
-                              class: 'TextArea',
-                              definition: {
-                                name: 'related_notes',
-                                label: '@dmpt-related-publication-notes',
-                                type: 'text',
-                                groupName: 'related_publication',
-                                groupClasses: 'width-30',
-                                cssClasses : "width-80 form-control",
-                                rows: "1"
-                              }
+                    fields: [{
+                      class: 'Container',
+                      compClass: 'GenericGroupComponent',
+                      definition: {
+                        name: "related_publication",
+                        cssClasses: "form-inline",
+                        fields: [{
+                            class: 'TextField',
+                            definition: {
+                              name: 'related_url',
+                              label: '@dmpt-related-publication-url',
+                              type: 'text',
+                              groupName: 'related_publication',
+                              groupClasses: 'width-30',
+                              cssClasses: "width-80 form-control"
                             }
-                          ]
-                        }
+                          },
+                          {
+                            class: 'TextField',
+                            definition: {
+                              name: 'related_title',
+                              label: '@dmpt-related-publication-title',
+                              type: 'text',
+                              groupName: 'related_publication',
+                              groupClasses: 'width-30',
+                              cssClasses: "width-80 form-control"
+                            }
+                          },
+                          {
+                            class: 'TextArea',
+                            definition: {
+                              name: 'related_notes',
+                              label: '@dmpt-related-publication-notes',
+                              type: 'text',
+                              groupName: 'related_publication',
+                              groupClasses: 'width-30',
+                              cssClasses: "width-80 form-control",
+                              rows: "1"
+                            }
+                          }
+                        ]
                       }
-                    ]
+                    }]
                   }
                 }
               ]
@@ -883,7 +893,7 @@ module.exports = {
                   class: 'DataLocation',
                   compClass: 'DataLocationComponent',
                   definition: {
-                    name:"dataLocations",
+                    name: "dataLocations",
                     maxFileSize: 1073741824, // <- Configure web server to match this
                     maxNumberOfFiles: 50,
                     notesHeader: '@dataLocations-notes',
@@ -911,8 +921,7 @@ module.exports = {
       class: "ButtonBarContainer",
       compClass: "ButtonBarContainerComponent",
       definition: {
-        fields: [
-          {
+        fields: [{
             class: "TabNavButton",
             definition: {
               id: 'mainTabNav',
