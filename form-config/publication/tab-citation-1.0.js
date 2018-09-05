@@ -35,7 +35,7 @@ module.exports = [
             }
           }
         },
-// remember that we disposed of citation-title         
+// remember that we disposed of citation-title
         {
           class: 'RepeatableContributor',
           compClass: 'RepeatableContributorComponent',
