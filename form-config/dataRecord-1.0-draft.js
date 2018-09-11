@@ -120,7 +120,7 @@ module.exports = {
                   class: 'RelatedObjectSelector',
                   compClass: 'RelatedObjectSelectorComponent',
                   definition: {
-                    label: 'TIP: If there is a Research Data Management Plan (RDMP) for the data, choose it here to pre-fill form.  Else, complete Project details below this box.',
+                    label: 'TIP: If there is a Research Data Management Plan (RDMP) for the data, choose it here to pre-fill form.  Else, complete Project details below.',
                     name: 'rdmp',
                     help: '@dataRecord-chooseRDMP-help',
                     recordType: 'rdmp',

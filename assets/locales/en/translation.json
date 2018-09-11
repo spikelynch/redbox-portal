@@ -672,7 +672,7 @@
   "export-csv-gitlab": "Download GitLab Records CSV",
   "export-csv-omero": "Download OMERO Records CSV",
   "dataRecord-title": "Data Record",
-  "@dataRecord-chooseRDMP-help": "If you have already created an RDMP for this data, you won't need to enter much! Choose it here by typing the title and selecting it to pre-fill the form. If you don't have an RDMP, please skip this step and enter some details about the Project below.",
+  "@dataRecord-chooseRDMP-help": "If you have already created an RDMP for this data, you won't need to enter much! Choose it here by typing the title and selecting it to pre-fill the form. If you don't have an RDMP, please skip this step and enter some details about the Project below this box.",
   "@dataPublication-chooseDR-help": "You need a Data Record in order to create a Data Publication. Start typing the Data Record title and select the record from the list.",
   "dataPublication-title": "Data Publication",
   "@dataPublication-publish": "Submit for Publication",
