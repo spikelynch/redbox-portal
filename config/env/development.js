@@ -22,7 +22,7 @@ module.exports = {
   // }
   bootstrapTimeout: 480000,
   pubsub: {
-    _hookTimeout: 480000,
+    hookTimeout: 480000,
   },
   log: {
     level: 'verbose'

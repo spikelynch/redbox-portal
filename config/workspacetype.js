@@ -1,6 +1,5 @@
 //Workspace Type Definitions
 
-//Left example commented
 
 module.exports.workspacetype = {
   'gitlab': {
