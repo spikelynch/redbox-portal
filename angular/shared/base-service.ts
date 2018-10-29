@@ -67,9 +67,13 @@ export class BaseService {
     return subs;
   }
 
-  protected emitInit() {
+  public getInitSubject() {
+    return this.initSubject;
+  }
+
+  public emitInit() {
     if (this.config) {
-      this.initSubject.next('');
+      this.initSubject.next(this);
     }
   }
 
@@ -94,6 +98,8 @@ export class BaseService {
   protected getOptionsClient(headersObj: any = {}) {
     headersObj['X-Source'] = 'jsclient';
     headersObj['Content-Type'] = 'application/json;charset=utf-8';
+    headersObj['X-CSRF-Token'] = this.config.csrfToken;
+
     return this.getOptions(headersObj);
   }
 }
