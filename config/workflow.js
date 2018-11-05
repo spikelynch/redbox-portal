@@ -47,20 +47,6 @@ module.exports.workflow = {
       },
       starting: true
     },
-    "queued": {
-      config: {
-        workflow: {
-          stage: 'queued',
-          stageLabel: 'Queued',
-        },
-        authorization: {
-          viewRoles: ['Admin', 'Librarians'],
-          editRoles: ['Admin', 'Librarians']
-        },
-        form: 'dataPublication-1.0-queued',
-        displayIndex: 2
-      }
-    },
     "embargoed": {
       config: {
         workflow: {
@@ -72,7 +58,7 @@ module.exports.workflow = {
           editRoles: ['Admin', 'Librarians']
         },
         form: 'dataPublication-1.0-embargoed',
-        displayIndex: 3
+        displayIndex: 2
       }
     },
     "reviewing": {
@@ -86,21 +72,7 @@ module.exports.workflow = {
           editRoles: ['Admin']
         },
         form: 'dataPublication-1.0-reviewing',
-        displayIndex: 4
-      }
-    },
-    "publishing": {
-      config: {
-        workflow: {
-          stage: 'publishing',
-          stageLabel: 'Publishing',
-        },
-        authorization: {
-          viewRoles: ['Admin', 'Librarians'],
-          editRoles: ['Admin', 'Librarians']
-        },
-        form: 'dataPublication-1.0-publishing',
-        displayIndex: 5
+        displayIndex: 3
       }
     },
     "published": {
@@ -114,7 +86,7 @@ module.exports.workflow = {
           editRoles: ['Admin']
         },
         form: 'dataPublication-1.0-published',
-        displayIndex: 6
+        displayIndex: 4
       }
     },
     "retired": {
@@ -128,7 +100,7 @@ module.exports.workflow = {
           editRoles: ['Admin']
         },
         form: 'dataPublication-1.0-retired',
-        displayIndex: 7
+        displayIndex: 5
       }
     }
 

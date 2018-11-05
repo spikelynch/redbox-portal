@@ -55,7 +55,7 @@ module.exports = [
             label: '@dataPublication-publish',
             closeOnSave: true,
             redirectLocation: '/@branding/@portal/dashboard/dataPublication',
-            targetStep: 'queued',
+            targetStep: 'reviewing',
             disabledExpression: '<%= _.isEmpty(relatedRecordId) %>'
           },
           variableSubstitutionFields: ['redirectLocation']
