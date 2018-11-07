@@ -306,6 +306,17 @@ module.exports.recordtype = {
           }
         ],
         post: [
+          // push the dataset to the staging web server
+          // this needs to be defined here for the case when the user goes straight
+          // to reviewing without saving first 
+          {
+            function: 'sails.services.publicationservice.exportDataset',
+            options: {
+              triggerCondition: "<%= record.workflow.stage=='reviewing' %>",
+              site: 'staging'
+            }
+          },
+ 
           // `Email "data publication is staged" notification to FNCI, DM, Supervisor with link to landing page on Staging`
           {
             function: 'sails.services.emailservice.sendRecordNotification',
@@ -381,6 +392,7 @@ module.exports.recordtype = {
           }
         ],
         post: [
+          // push the dataset to the staging web server
           {
             function: 'sails.services.publicationservice.exportDataset',
             options: {
