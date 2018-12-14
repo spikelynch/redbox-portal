@@ -10,6 +10,22 @@
  * http://sailsjs.org/#!/documentation/concepts/Logging
  */
 
-module.exports.log = {
 
+var winston = require('winston');
+
+var logger = new(winston.Logger)({
+  transports: [
+    new (winston.transports.Console)({}),
+    new (winston.transports.File)({
+      filename: 'logs/redbox.log',
+      level: 'debug',
+      json: false,
+      colorize: false
+    })
+  ]
+});
+
+module.exports.log = {
+    level: 'info',
+    custom: logger
 };

@@ -57,12 +57,13 @@ export module Services {
 
 
 
-  	public exportDataset(oid, record, options): Observable<any> {
+  	public exportDataset(oid, record, options, user): Observable<any> {
    		if( this.metTriggerCondition(oid, record, options) === "true") {
 
    			sails.log.info("Called exportDataset on update");
       	sails.log.info("oid: " + oid);
       	sails.log.info("options: " + JSON.stringify(options));
+      	sails.log.info("user: " + JSON.stringify(user));
 				const site = sails.config.datapubs.sites[options['site']];
 				if( ! site ) {
 					sails.log.error("Unknown publication site " + options['site']);
@@ -120,7 +121,7 @@ export module Services {
 						});
 				});
 
-				obs.push(this.makeDataCrate(oid, dir, md));
+				obs.push(this.makeDataCrate(oid, dir, md, user));
 				obs.push(this.updateUrl(oid, record, site['url']));
 
 				return Observable.merge(...obs);
@@ -184,10 +185,14 @@ export module Services {
 		}
 
 
-		private makeDataCrate(oid: string, dir: string, metadata: Object): Observable<any> {
+		private makeDataCrate(oid: string, dir: string, metadata: Object, user: Object): Observable<any> {
 
 			const owner = 'TODO@shouldnt.the.owner.come.from.the.datapub';
-			const approver = 'TODO@get.the.logged-in.user';
+			const approver = user['email'];
+
+			sails.log.info("User: " + JSON.stringify(user));
+
+			sails.log.info("Set approver to: " + user['email']);
 
 			return Observable.of({})
 				.flatMap(() => {

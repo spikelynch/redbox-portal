@@ -31,14 +31,11 @@ services:
   nginx:
     image: nginx
     ports:
-      - "8080:8080"
+      - "8080:80"
     restart: always
     volumes:
       - "/mnt/data/publication:/usr/share/nginx/html"
       - "/mnt/nginx.conf:/etc/nginx/conf.d"
-    expose:
-      - "8080"
-
 
   redbox:
     image: qcifengineering/redbox:2.x
@@ -58,6 +55,7 @@ services:
     ports:
        - "9000:9000"
 
+
   mongodb:
     image: mvertes/alpine-mongo:latest
     volumes:
@@ -70,3 +68,5 @@ services:
           - mongodb
     ports:
        - "27017:27017"
+
+

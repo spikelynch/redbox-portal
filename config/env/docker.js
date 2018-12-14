@@ -25,7 +25,7 @@ module.exports = {
     _hookTimeout: 480000,
   },
   log: {
-    level: 'verbose'
+    level: 'info'
   },
   appUrl:'http://localhost:1500',
   record:{
