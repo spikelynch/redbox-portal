@@ -430,16 +430,30 @@ module.exports.recordtype = {
               flagVal: 'draft', // hard coded value
               saveRecord: false // when true, do metadata update -> false, since this is on a pre-save hook, gets saved anyway
             }
-          }
-        ],
-        post: [
+          },
           {
-            function: 'sails.services.publicationservice.exportDataset',
+            function: 'sails.services.publicationservice.publishDataset',
             options: {
-              triggerCondition: "<%= record.workflow.stage=='reviewing' %>",
-              site: 'staging'
+              name: 'Write datacrate to staging website',
+              triggerCondition: "<%= record.workflow.stage == 'queued' || record.workflow.stage == 'reviewing' %>",
+              site: 'staging',
+              saveRecord: false
             }
           },
+
+
+          {
+            function: 'sails.services.publicationservice.publishDataset',
+            options: {
+              name: 'Write datacrate to public website',
+              triggerCondition: "<%= record.workflow.stage=='publishing' || record.workflow.stage == 'published' %>",
+              site: 'public',
+              saveRecord: false
+            }
+          }
+
+        ],
+        post: [
           {
             function: 'sails.services.emailservice.sendRecordNotification',
             options: {
@@ -470,14 +484,6 @@ module.exports.recordtype = {
                   }
                 }
               ]
-            }
-          },
-
-          {
-            function: 'sails.services.publicationservice.exportDataset',
-            options: {
-              triggerCondition: "<%= record.workflow.stage=='published' %>",
-              site: 'public'
             }
           },
 

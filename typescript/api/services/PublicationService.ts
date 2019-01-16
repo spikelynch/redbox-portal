@@ -52,16 +52,18 @@ export module Services {
   export class DataPublication extends services.Services.Core.Service {
 
   	protected _exportedMethods: any = [
-  		'exportDataset'
+  		'publishDataset'
   	];
 
 
 
-  	public exportDataset(oid, record, options, user): Observable<any> {
-   		if( this.metTriggerCondition(oid, record, options) === "true") {
 
-   			sails.log.info("Called exportDataset on update");
+  	public publishDataset(oid, record, options, user): Observable<any> {
+   		if( this.metTriggerCondition(oid, record, options) === "true") {
+     		sails.log.info(`Writing dataset for ${oid}, condition met: ${_.get(options, "triggerCondition", "")}`)
+
       	sails.log.info("oid: " + oid);
+      	sails.log.info("workflow stage: " + record.workflow.stage)
       	sails.log.info("options: " + JSON.stringify(options));
       	sails.log.info("user: " + JSON.stringify(user));
 				const site = sails.config.datapubs.sites[options['site']];
@@ -87,47 +89,73 @@ export module Services {
 					(a) => a['type'] === 'attachment'
 				);
 
-				const dir = path.join(site['dir'], oid);
-				try {
 
-					sails.log.info("making dataset dir: " + dir);
-					fs.mkdirSync(dir);
-				} catch(e) {
-					sails.log.error("Couldn't create dataset dir " + dir);
-					sails.log.error(e.name);
-					sails.log.error(e.message);
-					sails.log.error(e.stack);
-					return Observable.of(null);
+				// Creating the directory to publish. Currently done sync: should
+				// be improved so that it's an Observable and conforms with 
+				// OCFL
+
+				const dir = path.join(site['dir'], oid);
+				if( fs.existsSync(dir) ) {
+					sails.log.debug("publication directory " + dir + " already exists");
+				} else {
+					try {
+						sails.log.info("making dataset dir: " + dir);
+						fs.mkdirSync(dir);
+					} catch(e) {
+						sails.log.error("Couldn't create dataset dir " + dir);
+						sails.log.error(e.name);
+						sails.log.error(e.message);
+						sails.log.error(e.stack);
+						return Observable.of(null);
+					}
 				}
 
-				sails.log.info("Going to write attachments");
 
-				// build a list of observables, each of which writes out an
-				// attachment
 
-				const obs = attachments.map((a) => {
-					sails.log.info("building attachment observable " + a['name']);
-					return RecordsService.getDatastream(drid, a['fileId']).
+
+				return Observable.from(attachments).flatMap((attachment) => {
+					sails.log.debug("fetching attachment " + attachment['fileId']);
+					return RecordsService.getDatastream(drid, attachment['fileId']).
 						flatMap(ds => {
-							const filename = path.join(dir, a['name']);
-							sails.log.info("about to write " + filename);
+							const filename = path.join(dir, attachment['name']);
+							sails.log.info("about to write attachment" + filename);
 							return Observable.fromPromise(this.writeData(ds.body, filename))
 								.catch(err => {
-									sails.log.error("Error writing attachment " + a['fileId']);
+									sails.log.error("Error writing attachment " + attachment['fileId']);
 									sails.log.error(err.name);
 									sails.log.error(err.message);
-                  return new Observable();
+                  return new Observable(null);
 								});
 						});
+				}).flatMap((results) => { // because we only want this once
+					sails.log.info("After attachments written, datacrate observable");
+					return this.makeDataCrate(oid, dir, md, user)
+				}).flatMap((r) => {
+					// put the dataset URL into the record we're about to save
+					// Note: the trailing slash on the URL is here to stop nginx auto-redirecting
+					// it, which on localhost:8080 breaks the link in some browsers - see 
+					// https://serverfault.com/questions/759762/how-to-stop-nginx-301-auto-redirect-when-trailing-slash-is-not-in-uri/812461#812461
+
+					record['metadata']['citation_url'] = site['url'] + '/' + oid + '/';
+					sails.log.info("Updating URL: " + record['metadata']['citation_url']);
+
+					// TODO: check the results of the merged observables for writing out the
+					// datastreams and log any errors back to the record
+
+					return Observable.of(record);
 				});
 
-				obs.push(this.makeDataCrate(oid, dir, md, user));
-				obs.push(this.updateUrl(oid, record, site['url']));
+				// obs.push(this.makeDataCrate(oid, dir, md, user));
 
-				return Observable.merge(...obs);
+				// sails.log.info("Returning publication Observable");
+				// return Observable.merge(...obs).flatMap((results) => {
+
+				// })
+
     	} else {
-     		sails.log.info(`Not sending notification log for: ${oid}, condition not met: ${_.get(options, "triggerCondition", "")}`)
-    		return Observable.of(null);
+     		sails.log.info(`Not writing dataset for ${oid}, condition not met: ${_.get(options, "triggerCondition", "")}`)
+      	sails.log.info("workflow stage: " + record.workflow.stage)
+    		return Observable.of(record);
    		}
   	}
 
@@ -175,24 +203,29 @@ export module Services {
 			});
 		}
 
-		private updateUrl(oid: string, record: Object, baseUrl: string): Observable<any> {
-			const branding = sails.config.auth.defaultBrand; // fix me
-			// Note: the trailing slash on the URL is here to stop nginx auto-redirecting
-			// it, which on localhost:8080 breaks the link in some browsers - see 
-			// https://serverfault.com/questions/759762/how-to-stop-nginx-301-auto-redirect-when-trailing-slash-is-not-in-uri/812461#812461
-			record['metadata']['citation_url'] = baseUrl + '/' + oid + '/';
-			return RecordsService.updateMeta(branding, oid, record);
-		}
+		// private updateUrl(oid: string, record: Object, baseUrl: string): Observable<any> {
+		// 	const branding = sails.config.auth.defaultBrand; // fix me
+		// 	// Note: the trailing slash on the URL is here to stop nginx auto-redirecting
+		// 	// it, which on localhost:8080 breaks the link in some browsers - see 
+		// 	// https://serverfault.com/questions/759762/how-to-stop-nginx-301-auto-redirect-when-trailing-slash-is-not-in-uri/812461#812461
+		// 	record['metadata']['citation_url'] = baseUrl + '/' + oid + '/';
+		// 	return RecordsService.updateMeta(branding, oid, record);
+		// }
 
 
-		private makeDataCrate(oid: string, dir: string, metadata: Object, user: Object): Observable<any> {
+		private makeDataCrate(oid: string, dir: string, metadata: Object, user: Object): Observable< any > {
 
-			const owner = 'TODO@shouldnt.the.owner.come.from.the.datapub';
-			const approver = user['email'];
+			sails.log.debug("makeDataCrate " + oid);
+			const owner = user['email'];
+			const approver = "fake.id@thing.edu.at";
 
 			sails.log.info("User: " + JSON.stringify(user));
 
 			sails.log.info("Set approver to: " + user['email']);
+
+
+
+			// maybe have to add the get-owner to the front of this chain
 
 			return Observable.of({})
 				.flatMap(() => {
@@ -217,20 +250,20 @@ export module Services {
 						index.init(catalog, dir, false);
 						sails.log.info(`Writing CATALOG.html`);
 						index.make_index_html("text_citation", "zip_path"); //writeFileSync
-						return Observable.of({});
+						return Observable.of(true);
 					} catch (error) {
 						sails.log.error("Error (inside) while creating DataCrate");
 						sails.log.error(error.name);
 						sails.log.error(error.message);
 						sails.log.error(error.stack);
-						return Observable.of(null);
+						return Observable.of(false);
 					}
 				}).catch(error => {
 					sails.log.error("Error (outside) while creating DataCrate");
 					sails.log.error(error.name);
 					sails.log.error(error.message);
 					sails.log.error(error.stack);
-					return Observable.of({});
+					return Observable.of(false);
 				});
 		}
 	}

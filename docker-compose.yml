@@ -65,4 +65,20 @@ services:
     ports:
        - "27017:27017"
 
+  # For migrating redbox1 to redbox2
+  redbox1:
+    image: qcifengineering/redbox:release-1.10
+    expose:
+       - "8000"
+    environment:
+      - RB_API_KEY=c8e844fc-8550-497f-b970-7900ec8741ca
+    volumes:
+        - "/mnt/data/redbox1:/opt/redbox/data"
+        - "/var/log/redbox1:/opt/redbox/home/logs"
+    networks:
+      main:
+        aliases:
+          - redbox1
+    ports:
+       - "8000:9000"
 

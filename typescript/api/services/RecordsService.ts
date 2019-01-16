@@ -758,9 +758,11 @@ export module Services {
     }
 
     public async triggerPreSaveTriggers(oid: string, record: any, recordType: object, mode: string = 'onUpdate', user: object = undefined) {
-      sails.log.verbose("Triggering pre save triggers for record type: ");
-      sails.log.verbose(`hooks.${mode}.pre`);
-      sails.log.verbose(JSON.stringify(recordType));
+      sails.log.debug("Triggering pre save triggers for record type: ");
+      sails.log.debug(`hooks.${mode}.pre`);
+      sails.log.debug(JSON.stringify(recordType));
+
+      sails.log.debug(`OID = ${oid}, stage = ${record.workflow.stage}`);
 
       let preSaveUpdateHooks = _.get(recordType, `hooks.${mode}.pre`, null);
       sails.log.debug(preSaveUpdateHooks);
@@ -774,10 +776,9 @@ export module Services {
             let preSaveUpdateHookFunction = eval(preSaveUpdateHookFunctionString);
             let options = _.get(preSaveUpdateHook, "options", {});
 
-
-            sails.log.verbose(`Triggering pre save triggers: ${preSaveUpdateHookFunctionString}`);
+            sails.log.debug(`Pre-save trigger: ${preSaveUpdateHook['name']}`);
+            sails.log.debug(`Triggering pre save triggers: ${preSaveUpdateHookFunctionString}`);
             record = await preSaveUpdateHookFunction(oid, record, options, user).toPromise();
-
 
           }
         }
@@ -785,10 +786,12 @@ export module Services {
       return record;
     }
 
+
     public triggerPostSaveTriggers(oid: string, record: any, recordType: any, mode: string = 'onUpdate', user: object = undefined) {
-      sails.log.debug("Triggering post save triggers ");
+      sails.log.debug("Triggering post save triggers for " + oid);
       sails.log.debug(`hooks.${mode}.post`);
       sails.log.debug(recordType);
+      sails.log.info("triggerPostSaveTriggers user = " + JSON.stringify(user));
       let postSaveCreateHooks = _.get(recordType, `hooks.${mode}.post`, null);
       if (_.isArray(postSaveCreateHooks)) {
         _.each(postSaveCreateHooks, postSaveCreateHook => {
